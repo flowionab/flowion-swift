@@ -1,0 +1,40 @@
+{
+  "name": "An 'event: revoked' frame then close ends with revoked, not an error and not an item",
+  "call": {
+    "operation": "stream_live_events",
+    "mode": "stream",
+    "path": {
+      "projectId": "9f1c2b3a-0000-4000-8000-000000000003"
+    }
+  },
+  "exchange": [
+    {
+      "expect": {
+        "method": "GET",
+        "path": "/v1/projects/9f1c2b3a-0000-4000-8000-000000000003/live-events",
+        "headers": {
+          "Accept": "text/event-stream"
+        }
+      },
+      "respond": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "text/event-stream"
+        },
+        "frames": [
+          "data: {\"type\": \"chargingStationConnected\", \"chargingStationId\": \"9f1c2b3a-0000-4000-8000-000000000001\"}\n\n",
+          "event: revoked\ndata: {}\n\n"
+        ]
+      }
+    }
+  ],
+  "expectOutcome": {
+    "items": [
+      {
+        "type": "chargingStationConnected",
+        "chargingStationId": "9f1c2b3a-0000-4000-8000-000000000001"
+      }
+    ],
+    "end": "revoked"
+  }
+}

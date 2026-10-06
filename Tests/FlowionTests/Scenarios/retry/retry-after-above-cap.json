@@ -1,0 +1,41 @@
+{
+  "name": "Retry-After above maxWaitSeconds stops and surfaces rateLimited; it never retries early (research R9)",
+  "client": {
+    "retry": {
+      "maxAttempts": 4,
+      "maxWaitSeconds": 30
+    }
+  },
+  "call": {
+    "operation": "get_charger",
+    "path": {
+      "chargingStationId": "9f1c2b3a-0000-4000-8000-000000000001"
+    }
+  },
+  "exchange": [
+    {
+      "expect": {
+        "method": "GET",
+        "path": "/v1/charging-stations/9f1c2b3a-0000-4000-8000-000000000001"
+      },
+      "respond": {
+        "status": 429,
+        "headers": {
+          "Retry-After": "120"
+        },
+        "body": {
+          "error": "rateLimited",
+          "message": "slow down"
+        }
+      }
+    }
+  ],
+  "expectOutcome": {
+    "error": {
+      "kind": "rateLimited",
+      "status": 429,
+      "retryAfterSeconds": 120
+    }
+  },
+  "expectWaitsSeconds": []
+}

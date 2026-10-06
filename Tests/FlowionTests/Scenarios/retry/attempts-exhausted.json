@@ -1,0 +1,76 @@
+{
+  "name": "After the last attempt the final 429 surfaces as rateLimited carrying its budget",
+  "client": {
+    "retry": {
+      "maxAttempts": 3,
+      "maxWaitSeconds": 30
+    }
+  },
+  "call": {
+    "operation": "get_charger",
+    "path": {
+      "chargingStationId": "9f1c2b3a-0000-4000-8000-000000000001"
+    }
+  },
+  "exchange": [
+    {
+      "expect": {
+        "method": "GET",
+        "path": "/v1/charging-stations/9f1c2b3a-0000-4000-8000-000000000001"
+      },
+      "respond": {
+        "status": 429,
+        "headers": {
+          "Retry-After": "1"
+        },
+        "body": {
+          "error": "rateLimited",
+          "message": "slow down"
+        }
+      }
+    },
+    {
+      "expect": {
+        "method": "GET",
+        "path": "/v1/charging-stations/9f1c2b3a-0000-4000-8000-000000000001"
+      },
+      "respond": {
+        "status": 429,
+        "headers": {
+          "Retry-After": "1"
+        },
+        "body": {
+          "error": "rateLimited",
+          "message": "slow down"
+        }
+      }
+    },
+    {
+      "expect": {
+        "method": "GET",
+        "path": "/v1/charging-stations/9f1c2b3a-0000-4000-8000-000000000001"
+      },
+      "respond": {
+        "status": 429,
+        "headers": {
+          "Retry-After": "5"
+        },
+        "body": {
+          "error": "rateLimited",
+          "message": "slow down"
+        }
+      }
+    }
+  ],
+  "expectOutcome": {
+    "error": {
+      "kind": "rateLimited",
+      "status": 429,
+      "retryAfterSeconds": 5
+    }
+  },
+  "expectWaitsSeconds": [
+    1,
+    1
+  ]
+}

@@ -1,0 +1,95 @@
+{
+  "name": "429 with Retry-After is retried with the default policy (4 attempts); each wait equals Retry-After",
+  "call": {
+    "operation": "get_charger",
+    "path": {
+      "chargingStationId": "9f1c2b3a-0000-4000-8000-000000000001"
+    }
+  },
+  "exchange": [
+    {
+      "expect": {
+        "method": "GET",
+        "path": "/v1/charging-stations/9f1c2b3a-0000-4000-8000-000000000001"
+      },
+      "respond": {
+        "status": 429,
+        "headers": {
+          "Retry-After": "2"
+        },
+        "body": {
+          "error": "rateLimited",
+          "message": "slow down"
+        }
+      }
+    },
+    {
+      "expect": {
+        "method": "GET",
+        "path": "/v1/charging-stations/9f1c2b3a-0000-4000-8000-000000000001"
+      },
+      "respond": {
+        "status": 429,
+        "headers": {
+          "Retry-After": "1"
+        },
+        "body": {
+          "error": "rateLimited",
+          "message": "slow down"
+        }
+      }
+    },
+    {
+      "expect": {
+        "method": "GET",
+        "path": "/v1/charging-stations/9f1c2b3a-0000-4000-8000-000000000001"
+      },
+      "respond": {
+        "status": 429,
+        "headers": {
+          "Retry-After": "3"
+        },
+        "body": {
+          "error": "rateLimited",
+          "message": "slow down"
+        }
+      }
+    },
+    {
+      "expect": {
+        "method": "GET",
+        "path": "/v1/charging-stations/9f1c2b3a-0000-4000-8000-000000000001"
+      },
+      "respond": {
+        "status": 200,
+        "body": {
+          "id": "9f1c2b3a-0000-4000-8000-000000000001",
+          "chargePointId": "CP-001",
+          "status": "online",
+          "currentType": "AC",
+          "serviceState": {
+            "inService": true,
+            "reasons": []
+          }
+        }
+      }
+    }
+  ],
+  "expectOutcome": {
+    "ok": {
+      "id": "9f1c2b3a-0000-4000-8000-000000000001",
+      "chargePointId": "CP-001",
+      "status": "online",
+      "currentType": "AC",
+      "serviceState": {
+        "inService": true,
+        "reasons": []
+      }
+    }
+  },
+  "expectWaitsSeconds": [
+    2,
+    1,
+    3
+  ]
+}

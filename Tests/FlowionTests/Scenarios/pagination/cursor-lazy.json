@@ -1,0 +1,171 @@
+{
+  "name": "Pages are fetched lazily by cursor; an absent nextCursor ends the listing; each item arrives once",
+  "call": {
+    "operation": "list_transaction_events",
+    "mode": "paginate",
+    "path": {
+      "transactionId": "9f1c2b3a-0000-4000-8000-000000000002"
+    },
+    "query": {
+      "limit": 2
+    }
+  },
+  "exchange": [
+    {
+      "expect": {
+        "method": "GET",
+        "path": "/v1/transactions/9f1c2b3a-0000-4000-8000-000000000002/events",
+        "query": {
+          "limit": "2"
+        }
+      },
+      "respond": {
+        "status": 200,
+        "body": {
+          "data": [
+            {
+              "id": 1,
+              "transactionId": "9f1c2b3a-0000-4000-8000-000000000002",
+              "eventType": "Updated",
+              "timestamp": "2026-10-01T12:00:00Z",
+              "seqNo": 1,
+              "offline": false,
+              "meterValues": [],
+              "createdAt": "2026-10-01T12:00:00Z"
+            },
+            {
+              "id": 2,
+              "transactionId": "9f1c2b3a-0000-4000-8000-000000000002",
+              "eventType": "Updated",
+              "timestamp": "2026-10-01T12:00:00Z",
+              "seqNo": 2,
+              "offline": false,
+              "meterValues": [],
+              "createdAt": "2026-10-01T12:00:00Z"
+            }
+          ],
+          "nextCursor": "cur2"
+        }
+      }
+    },
+    {
+      "expect": {
+        "method": "GET",
+        "path": "/v1/transactions/9f1c2b3a-0000-4000-8000-000000000002/events",
+        "query": {
+          "limit": "2",
+          "cursor": "cur2"
+        }
+      },
+      "respond": {
+        "status": 200,
+        "body": {
+          "data": [
+            {
+              "id": 3,
+              "transactionId": "9f1c2b3a-0000-4000-8000-000000000002",
+              "eventType": "Updated",
+              "timestamp": "2026-10-01T12:00:00Z",
+              "seqNo": 3,
+              "offline": false,
+              "meterValues": [],
+              "createdAt": "2026-10-01T12:00:00Z"
+            },
+            {
+              "id": 4,
+              "transactionId": "9f1c2b3a-0000-4000-8000-000000000002",
+              "eventType": "Updated",
+              "timestamp": "2026-10-01T12:00:00Z",
+              "seqNo": 4,
+              "offline": false,
+              "meterValues": [],
+              "createdAt": "2026-10-01T12:00:00Z"
+            }
+          ],
+          "nextCursor": "cur3"
+        }
+      }
+    },
+    {
+      "expect": {
+        "method": "GET",
+        "path": "/v1/transactions/9f1c2b3a-0000-4000-8000-000000000002/events",
+        "query": {
+          "limit": "2",
+          "cursor": "cur3"
+        }
+      },
+      "respond": {
+        "status": 200,
+        "body": {
+          "data": [
+            {
+              "id": 5,
+              "transactionId": "9f1c2b3a-0000-4000-8000-000000000002",
+              "eventType": "Updated",
+              "timestamp": "2026-10-01T12:00:00Z",
+              "seqNo": 5,
+              "offline": false,
+              "meterValues": [],
+              "createdAt": "2026-10-01T12:00:00Z"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "expectOutcome": {
+    "items": [
+      {
+        "id": 1,
+        "transactionId": "9f1c2b3a-0000-4000-8000-000000000002",
+        "eventType": "Updated",
+        "timestamp": "2026-10-01T12:00:00Z",
+        "seqNo": 1,
+        "offline": false,
+        "meterValues": [],
+        "createdAt": "2026-10-01T12:00:00Z"
+      },
+      {
+        "id": 2,
+        "transactionId": "9f1c2b3a-0000-4000-8000-000000000002",
+        "eventType": "Updated",
+        "timestamp": "2026-10-01T12:00:00Z",
+        "seqNo": 2,
+        "offline": false,
+        "meterValues": [],
+        "createdAt": "2026-10-01T12:00:00Z"
+      },
+      {
+        "id": 3,
+        "transactionId": "9f1c2b3a-0000-4000-8000-000000000002",
+        "eventType": "Updated",
+        "timestamp": "2026-10-01T12:00:00Z",
+        "seqNo": 3,
+        "offline": false,
+        "meterValues": [],
+        "createdAt": "2026-10-01T12:00:00Z"
+      },
+      {
+        "id": 4,
+        "transactionId": "9f1c2b3a-0000-4000-8000-000000000002",
+        "eventType": "Updated",
+        "timestamp": "2026-10-01T12:00:00Z",
+        "seqNo": 4,
+        "offline": false,
+        "meterValues": [],
+        "createdAt": "2026-10-01T12:00:00Z"
+      },
+      {
+        "id": 5,
+        "transactionId": "9f1c2b3a-0000-4000-8000-000000000002",
+        "eventType": "Updated",
+        "timestamp": "2026-10-01T12:00:00Z",
+        "seqNo": 5,
+        "offline": false,
+        "meterValues": [],
+        "createdAt": "2026-10-01T12:00:00Z"
+      }
+    ]
+  }
+}

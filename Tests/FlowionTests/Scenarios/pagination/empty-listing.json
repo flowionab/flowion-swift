@@ -1,0 +1,33 @@
+{
+  "name": "An empty first page with no nextCursor yields no items and no further request",
+  "call": {
+    "operation": "list_transaction_events",
+    "mode": "paginate",
+    "path": {
+      "transactionId": "9f1c2b3a-0000-4000-8000-000000000002"
+    },
+    "query": {
+      "limit": 2
+    }
+  },
+  "exchange": [
+    {
+      "expect": {
+        "method": "GET",
+        "path": "/v1/transactions/9f1c2b3a-0000-4000-8000-000000000002/events",
+        "query": {
+          "limit": "2"
+        }
+      },
+      "respond": {
+        "status": 200,
+        "body": {
+          "data": []
+        }
+      }
+    }
+  ],
+  "expectOutcome": {
+    "items": []
+  }
+}

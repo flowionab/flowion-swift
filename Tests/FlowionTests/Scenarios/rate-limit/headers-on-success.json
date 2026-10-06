@@ -1,0 +1,53 @@
+{
+  "name": "RateLimit-* headers on a success are readable by the caller",
+  "call": {
+    "operation": "get_charger",
+    "path": {
+      "chargingStationId": "9f1c2b3a-0000-4000-8000-000000000001"
+    }
+  },
+  "exchange": [
+    {
+      "expect": {
+        "method": "GET",
+        "path": "/v1/charging-stations/9f1c2b3a-0000-4000-8000-000000000001"
+      },
+      "respond": {
+        "status": 200,
+        "body": {
+          "id": "9f1c2b3a-0000-4000-8000-000000000001",
+          "chargePointId": "CP-001",
+          "status": "online",
+          "currentType": "AC",
+          "serviceState": {
+            "inService": true,
+            "reasons": []
+          }
+        },
+        "headers": {
+          "RateLimit-Limit": "100",
+          "RateLimit-Remaining": "97",
+          "RateLimit-Reset": "42"
+        }
+      }
+    }
+  ],
+  "expectOutcome": {
+    "ok": {
+      "id": "9f1c2b3a-0000-4000-8000-000000000001",
+      "chargePointId": "CP-001",
+      "status": "online",
+      "currentType": "AC",
+      "serviceState": {
+        "inService": true,
+        "reasons": []
+      }
+    }
+  },
+  "expectRateLimit": {
+    "limit": 100,
+    "remaining": 97,
+    "resetSeconds": 42,
+    "retryAfterSeconds": null
+  }
+}
