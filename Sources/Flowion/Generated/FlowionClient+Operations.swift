@@ -2,6 +2,22 @@
 import OpenAPIRuntime
 
 extension FlowionClient: APIProtocol {
+    public func getAdditionOffer(_ input: Operations.GetAdditionOffer.Input) async throws -> Operations.GetAdditionOffer.Output {
+        do { return try await api.getAdditionOffer(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func acceptAdditionOffer(_ input: Operations.AcceptAdditionOffer.Input) async throws -> Operations.AcceptAdditionOffer.Output {
+        do { return try await api.acceptAdditionOffer(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func declineAdditionOffer(_ input: Operations.DeclineAdditionOffer.Input) async throws -> Operations.DeclineAdditionOffer.Output {
+        do { return try await api.declineAdditionOffer(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func completeAddressConfirmation(_ input: Operations.CompleteAddressConfirmation.Input) async throws -> Operations.CompleteAddressConfirmation.Output {
+        do { return try await api.completeAddressConfirmation(input) }
+        catch { throw Self.failure(error) }
+    }
     public func approveAssistant(_ input: Operations.ApproveAssistant.Input) async throws -> Operations.ApproveAssistant.Output {
         do { return try await api.approveAssistant(input) }
         catch { throw Self.failure(error) }
@@ -14,8 +30,16 @@ extension FlowionClient: APIProtocol {
         do { return try await api.getAssistantClient(input) }
         catch { throw Self.failure(error) }
     }
+    public func listAssistantConversations(_ input: Operations.ListAssistantConversations.Input) async throws -> Operations.ListAssistantConversations.Output {
+        do { return try await api.listAssistantConversations(input) }
+        catch { throw Self.failure(error) }
+    }
     public func startAssistantConversation(_ input: Operations.StartAssistantConversation.Input) async throws -> Operations.StartAssistantConversation.Output {
         do { return try await api.startAssistantConversation(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func getAssistantConversation(_ input: Operations.GetAssistantConversation.Input) async throws -> Operations.GetAssistantConversation.Output {
+        do { return try await api.getAssistantConversation(input) }
         catch { throw Self.failure(error) }
     }
     public func sendAssistantMessage(_ input: Operations.SendAssistantMessage.Input) async throws -> Operations.SendAssistantMessage.Output {
@@ -310,6 +334,26 @@ extension FlowionClient: APIProtocol {
         do { return try await api.listMonitorCandidates(input) }
         catch { throw Self.failure(error) }
     }
+    public func listCircuitInverters(_ input: Operations.ListCircuitInverters.Input) async throws -> Operations.ListCircuitInverters.Output {
+        do { return try await api.listCircuitInverters(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func createInverter(_ input: Operations.CreateInverter.Input) async throws -> Operations.CreateInverter.Output {
+        do { return try await api.createInverter(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func getInverter(_ input: Operations.GetInverter.Input) async throws -> Operations.GetInverter.Output {
+        do { return try await api.getInverter(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func updateInverter(_ input: Operations.UpdateInverter.Input) async throws -> Operations.UpdateInverter.Output {
+        do { return try await api.updateInverter(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func deleteInverter(_ input: Operations.DeleteInverter.Input) async throws -> Operations.DeleteInverter.Output {
+        do { return try await api.deleteInverter(input) }
+        catch { throw Self.failure(error) }
+    }
     public func setCircuitName(_ input: Operations.SetCircuitName.Input) async throws -> Operations.SetCircuitName.Output {
         do { return try await api.setCircuitName(input) }
         catch { throw Self.failure(error) }
@@ -348,6 +392,30 @@ extension FlowionClient: APIProtocol {
     }
     public func connectionProjects(_ input: Operations.ConnectionProjects.Input) async throws -> Operations.ConnectionProjects.Output {
         do { return try await api.connectionProjects(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func listProviderProjectChargers(_ input: Operations.ListProviderProjectChargers.Input) async throws -> Operations.ListProviderProjectChargers.Output {
+        do { return try await api.listProviderProjectChargers(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func getProviderProjectPrice(_ input: Operations.GetProviderProjectPrice.Input) async throws -> Operations.GetProviderProjectPrice.Output {
+        do { return try await api.getProviderProjectPrice(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func listProviderProjectSessions(_ input: Operations.ListProviderProjectSessions.Input) async throws -> Operations.ListProviderProjectSessions.Output {
+        do { return try await api.listProviderProjectSessions(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func approveAuthorize(_ input: Operations.ApproveAuthorize.Input) async throws -> Operations.ApproveAuthorize.Output {
+        do { return try await api.approveAuthorize(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func denyAuthorize(_ input: Operations.DenyAuthorize.Input) async throws -> Operations.DenyAuthorize.Output {
+        do { return try await api.denyAuthorize(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func previewAuthorize(_ input: Operations.PreviewAuthorize.Input) async throws -> Operations.PreviewAuthorize.Output {
+        do { return try await api.previewAuthorize(input) }
         catch { throw Self.failure(error) }
     }
     public func completeInstallFlow(_ input: Operations.CompleteInstallFlow.Input) async throws -> Operations.CompleteInstallFlow.Output {
@@ -502,6 +570,18 @@ extension FlowionClient: APIProtocol {
         do { return try await api.acceptInvitation(input) }
         catch { throw Self.failure(error) }
     }
+    public func requestAddressConfirmation(_ input: Operations.RequestAddressConfirmation.Input) async throws -> Operations.RequestAddressConfirmation.Output {
+        do { return try await api.requestAddressConfirmation(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func getJobInvitation(_ input: Operations.GetJobInvitation.Input) async throws -> Operations.GetJobInvitation.Output {
+        do { return try await api.getJobInvitation(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func acceptJobInvitation(_ input: Operations.AcceptJobInvitation.Input) async throws -> Operations.AcceptJobInvitation.Output {
+        do { return try await api.acceptJobInvitation(input) }
+        catch { throw Self.failure(error) }
+    }
     public func getLocation(_ input: Operations.GetLocation.Input) async throws -> Operations.GetLocation.Output {
         do { return try await api.getLocation(input) }
         catch { throw Self.failure(error) }
@@ -524,6 +604,18 @@ extension FlowionClient: APIProtocol {
     }
     public func listLocationDevicesAccess(_ input: Operations.ListLocationDevicesAccess.Input) async throws -> Operations.ListLocationDevicesAccess.Output {
         do { return try await api.listLocationDevicesAccess(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func listLocationAdditionOffers(_ input: Operations.ListLocationAdditionOffers.Input) async throws -> Operations.ListLocationAdditionOffers.Output {
+        do { return try await api.listLocationAdditionOffers(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func acceptLocationAdditionOffer(_ input: Operations.AcceptLocationAdditionOffer.Input) async throws -> Operations.AcceptLocationAdditionOffer.Output {
+        do { return try await api.acceptLocationAdditionOffer(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func declineLocationAdditionOffer(_ input: Operations.DeclineLocationAdditionOffer.Input) async throws -> Operations.DeclineLocationAdditionOffer.Output {
+        do { return try await api.declineLocationAdditionOffer(input) }
         catch { throw Self.failure(error) }
     }
     public func getLocationAllocationDecisions(_ input: Operations.GetLocationAllocationDecisions.Input) async throws -> Operations.GetLocationAllocationDecisions.Output {
@@ -590,12 +682,40 @@ extension FlowionClient: APIProtocol {
         do { return try await api.listLocationPrices(input) }
         catch { throw Self.failure(error) }
     }
+    public func listHomeVehicles(_ input: Operations.ListHomeVehicles.Input) async throws -> Operations.ListHomeVehicles.Output {
+        do { return try await api.listHomeVehicles(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func attachHomeVehicle(_ input: Operations.AttachHomeVehicle.Input) async throws -> Operations.AttachHomeVehicle.Output {
+        do { return try await api.attachHomeVehicle(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func replaceHomeVehicle(_ input: Operations.ReplaceHomeVehicle.Input) async throws -> Operations.ReplaceHomeVehicle.Output {
+        do { return try await api.replaceHomeVehicle(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func removeHomeVehicle(_ input: Operations.RemoveHomeVehicle.Input) async throws -> Operations.RemoveHomeVehicle.Output {
+        do { return try await api.removeHomeVehicle(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func listLocationInverters(_ input: Operations.ListLocationInverters.Input) async throws -> Operations.ListLocationInverters.Output {
+        do { return try await api.listLocationInverters(input) }
+        catch { throw Self.failure(error) }
+    }
     public func getLocationMonth(_ input: Operations.GetLocationMonth.Input) async throws -> Operations.GetLocationMonth.Output {
         do { return try await api.getLocationMonth(input) }
         catch { throw Self.failure(error) }
     }
     public func getLocationOccupancy(_ input: Operations.GetLocationOccupancy.Input) async throws -> Operations.GetLocationOccupancy.Output {
         do { return try await api.getLocationOccupancy(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func setLocationSolarCapacity(_ input: Operations.SetLocationSolarCapacity.Input) async throws -> Operations.SetLocationSolarCapacity.Output {
+        do { return try await api.setLocationSolarCapacity(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func getLocationSolarForecast(_ input: Operations.GetLocationSolarForecast.Input) async throws -> Operations.GetLocationSolarForecast.Output {
+        do { return try await api.getLocationSolarForecast(input) }
         catch { throw Self.failure(error) }
     }
     public func getLocationSupply(_ input: Operations.GetLocationSupply.Input) async throws -> Operations.GetLocationSupply.Output {
@@ -622,8 +742,20 @@ extension FlowionClient: APIProtocol {
         do { return try await api.getLocationUtilisation(input) }
         catch { throw Self.failure(error) }
     }
+    public func getLocationWeather(_ input: Operations.GetLocationWeather.Input) async throws -> Operations.GetLocationWeather.Output {
+        do { return try await api.getLocationWeather(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func getLocationWeatherForecast(_ input: Operations.GetLocationWeatherForecast.Input) async throws -> Operations.GetLocationWeatherForecast.Output {
+        do { return try await api.getLocationWeatherForecast(input) }
+        catch { throw Self.failure(error) }
+    }
     public func whoCanChargeAtLocation(_ input: Operations.WhoCanChargeAtLocation.Input) async throws -> Operations.WhoCanChargeAtLocation.Output {
         do { return try await api.whoCanChargeAtLocation(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func getMyProfile(_ input: Operations.GetMyProfile.Input) async throws -> Operations.GetMyProfile.Output {
+        do { return try await api.getMyProfile(input) }
         catch { throw Self.failure(error) }
     }
     public func deleteAccount(_ input: Operations.DeleteAccount.Input) async throws -> Operations.DeleteAccount.Output {
@@ -636,6 +768,74 @@ extension FlowionClient: APIProtocol {
     }
     public func revokeAssistantConnection(_ input: Operations.RevokeAssistantConnection.Input) async throws -> Operations.RevokeAssistantConnection.Output {
         do { return try await api.revokeAssistantConnection(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func getMyAutocharge(_ input: Operations.GetMyAutocharge.Input) async throws -> Operations.GetMyAutocharge.Output {
+        do { return try await api.getMyAutocharge(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func setMyAutocharge(_ input: Operations.SetMyAutocharge.Input) async throws -> Operations.SetMyAutocharge.Output {
+        do { return try await api.setMyAutocharge(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func getAvatar(_ input: Operations.GetAvatar.Input) async throws -> Operations.GetAvatar.Output {
+        do { return try await api.getAvatar(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func putAvatar(_ input: Operations.PutAvatar.Input) async throws -> Operations.PutAvatar.Output {
+        do { return try await api.putAvatar(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func deleteAvatar(_ input: Operations.DeleteAvatar.Input) async throws -> Operations.DeleteAvatar.Output {
+        do { return try await api.deleteAvatar(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func listMyCards(_ input: Operations.ListMyCards.Input) async throws -> Operations.ListMyCards.Output {
+        do { return try await api.listMyCards(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func registerCard(_ input: Operations.RegisterCard.Input) async throws -> Operations.RegisterCard.Output {
+        do { return try await api.registerCard(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func startLearn(_ input: Operations.StartLearn.Input) async throws -> Operations.StartLearn.Output {
+        do { return try await api.startLearn(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func getLearn(_ input: Operations.GetLearn.Input) async throws -> Operations.GetLearn.Output {
+        do { return try await api.getLearn(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func cancelLearn(_ input: Operations.CancelLearn.Input) async throws -> Operations.CancelLearn.Output {
+        do { return try await api.cancelLearn(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func confirmLearn(_ input: Operations.ConfirmLearn.Input) async throws -> Operations.ConfirmLearn.Output {
+        do { return try await api.confirmLearn(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func revokeCard(_ input: Operations.RevokeCard.Input) async throws -> Operations.RevokeCard.Output {
+        do { return try await api.revokeCard(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func previewMyChargingPlan(_ input: Operations.PreviewMyChargingPlan.Input) async throws -> Operations.PreviewMyChargingPlan.Output {
+        do { return try await api.previewMyChargingPlan(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func getMyChargerPrice(_ input: Operations.GetMyChargerPrice.Input) async throws -> Operations.GetMyChargerPrice.Output {
+        do { return try await api.getMyChargerPrice(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func getMyReadyBy(_ input: Operations.GetMyReadyBy.Input) async throws -> Operations.GetMyReadyBy.Output {
+        do { return try await api.getMyReadyBy(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func setMyReadyBy(_ input: Operations.SetMyReadyBy.Input) async throws -> Operations.SetMyReadyBy.Output {
+        do { return try await api.setMyReadyBy(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func clearMyReadyBy(_ input: Operations.ClearMyReadyBy.Input) async throws -> Operations.ClearMyReadyBy.Output {
+        do { return try await api.clearMyReadyBy(input) }
         catch { throw Self.failure(error) }
     }
     public func startCharging(_ input: Operations.StartCharging.Input) async throws -> Operations.StartCharging.Output {
@@ -652,6 +852,106 @@ extension FlowionClient: APIProtocol {
     }
     public func getMyChargingSession(_ input: Operations.GetMyChargingSession.Input) async throws -> Operations.GetMyChargingSession.Output {
         do { return try await api.getMyChargingSession(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func registerHomeDevice(_ input: Operations.RegisterHomeDevice.Input) async throws -> Operations.RegisterHomeDevice.Output {
+        do { return try await api.registerHomeDevice(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func retireHomeDevice(_ input: Operations.RetireHomeDevice.Input) async throws -> Operations.RetireHomeDevice.Output {
+        do { return try await api.retireHomeDevice(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func listMyHomes(_ input: Operations.ListMyHomes.Input) async throws -> Operations.ListMyHomes.Output {
+        do { return try await api.listMyHomes(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func createHome(_ input: Operations.CreateHome.Input) async throws -> Operations.CreateHome.Output {
+        do { return try await api.createHome(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func updateMyHome(_ input: Operations.UpdateMyHome.Input) async throws -> Operations.UpdateMyHome.Output {
+        do { return try await api.updateMyHome(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func deleteMyHome(_ input: Operations.DeleteMyHome.Input) async throws -> Operations.DeleteMyHome.Output {
+        do { return try await api.deleteMyHome(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func getHomeElectricity(_ input: Operations.GetHomeElectricity.Input) async throws -> Operations.GetHomeElectricity.Output {
+        do { return try await api.getHomeElectricity(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func putHomeElectricity(_ input: Operations.PutHomeElectricity.Input) async throws -> Operations.PutHomeElectricity.Output {
+        do { return try await api.putHomeElectricity(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func getMyHomePrice(_ input: Operations.GetMyHomePrice.Input) async throws -> Operations.GetMyHomePrice.Output {
+        do { return try await api.getMyHomePrice(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func setInstallerActivity(_ input: Operations.SetInstallerActivity.Input) async throws -> Operations.SetInstallerActivity.Output {
+        do { return try await api.setInstallerActivity(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func registerInstallerLiveActivity(_ input: Operations.RegisterInstallerLiveActivity.Input) async throws -> Operations.RegisterInstallerLiveActivity.Output {
+        do { return try await api.registerInstallerLiveActivity(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func unregisterInstallerLiveActivity(_ input: Operations.UnregisterInstallerLiveActivity.Input) async throws -> Operations.UnregisterInstallerLiveActivity.Output {
+        do { return try await api.unregisterInstallerLiveActivity(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func getInstallerNotificationSettings(_ input: Operations.GetInstallerNotificationSettings.Input) async throws -> Operations.GetInstallerNotificationSettings.Output {
+        do { return try await api.getInstallerNotificationSettings(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func setInstallerNotificationSettings(_ input: Operations.SetInstallerNotificationSettings.Input) async throws -> Operations.SetInstallerNotificationSettings.Output {
+        do { return try await api.setInstallerNotificationSettings(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func listInstallerNotifications(_ input: Operations.ListInstallerNotifications.Input) async throws -> Operations.ListInstallerNotifications.Output {
+        do { return try await api.listInstallerNotifications(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func markInstallerNotificationsRead(_ input: Operations.MarkInstallerNotificationsRead.Input) async throws -> Operations.MarkInstallerNotificationsRead.Output {
+        do { return try await api.markInstallerNotificationsRead(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func registerInstallerPushDevice(_ input: Operations.RegisterInstallerPushDevice.Input) async throws -> Operations.RegisterInstallerPushDevice.Output {
+        do { return try await api.registerInstallerPushDevice(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func unregisterInstallerPushDevice(_ input: Operations.UnregisterInstallerPushDevice.Input) async throws -> Operations.UnregisterInstallerPushDevice.Output {
+        do { return try await api.unregisterInstallerPushDevice(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func listMyJobInvitations(_ input: Operations.ListMyJobInvitations.Input) async throws -> Operations.ListMyJobInvitations.Output {
+        do { return try await api.listMyJobInvitations(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func removeMyJobInvitation(_ input: Operations.RemoveMyJobInvitation.Input) async throws -> Operations.RemoveMyJobInvitation.Output {
+        do { return try await api.removeMyJobInvitation(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func declineMyJobInvitation(_ input: Operations.DeclineMyJobInvitation.Input) async throws -> Operations.DeclineMyJobInvitation.Output {
+        do { return try await api.declineMyJobInvitation(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func getMyLabel(_ input: Operations.GetMyLabel.Input) async throws -> Operations.GetMyLabel.Output {
+        do { return try await api.getMyLabel(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func registerHomeLiveActivity(_ input: Operations.RegisterHomeLiveActivity.Input) async throws -> Operations.RegisterHomeLiveActivity.Output {
+        do { return try await api.registerHomeLiveActivity(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func endHomeLiveActivity(_ input: Operations.EndHomeLiveActivity.Input) async throws -> Operations.EndHomeLiveActivity.Output {
+        do { return try await api.endHomeLiveActivity(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func streamMyLiveEvents(_ input: Operations.StreamMyLiveEvents.Input) async throws -> Operations.StreamMyLiveEvents.Output {
+        do { return try await api.streamMyLiveEvents(input) }
         catch { throw Self.failure(error) }
     }
     public func setMyNotificationLanguage(_ input: Operations.SetMyNotificationLanguage.Input) async throws -> Operations.SetMyNotificationLanguage.Output {
@@ -686,6 +986,18 @@ extension FlowionClient: APIProtocol {
         do { return try await api.listMyPlaces(input) }
         catch { throw Self.failure(error) }
     }
+    public func listMyResidentInvitations(_ input: Operations.ListMyResidentInvitations.Input) async throws -> Operations.ListMyResidentInvitations.Output {
+        do { return try await api.listMyResidentInvitations(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func acceptMyResidentInvitation(_ input: Operations.AcceptMyResidentInvitation.Input) async throws -> Operations.AcceptMyResidentInvitation.Output {
+        do { return try await api.acceptMyResidentInvitation(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func declineMyResidentInvitation(_ input: Operations.DeclineMyResidentInvitation.Input) async throws -> Operations.DeclineMyResidentInvitation.Output {
+        do { return try await api.declineMyResidentInvitation(input) }
+        catch { throw Self.failure(error) }
+    }
     public func listMyVehicleConnections(_ input: Operations.ListMyVehicleConnections.Input) async throws -> Operations.ListMyVehicleConnections.Output {
         do { return try await api.listMyVehicleConnections(input) }
         catch { throw Self.failure(error) }
@@ -696,6 +1008,10 @@ extension FlowionClient: APIProtocol {
     }
     public func disconnectMyVehicleConnection(_ input: Operations.DisconnectMyVehicleConnection.Input) async throws -> Operations.DisconnectMyVehicleConnection.Output {
         do { return try await api.disconnectMyVehicleConnection(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func withdrawMyVehicleTracking(_ input: Operations.WithdrawMyVehicleTracking.Input) async throws -> Operations.WithdrawMyVehicleTracking.Output {
+        do { return try await api.withdrawMyVehicleTracking(input) }
         catch { throw Self.failure(error) }
     }
     public func discoverMyVehicles(_ input: Operations.DiscoverMyVehicles.Input) async throws -> Operations.DiscoverMyVehicles.Output {
@@ -720,6 +1036,10 @@ extension FlowionClient: APIProtocol {
     }
     public func removeMyVehicle(_ input: Operations.RemoveMyVehicle.Input) async throws -> Operations.RemoveMyVehicle.Output {
         do { return try await api.removeMyVehicle(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func setMyVehicleAutochargeFor(_ input: Operations.SetMyVehicleAutochargeFor.Input) async throws -> Operations.SetMyVehicleAutochargeFor.Output {
+        do { return try await api.setMyVehicleAutochargeFor(input) }
         catch { throw Self.failure(error) }
     }
     public func listOrganizations(_ input: Operations.ListOrganizations.Input) async throws -> Operations.ListOrganizations.Output {
@@ -802,10 +1122,6 @@ extension FlowionClient: APIProtocol {
         do { return try await api.getPayouts(input) }
         catch { throw Self.failure(error) }
     }
-    public func requestOnboardingLink(_ input: Operations.RequestOnboardingLink.Input) async throws -> Operations.RequestOnboardingLink.Output {
-        do { return try await api.requestOnboardingLink(input) }
-        catch { throw Self.failure(error) }
-    }
     public func beginPaymentMethodSetup(_ input: Operations.BeginPaymentMethodSetup.Input) async throws -> Operations.BeginPaymentMethodSetup.Output {
         do { return try await api.beginPaymentMethodSetup(input) }
         catch { throw Self.failure(error) }
@@ -874,6 +1190,10 @@ extension FlowionClient: APIProtocol {
         do { return try await api.listSyncedFortnoxArticles(input) }
         catch { throw Self.failure(error) }
     }
+    public func listSyncedFortnoxCustomers(_ input: Operations.ListSyncedFortnoxCustomers.Input) async throws -> Operations.ListSyncedFortnoxCustomers.Output {
+        do { return try await api.listSyncedFortnoxCustomers(input) }
+        catch { throw Self.failure(error) }
+    }
     public func updateInstallation(_ input: Operations.UpdateInstallation.Input) async throws -> Operations.UpdateInstallation.Output {
         do { return try await api.updateInstallation(input) }
         catch { throw Self.failure(error) }
@@ -938,6 +1258,14 @@ extension FlowionClient: APIProtocol {
         do { return try await api.createCustomer(input) }
         catch { throw Self.failure(error) }
     }
+    public func setCustomerServingProject(_ input: Operations.SetCustomerServingProject.Input) async throws -> Operations.SetCustomerServingProject.Output {
+        do { return try await api.setCustomerServingProject(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func listCustomerSites(_ input: Operations.ListCustomerSites.Input) async throws -> Operations.ListCustomerSites.Output {
+        do { return try await api.listCustomerSites(input) }
+        catch { throw Self.failure(error) }
+    }
     public func createStationCommand(_ input: Operations.CreateStationCommand.Input) async throws -> Operations.CreateStationCommand.Output {
         do { return try await api.createStationCommand(input) }
         catch { throw Self.failure(error) }
@@ -946,16 +1274,72 @@ extension FlowionClient: APIProtocol {
         do { return try await api.getDiagnostics(input) }
         catch { throw Self.failure(error) }
     }
-    public func listInstallerTeam(_ input: Operations.ListInstallerTeam.Input) async throws -> Operations.ListInstallerTeam.Output {
-        do { return try await api.listInstallerTeam(input) }
+    public func getInstallerChargerManuals(_ input: Operations.GetInstallerChargerManuals.Input) async throws -> Operations.GetInstallerChargerManuals.Output {
+        do { return try await api.getInstallerChargerManuals(input) }
         catch { throw Self.failure(error) }
     }
-    public func assignTechnician(_ input: Operations.AssignTechnician.Input) async throws -> Operations.AssignTechnician.Output {
-        do { return try await api.assignTechnician(input) }
+    public func getInstallerChargerManualPage(_ input: Operations.GetInstallerChargerManualPage.Input) async throws -> Operations.GetInstallerChargerManualPage.Output {
+        do { return try await api.getInstallerChargerManualPage(input) }
         catch { throw Self.failure(error) }
     }
-    public func unassignTechnician(_ input: Operations.UnassignTechnician.Input) async throws -> Operations.UnassignTechnician.Output {
-        do { return try await api.unassignTechnician(input) }
+    public func listInstallerChats(_ input: Operations.ListInstallerChats.Input) async throws -> Operations.ListInstallerChats.Output {
+        do { return try await api.listInstallerChats(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func startInstallerAssistantConversation(_ input: Operations.StartInstallerAssistantConversation.Input) async throws -> Operations.StartInstallerAssistantConversation.Output {
+        do { return try await api.startInstallerAssistantConversation(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func getInstallerChat(_ input: Operations.GetInstallerChat.Input) async throws -> Operations.GetInstallerChat.Output {
+        do { return try await api.getInstallerChat(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func deleteInstallerChat(_ input: Operations.DeleteInstallerChat.Input) async throws -> Operations.DeleteInstallerChat.Output {
+        do { return try await api.deleteInstallerChat(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func sendInstallerAssistantMessage(_ input: Operations.SendInstallerAssistantMessage.Input) async throws -> Operations.SendInstallerAssistantMessage.Output {
+        do { return try await api.sendInstallerAssistantMessage(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func sendInstallerAssistantPhoto(_ input: Operations.SendInstallerAssistantPhoto.Input) async throws -> Operations.SendInstallerAssistantPhoto.Output {
+        do { return try await api.sendInstallerAssistantPhoto(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func getInstallerAssistantTurn(_ input: Operations.GetInstallerAssistantTurn.Input) async throws -> Operations.GetInstallerAssistantTurn.Output {
+        do { return try await api.getInstallerAssistantTurn(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func generateInstallerSpeech(_ input: Operations.GenerateInstallerSpeech.Input) async throws -> Operations.GenerateInstallerSpeech.Output {
+        do { return try await api.generateInstallerSpeech(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func getInstallerJobManuals(_ input: Operations.GetInstallerJobManuals.Input) async throws -> Operations.GetInstallerJobManuals.Output {
+        do { return try await api.getInstallerJobManuals(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func getInstallerJobManualPage(_ input: Operations.GetInstallerJobManualPage.Input) async throws -> Operations.GetInstallerJobManualPage.Output {
+        do { return try await api.getInstallerJobManualPage(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func lookupInstallerCompany(_ input: Operations.LookupInstallerCompany.Input) async throws -> Operations.LookupInstallerCompany.Output {
+        do { return try await api.lookupInstallerCompany(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func getInstallerSettings(_ input: Operations.GetInstallerSettings.Input) async throws -> Operations.GetInstallerSettings.Output {
+        do { return try await api.getInstallerSettings(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func updateInstallerSettings(_ input: Operations.UpdateInstallerSettings.Input) async throws -> Operations.UpdateInstallerSettings.Output {
+        do { return try await api.updateInstallerSettings(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func listInstallerVisits(_ input: Operations.ListInstallerVisits.Input) async throws -> Operations.ListInstallerVisits.Output {
+        do { return try await api.listInstallerVisits(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func endInstallerVisit(_ input: Operations.EndInstallerVisit.Input) async throws -> Operations.EndInstallerVisit.Output {
+        do { return try await api.endInstallerVisit(input) }
         catch { throw Self.failure(error) }
     }
     public func listInstallers(_ input: Operations.ListInstallers.Input) async throws -> Operations.ListInstallers.Output {
@@ -990,12 +1374,20 @@ extension FlowionClient: APIProtocol {
         do { return try await api.createJob(input) }
         catch { throw Self.failure(error) }
     }
+    public func createJobDraft(_ input: Operations.CreateJobDraft.Input) async throws -> Operations.CreateJobDraft.Output {
+        do { return try await api.createJobDraft(input) }
+        catch { throw Self.failure(error) }
+    }
     public func getJob(_ input: Operations.GetJob.Input) async throws -> Operations.GetJob.Output {
         do { return try await api.getJob(input) }
         catch { throw Self.failure(error) }
     }
     public func updateJob(_ input: Operations.UpdateJob.Input) async throws -> Operations.UpdateJob.Output {
         do { return try await api.updateJob(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func registerJobAddition(_ input: Operations.RegisterJobAddition.Input) async throws -> Operations.RegisterJobAddition.Output {
+        do { return try await api.registerJobAddition(input) }
         catch { throw Self.failure(error) }
     }
     public func assignJob(_ input: Operations.AssignJob.Input) async throws -> Operations.AssignJob.Output {
@@ -1014,8 +1406,36 @@ extension FlowionClient: APIProtocol {
         do { return try await api.registerJobCharger(input) }
         catch { throw Self.failure(error) }
     }
+    public func setChargerInstallerMode(_ input: Operations.SetChargerInstallerMode.Input) async throws -> Operations.SetChargerInstallerMode.Output {
+        do { return try await api.setChargerInstallerMode(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func extendInstallerMode(_ input: Operations.ExtendInstallerMode.Input) async throws -> Operations.ExtendInstallerMode.Output {
+        do { return try await api.extendInstallerMode(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func setInstallerModeStep(_ input: Operations.SetInstallerModeStep.Input) async throws -> Operations.SetInstallerModeStep.Output {
+        do { return try await api.setInstallerModeStep(input) }
+        catch { throw Self.failure(error) }
+    }
     public func setCheckNote(_ input: Operations.SetCheckNote.Input) async throws -> Operations.SetCheckNote.Output {
         do { return try await api.setCheckNote(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func listJobCircuits(_ input: Operations.ListJobCircuits.Input) async throws -> Operations.ListJobCircuits.Output {
+        do { return try await api.listJobCircuits(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func completeJob(_ input: Operations.CompleteJob.Input) async throws -> Operations.CompleteJob.Output {
+        do { return try await api.completeJob(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func listJobConnectionRefusals(_ input: Operations.ListJobConnectionRefusals.Input) async throws -> Operations.ListJobConnectionRefusals.Output {
+        do { return try await api.listJobConnectionRefusals(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func getCustomerLink(_ input: Operations.GetCustomerLink.Input) async throws -> Operations.GetCustomerLink.Output {
+        do { return try await api.getCustomerLink(input) }
         catch { throw Self.failure(error) }
     }
     public func getJobEaseeCommissioning(_ input: Operations.GetJobEaseeCommissioning.Input) async throws -> Operations.GetJobEaseeCommissioning.Output {
@@ -1038,16 +1458,44 @@ extension FlowionClient: APIProtocol {
         do { return try await api.pairJobEaseeSite(input) }
         catch { throw Self.failure(error) }
     }
+    public func linkJobOutletLabel(_ input: Operations.LinkJobOutletLabel.Input) async throws -> Operations.LinkJobOutletLabel.Output {
+        do { return try await api.linkJobOutletLabel(input) }
+        catch { throw Self.failure(error) }
+    }
     public func waiveExpectedCharger(_ input: Operations.WaiveExpectedCharger.Input) async throws -> Operations.WaiveExpectedCharger.Output {
         do { return try await api.waiveExpectedCharger(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func handOverJob(_ input: Operations.HandOverJob.Input) async throws -> Operations.HandOverJob.Output {
+        do { return try await api.handOverJob(input) }
         catch { throw Self.failure(error) }
     }
     public func resendHandoverLink(_ input: Operations.ResendHandoverLink.Input) async throws -> Operations.ResendHandoverLink.Output {
         do { return try await api.resendHandoverLink(input) }
         catch { throw Self.failure(error) }
     }
+    public func holdCircuitChange(_ input: Operations.HoldCircuitChange.Input) async throws -> Operations.HoldCircuitChange.Output {
+        do { return try await api.holdCircuitChange(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func getInstallerMode(_ input: Operations.GetInstallerMode.Input) async throws -> Operations.GetInstallerMode.Output {
+        do { return try await api.getInstallerMode(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func setJobInstallerMode(_ input: Operations.SetJobInstallerMode.Input) async throws -> Operations.SetJobInstallerMode.Output {
+        do { return try await api.setJobInstallerMode(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func resendJobInvitation(_ input: Operations.ResendJobInvitation.Input) async throws -> Operations.ResendJobInvitation.Output {
+        do { return try await api.resendJobInvitation(input) }
+        catch { throw Self.failure(error) }
+    }
     public func createJobLocation(_ input: Operations.CreateJobLocation.Input) async throws -> Operations.CreateJobLocation.Output {
         do { return try await api.createJobLocation(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func offerAdditions(_ input: Operations.OfferAdditions.Input) async throws -> Operations.OfferAdditions.Output {
+        do { return try await api.offerAdditions(input) }
         catch { throw Self.failure(error) }
     }
     public func markReadyForHandover(_ input: Operations.MarkReadyForHandover.Input) async throws -> Operations.MarkReadyForHandover.Output {
@@ -1056,6 +1504,70 @@ extension FlowionClient: APIProtocol {
     }
     public func withdrawReadiness(_ input: Operations.WithdrawReadiness.Input) async throws -> Operations.WithdrawReadiness.Output {
         do { return try await api.withdrawReadiness(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func withdrawAdditions(_ input: Operations.WithdrawAdditions.Input) async throws -> Operations.WithdrawAdditions.Output {
+        do { return try await api.withdrawAdditions(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func getJobZaptecOnboarding(_ input: Operations.GetJobZaptecOnboarding.Input) async throws -> Operations.GetJobZaptecOnboarding.Output {
+        do { return try await api.getJobZaptecOnboarding(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func startJobZaptecOnboarding(_ input: Operations.StartJobZaptecOnboarding.Input) async throws -> Operations.StartJobZaptecOnboarding.Output {
+        do { return try await api.startJobZaptecOnboarding(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func getJobZaptecOnboardingAttempt(_ input: Operations.GetJobZaptecOnboardingAttempt.Input) async throws -> Operations.GetJobZaptecOnboardingAttempt.Output {
+        do { return try await api.getJobZaptecOnboardingAttempt(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func advanceJobZaptecOnboarding(_ input: Operations.AdvanceJobZaptecOnboarding.Input) async throws -> Operations.AdvanceJobZaptecOnboarding.Output {
+        do { return try await api.advanceJobZaptecOnboarding(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func cancelJobZaptecOnboarding(_ input: Operations.CancelJobZaptecOnboarding.Input) async throws -> Operations.CancelJobZaptecOnboarding.Output {
+        do { return try await api.cancelJobZaptecOnboarding(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func beginJobZaptecConsent(_ input: Operations.BeginJobZaptecConsent.Input) async throws -> Operations.BeginJobZaptecConsent.Output {
+        do { return try await api.beginJobZaptecConsent(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func completeJobZaptecConsent(_ input: Operations.CompleteJobZaptecConsent.Input) async throws -> Operations.CompleteJobZaptecConsent.Output {
+        do { return try await api.completeJobZaptecConsent(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func confirmJobZaptecReview(_ input: Operations.ConfirmJobZaptecReview.Input) async throws -> Operations.ConfirmJobZaptecReview.Output {
+        do { return try await api.confirmJobZaptecReview(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func listLinkedJobs(_ input: Operations.ListLinkedJobs.Input) async throws -> Operations.ListLinkedJobs.Output {
+        do { return try await api.listLinkedJobs(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func getLinkedJob(_ input: Operations.GetLinkedJob.Input) async throws -> Operations.GetLinkedJob.Output {
+        do { return try await api.getLinkedJob(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func detachLinkedJob(_ input: Operations.DetachLinkedJob.Input) async throws -> Operations.DetachLinkedJob.Output {
+        do { return try await api.detachLinkedJob(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func setAccessArranged(_ input: Operations.SetAccessArranged.Input) async throws -> Operations.SetAccessArranged.Output {
+        do { return try await api.setAccessArranged(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func listIntentions(_ input: Operations.ListIntentions.Input) async throws -> Operations.ListIntentions.Output {
+        do { return try await api.listIntentions(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func recordIntention(_ input: Operations.RecordIntention.Input) async throws -> Operations.RecordIntention.Output {
+        do { return try await api.recordIntention(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func removeIntention(_ input: Operations.RemoveIntention.Input) async throws -> Operations.RemoveIntention.Output {
+        do { return try await api.removeIntention(input) }
         catch { throw Self.failure(error) }
     }
     public func listMembers(_ input: Operations.ListMembers.Input) async throws -> Operations.ListMembers.Output {
@@ -1110,8 +1622,8 @@ extension FlowionClient: APIProtocol {
         do { return try await api.deletePaymentsAccount(input) }
         catch { throw Self.failure(error) }
     }
-    public func createPaymentsAccountSession(_ input: Operations.CreatePaymentsAccountSession.Input) async throws -> Operations.CreatePaymentsAccountSession.Output {
-        do { return try await api.createPaymentsAccountSession(input) }
+    public func createPaymentsAccountLink(_ input: Operations.CreatePaymentsAccountLink.Input) async throws -> Operations.CreatePaymentsAccountLink.Output {
+        do { return try await api.createPaymentsAccountLink(input) }
         catch { throw Self.failure(error) }
     }
     public func listPermissionPolicies(_ input: Operations.ListPermissionPolicies.Input) async throws -> Operations.ListPermissionPolicies.Output {
@@ -1140,6 +1652,10 @@ extension FlowionClient: APIProtocol {
     }
     public func deletePermissionPolicy(_ input: Operations.DeletePermissionPolicy.Input) async throws -> Operations.DeletePermissionPolicy.Output {
         do { return try await api.deletePermissionPolicy(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func listPermissionPolicyHolders(_ input: Operations.ListPermissionPolicyHolders.Input) async throws -> Operations.ListPermissionPolicyHolders.Output {
+        do { return try await api.listPermissionPolicyHolders(input) }
         catch { throw Self.failure(error) }
     }
     public func listProjects(_ input: Operations.ListProjects.Input) async throws -> Operations.ListProjects.Output {
@@ -1180,18 +1696,6 @@ extension FlowionClient: APIProtocol {
     }
     public func listPermissions(_ input: Operations.ListPermissions.Input) async throws -> Operations.ListPermissions.Output {
         do { return try await api.listPermissions(input) }
-        catch { throw Self.failure(error) }
-    }
-    public func listCertificates(_ input: Operations.ListCertificates.Input) async throws -> Operations.ListCertificates.Output {
-        do { return try await api.listCertificates(input) }
-        catch { throw Self.failure(error) }
-    }
-    public func getHierarchyHealth(_ input: Operations.GetHierarchyHealth.Input) async throws -> Operations.GetHierarchyHealth.Output {
-        do { return try await api.getHierarchyHealth(input) }
-        catch { throw Self.failure(error) }
-    }
-    public func unlinkPaymentsAccount(_ input: Operations.UnlinkPaymentsAccount.Input) async throws -> Operations.UnlinkPaymentsAccount.Output {
-        do { return try await api.unlinkPaymentsAccount(input) }
         catch { throw Self.failure(error) }
     }
     public func getPrincipal(_ input: Operations.GetPrincipal.Input) async throws -> Operations.GetPrincipal.Output {
@@ -1260,6 +1764,14 @@ extension FlowionClient: APIProtocol {
     }
     public func getNeedsAttention(_ input: Operations.GetNeedsAttention.Input) async throws -> Operations.GetNeedsAttention.Output {
         do { return try await api.getNeedsAttention(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func linkOutletLabel(_ input: Operations.LinkOutletLabel.Input) async throws -> Operations.LinkOutletLabel.Output {
+        do { return try await api.linkOutletLabel(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func unlinkOutletLabel(_ input: Operations.UnlinkOutletLabel.Input) async throws -> Operations.UnlinkOutletLabel.Output {
+        do { return try await api.unlinkOutletLabel(input) }
         catch { throw Self.failure(error) }
     }
     public func listConnectorsInBadState(_ input: Operations.ListConnectorsInBadState.Input) async throws -> Operations.ListConnectorsInBadState.Output {
@@ -1374,6 +1886,18 @@ extension FlowionClient: APIProtocol {
         do { return try await api.createLocation(input) }
         catch { throw Self.failure(error) }
     }
+    public func getLocationAutocharge(_ input: Operations.GetLocationAutocharge.Input) async throws -> Operations.GetLocationAutocharge.Output {
+        do { return try await api.getLocationAutocharge(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func setLocationAutocharge(_ input: Operations.SetLocationAutocharge.Input) async throws -> Operations.SetLocationAutocharge.Output {
+        do { return try await api.setLocationAutocharge(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func setLocationCredentialsPolicy(_ input: Operations.SetLocationCredentialsPolicy.Input) async throws -> Operations.SetLocationCredentialsPolicy.Output {
+        do { return try await api.setLocationCredentialsPolicy(input) }
+        catch { throw Self.failure(error) }
+    }
     public func getMyProjectPermissions(_ input: Operations.GetMyProjectPermissions.Input) async throws -> Operations.GetMyProjectPermissions.Output {
         do { return try await api.getMyProjectPermissions(input) }
         catch { throw Self.failure(error) }
@@ -1396,6 +1920,26 @@ extension FlowionClient: APIProtocol {
     }
     public func upsertPrincipalByReference(_ input: Operations.UpsertPrincipalByReference.Input) async throws -> Operations.UpsertPrincipalByReference.Output {
         do { return try await api.upsertPrincipalByReference(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func previewResidentImport(_ input: Operations.PreviewResidentImport.Input) async throws -> Operations.PreviewResidentImport.Output {
+        do { return try await api.previewResidentImport(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func listResidentInvitations(_ input: Operations.ListResidentInvitations.Input) async throws -> Operations.ListResidentInvitations.Output {
+        do { return try await api.listResidentInvitations(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func inviteResident(_ input: Operations.InviteResident.Input) async throws -> Operations.InviteResident.Output {
+        do { return try await api.inviteResident(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func revokeResidentInvitation(_ input: Operations.RevokeResidentInvitation.Input) async throws -> Operations.RevokeResidentInvitation.Output {
+        do { return try await api.revokeResidentInvitation(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func resendResidentInvitation(_ input: Operations.ResendResidentInvitation.Input) async throws -> Operations.ResendResidentInvitation.Output {
+        do { return try await api.resendResidentInvitation(input) }
         catch { throw Self.failure(error) }
     }
     public func getStatementMonth(_ input: Operations.GetStatementMonth.Input) async throws -> Operations.GetStatementMonth.Output {
@@ -1588,6 +2132,62 @@ extension FlowionClient: APIProtocol {
     }
     public func whoCanChargeAtProject(_ input: Operations.WhoCanChargeAtProject.Input) async throws -> Operations.WhoCanChargeAtProject.Output {
         do { return try await api.whoCanChargeAtProject(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func getOwnerZaptecOnboarding(_ input: Operations.GetOwnerZaptecOnboarding.Input) async throws -> Operations.GetOwnerZaptecOnboarding.Output {
+        do { return try await api.getOwnerZaptecOnboarding(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func startOwnerZaptecOnboarding(_ input: Operations.StartOwnerZaptecOnboarding.Input) async throws -> Operations.StartOwnerZaptecOnboarding.Output {
+        do { return try await api.startOwnerZaptecOnboarding(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func getOwnerZaptecOnboardingAttempt(_ input: Operations.GetOwnerZaptecOnboardingAttempt.Input) async throws -> Operations.GetOwnerZaptecOnboardingAttempt.Output {
+        do { return try await api.getOwnerZaptecOnboardingAttempt(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func advanceOwnerZaptecOnboarding(_ input: Operations.AdvanceOwnerZaptecOnboarding.Input) async throws -> Operations.AdvanceOwnerZaptecOnboarding.Output {
+        do { return try await api.advanceOwnerZaptecOnboarding(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func cancelOwnerZaptecOnboarding(_ input: Operations.CancelOwnerZaptecOnboarding.Input) async throws -> Operations.CancelOwnerZaptecOnboarding.Output {
+        do { return try await api.cancelOwnerZaptecOnboarding(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func beginOwnerZaptecConsent(_ input: Operations.BeginOwnerZaptecConsent.Input) async throws -> Operations.BeginOwnerZaptecConsent.Output {
+        do { return try await api.beginOwnerZaptecConsent(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func completeOwnerZaptecConsent(_ input: Operations.CompleteOwnerZaptecConsent.Input) async throws -> Operations.CompleteOwnerZaptecConsent.Output {
+        do { return try await api.completeOwnerZaptecConsent(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func confirmOwnerZaptecReview(_ input: Operations.ConfirmOwnerZaptecReview.Input) async throws -> Operations.ConfirmOwnerZaptecReview.Output {
+        do { return try await api.confirmOwnerZaptecReview(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func listPublicChargingLocations(_ input: Operations.ListPublicChargingLocations.Input) async throws -> Operations.ListPublicChargingLocations.Output {
+        do { return try await api.listPublicChargingLocations(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func getInvitationDecision(_ input: Operations.GetInvitationDecision.Input) async throws -> Operations.GetInvitationDecision.Output {
+        do { return try await api.getInvitationDecision(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func decideInvitation(_ input: Operations.DecideInvitation.Input) async throws -> Operations.DecideInvitation.Output {
+        do { return try await api.decideInvitation(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func getPublicLabel(_ input: Operations.GetPublicLabel.Input) async throws -> Operations.GetPublicLabel.Output {
+        do { return try await api.getPublicLabel(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func getResidentInvitation(_ input: Operations.GetResidentInvitation.Input) async throws -> Operations.GetResidentInvitation.Output {
+        do { return try await api.getResidentInvitation(input) }
+        catch { throw Self.failure(error) }
+    }
+    public func acceptResidentInvitation(_ input: Operations.AcceptResidentInvitation.Input) async throws -> Operations.AcceptResidentInvitation.Output {
+        do { return try await api.acceptResidentInvitation(input) }
         catch { throw Self.failure(error) }
     }
     public func getTransaction(_ input: Operations.GetTransaction.Input) async throws -> Operations.GetTransaction.Output {

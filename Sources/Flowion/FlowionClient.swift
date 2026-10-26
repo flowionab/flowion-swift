@@ -32,7 +32,9 @@ public struct FlowionClient: Sendable {
     let policy = PolicyTransport(
       transport: transport, token: token, mode: mode, retry: retry, sleep: sleep)
     self.policy = policy
-    self.api = Client(serverURL: baseURL, transport: policy)
+    self.api = Client(
+      serverURL: baseURL, configuration: .init(dateTranscoder: ServerDateTranscoder()),
+      transport: policy)
   }
 
   /// Headers from the most recently received response, including failures.

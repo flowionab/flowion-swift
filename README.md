@@ -61,8 +61,13 @@ distribution repository includes those generated sources for SwiftPM consumers.
 Build and test from the monorepo root:
 
 ```sh
-bazelisk test //sdks/swift/... //sdks/codegen:unit_test
+bazelisk test //sdks/codegen:unit_test
+# the Swift tests are tagged `swift` and left out of a plain run (ADR-0232); on the
+# farm: --config=rbe --config=swift
+bazelisk test --config=swift //sdks/swift/...
 bazelisk build //sdks/swift:package
+# :package_test (in the line above) is SwiftPM on the exported tree, offline,
+# against the pinned dependencies; this is the release's online version:
 bazelisk run //sdks/swift:verify_package
 # Compile for a real iPhone (requires Xcode):
 bazelisk build //sdks/swift:Flowion --platforms=//bazel/ios:ios_arm64 --ios_minimum_os=16.0
@@ -99,4 +104,4 @@ glibc 2.35 or newer; macOS/iOS builds use the selected Xcode SDK and compiler.
 SwiftPM dependency resolution and `verify_package` use the Bazel-provided host
 executable too. The runtime pins live in `bazel/swift/linux-runtime.json`; the
 small SwiftPM repository patch supplies an explicit compiler instead of PATH.
-Linux verification runs in CI.
+Linux verification runs in CI and on the build farm (`bazel/swift/README.md`).

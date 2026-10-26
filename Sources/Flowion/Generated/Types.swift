@@ -11,6 +11,51 @@ public import struct Foundation.Date
 #endif
 /// A type that performs HTTP operations defined by the OpenAPI document.
 public protocol APIProtocol: Sendable {
+    /// Reads what the customer is asked to accept, before deciding anything.
+    ///
+    /// **`require_auth` only**, like a handover: the caller's verified email, if any,
+    /// is compared by `jobs` with the address the link was sent to. A link that is
+    /// unknown, used, expired, withdrawn, or addressed to someone else is the same
+    /// `404`.
+    ///
+    /// - Remark: HTTP `GET /v1/addition-offers/{token}`.
+    /// - Remark: Generated from `#/paths//v1/addition-offers/{token}/get(get_addition_offer)`.
+    func getAdditionOffer(_ input: Operations.GetAdditionOffer.Input) async throws -> Operations.GetAdditionOffer.Output
+    /// Accepts everything in the offer, all or nothing.
+    ///
+    /// Every added charger leaves its limitation and is counted from this moment,
+    /// every held rating applies, both organizations' audit trails record it and the
+    /// job ends. The caller must have a **verified email** equal to the one the link
+    /// was sent to, and hold `asset.location.manage` at the location's project (an
+    /// Owner or Admin). A circuit that changed while the offer waited refuses the
+    /// whole acceptance (`staleCircuit`) and sends the offer back to the installer.
+    ///
+    /// - Remark: HTTP `POST /v1/addition-offers/{token}/accept`.
+    /// - Remark: Generated from `#/paths//v1/addition-offers/{token}/accept/post(accept_addition_offer)`.
+    func acceptAdditionOffer(_ input: Operations.AcceptAdditionOffer.Input) async throws -> Operations.AcceptAdditionOffer.Output
+    /// Declines the offer.
+    ///
+    /// Nothing goes into service and no held rating applies. The additions stay
+    /// limited and are marked declined; the job is back with the installer, who may
+    /// amend and offer again. Needs the same verified email and the same permission
+    /// as accepting.
+    ///
+    /// - Remark: HTTP `POST /v1/addition-offers/{token}/decline`.
+    /// - Remark: Generated from `#/paths//v1/addition-offers/{token}/decline/post(decline_addition_offer)`.
+    func declineAdditionOffer(_ input: Operations.DeclineAdditionOffer.Input) async throws -> Operations.DeclineAdditionOffer.Output
+    /// Finishes proving an invited address, with the emailed link token or code.
+    ///
+    /// Authorized by the proof itself, for the signed-in caller only: a link or
+    /// code belongs to the account that asked for it, and another account holding
+    /// it gets the same `404` as a wrong one. Idempotent: completing a completed
+    /// link again is `200` and changes nothing.
+    ///
+    /// After `200` the address counts for this account, so accepting the
+    /// invitation succeeds. Confirming the address never joins anyone by itself.
+    ///
+    /// - Remark: HTTP `POST /v1/address-confirmations/complete`.
+    /// - Remark: Generated from `#/paths//v1/address-confirmations/complete/post(complete_address_confirmation)`.
+    func completeAddressConfirmation(_ input: Operations.CompleteAddressConfirmation.Input) async throws -> Operations.CompleteAddressConfirmation.Output
     /// Approve an assistant connection
     ///
     /// Called by the console's consent page with the customer's own session.
@@ -34,6 +79,17 @@ public protocol APIProtocol: Sendable {
     /// - Remark: HTTP `GET /v1/assistant/clients/{clientId}`.
     /// - Remark: Generated from `#/paths//v1/assistant/clients/{clientId}/get(get_assistant_client)`.
     func getAssistantClient(_ input: Operations.GetAssistantClient.Input) async throws -> Operations.GetAssistantClient.Output
+    /// List my assistant conversations
+    ///
+    /// The signed-in member's own conversations in the project and the request's
+    /// mode, newest activity first, kept for 30 days after their last message.
+    /// Also says how many conversations the organization may still start today.
+    /// Reading costs nothing: no model is asked and nothing is metered. A
+    /// person's own session only.
+    ///
+    /// - Remark: HTTP `GET /v1/assistant/conversations`.
+    /// - Remark: Generated from `#/paths//v1/assistant/conversations/get(list_assistant_conversations)`.
+    func listAssistantConversations(_ input: Operations.ListAssistantConversations.Input) async throws -> Operations.ListAssistantConversations.Output
     /// Start an assistant conversation
     ///
     /// For the signed-in member, in one project and the request's mode. Starting
@@ -44,6 +100,17 @@ public protocol APIProtocol: Sendable {
     /// - Remark: HTTP `POST /v1/assistant/conversations`.
     /// - Remark: Generated from `#/paths//v1/assistant/conversations/post(start_assistant_conversation)`.
     func startAssistantConversation(_ input: Operations.StartAssistantConversation.Input) async throws -> Operations.StartAssistantConversation.Output
+    /// Read my assistant conversation
+    ///
+    /// The whole conversation as stored: what the member said, the assistant's
+    /// replies as the frames they streamed, what it read and what became of each
+    /// proposal. Read-only, and it works on a closed conversation. Only the
+    /// member's own conversation in this project and mode: anything else is
+    /// `404`. A person's own session only.
+    ///
+    /// - Remark: HTTP `GET /v1/assistant/conversations/{conversationId}`.
+    /// - Remark: Generated from `#/paths//v1/assistant/conversations/{conversationId}/get(get_assistant_conversation)`.
+    func getAssistantConversation(_ input: Operations.GetAssistantConversation.Input) async throws -> Operations.GetAssistantConversation.Output
     /// Send an assistant message
     ///
     /// The body is `text/event-stream`. Each frame's `event:` is its `type`
@@ -817,7 +884,7 @@ public protocol APIProtocol: Sendable {
     func setCircuitParent(_ input: Operations.SetCircuitParent.Input) async throws -> Operations.SetCircuitParent.Output
     /// Deletes a circuit.
     ///
-    /// Refused with 409 in two cases: this is the location's last remaining
+    /// Refused with 409 when inverters remain attached (`hasInverters`), or in either of these cases: this is the location's last remaining
     /// circuit (`lastCircuitOnLocation` — a location always keeps at least a Main
     /// circuit), or other circuits are still fed from it (`hasChildCircuits` —
     /// move or remove those first). Requires the caller to be an Owner or
@@ -874,6 +941,31 @@ public protocol APIProtocol: Sendable {
     /// - Remark: HTTP `GET /v1/circuits/{circuitId}/energy-monitor-candidates`.
     /// - Remark: Generated from `#/paths//v1/circuits/{circuitId}/energy-monitor-candidates/get(list_monitor_candidates)`.
     func listMonitorCandidates(_ input: Operations.ListMonitorCandidates.Input) async throws -> Operations.ListMonitorCandidates.Output
+    /// List a circuit’s inverters.
+    ///
+    /// - Remark: HTTP `GET /v1/circuits/{circuitId}/inverters`.
+    /// - Remark: Generated from `#/paths//v1/circuits/{circuitId}/inverters/get(list_circuit_inverters)`.
+    func listCircuitInverters(_ input: Operations.ListCircuitInverters.Input) async throws -> Operations.ListCircuitInverters.Output
+    /// Register an inverter on a circuit.
+    ///
+    /// - Remark: HTTP `POST /v1/circuits/{circuitId}/inverters`.
+    /// - Remark: Generated from `#/paths//v1/circuits/{circuitId}/inverters/post(create_inverter)`.
+    func createInverter(_ input: Operations.CreateInverter.Input) async throws -> Operations.CreateInverter.Output
+    /// Get an inverter on its assigned circuit.
+    ///
+    /// - Remark: HTTP `GET /v1/circuits/{circuitId}/inverters/{inverterId}`.
+    /// - Remark: Generated from `#/paths//v1/circuits/{circuitId}/inverters/{inverterId}/get(get_inverter)`.
+    func getInverter(_ input: Operations.GetInverter.Input) async throws -> Operations.GetInverter.Output
+    /// Replace inverter metadata.
+    ///
+    /// - Remark: HTTP `PUT /v1/circuits/{circuitId}/inverters/{inverterId}`.
+    /// - Remark: Generated from `#/paths//v1/circuits/{circuitId}/inverters/{inverterId}/put(update_inverter)`.
+    func updateInverter(_ input: Operations.UpdateInverter.Input) async throws -> Operations.UpdateInverter.Output
+    /// Remove an inverter from inventory.
+    ///
+    /// - Remark: HTTP `DELETE /v1/circuits/{circuitId}/inverters/{inverterId}`.
+    /// - Remark: Generated from `#/paths//v1/circuits/{circuitId}/inverters/{inverterId}/delete(delete_inverter)`.
+    func deleteInverter(_ input: Operations.DeleteInverter.Input) async throws -> Operations.DeleteInverter.Output
     /// Renames a circuit.
     ///
     /// The name is trimmed, must not be empty, and is at most 100 characters.
@@ -906,7 +998,7 @@ public protocol APIProtocol: Sendable {
     /// - Remark: HTTP `GET /v1/circuits/{circuitId}/stats`.
     /// - Remark: Generated from `#/paths//v1/circuits/{circuitId}/stats/get(get_circuit_stats)`.
     func getCircuitStats(_ input: Operations.GetCircuitStats.Input) async throws -> Operations.GetCircuitStats.Output
-    /// List submitted connection apps for platform review
+    /// List connection apps and edits awaiting platform review
     ///
     /// - Remark: HTTP `GET /v1/connection-app-reviews`.
     /// - Remark: Generated from `#/paths//v1/connection-app-reviews/get(list_reviewable_connection_apps)`.
@@ -941,6 +1033,48 @@ public protocol APIProtocol: Sendable {
     /// - Remark: HTTP `GET /v1/connection/projects`.
     /// - Remark: Generated from `#/paths//v1/connection/projects/get(connection_projects)`.
     func connectionProjects(_ input: Operations.ConnectionProjects.Input) async throws -> Operations.ConnectionProjects.Output
+    /// List the chargers of a project this connection reaches
+    ///
+    /// Each charger of the project with its state, the session running on it if there is one, and when it last made contact. Needs the `chargers:read` scope, granted to the connection and covering this project. At most 50 chargers are returned.
+    ///
+    /// - Remark: HTTP `GET /v1/connection/projects/{projectId}/chargers`.
+    /// - Remark: Generated from `#/paths//v1/connection/projects/{projectId}/chargers/get(list_provider_project_chargers)`.
+    func listProviderProjectChargers(_ input: Operations.ListProviderProjectChargers.Input) async throws -> Operations.ListProviderProjectChargers.Output
+    /// Read the price of electricity at a project this connection reaches
+    ///
+    /// What electricity costs at the project now, or the reason the price is unknown. Needs the `prices:read` scope, granted to the connection and covering this project.
+    ///
+    /// - Remark: HTTP `GET /v1/connection/projects/{projectId}/price`.
+    /// - Remark: Generated from `#/paths//v1/connection/projects/{projectId}/price/get(get_provider_project_price)`.
+    func getProviderProjectPrice(_ input: Operations.GetProviderProjectPrice.Input) async throws -> Operations.GetProviderProjectPrice.Output
+    /// List the charging sessions of a project this connection reaches
+    ///
+    /// Charging sessions at the project, most recently started first, within a window of at most 90 days (30 by default), paged by `cursor`. Needs the `sessions:read` scope, granted to the connection and covering this project. A session carries no information that identifies a person.
+    ///
+    /// - Remark: HTTP `GET /v1/connection/projects/{projectId}/sessions`.
+    /// - Remark: Generated from `#/paths//v1/connection/projects/{projectId}/sessions/get(list_provider_project_sessions)`.
+    func listProviderProjectSessions(_ input: Operations.ListProviderProjectSessions.Input) async throws -> Operations.ListProviderProjectSessions.Output
+    /// Approve a client-initiated connection request
+    ///
+    /// Called by the sign-in page with the same session and browser headers the preview was given. `connections` checks the stored request (this person, this app, not expired, not used, the browser values and the parameters unchanged) before anything is issued, then creates the connection and a one-time code in one transaction. A retry with the same `Idempotency-Key` returns the same `redirectTo` until the code is redeemed, and `409 idempotencyKeyConflict` after.
+    ///
+    /// - Remark: HTTP `POST /v1/connections/authorize/approve`.
+    /// - Remark: Generated from `#/paths//v1/connections/authorize/approve/post(approve_authorize)`.
+    func approveAuthorize(_ input: Operations.ApproveAuthorize.Input) async throws -> Operations.ApproveAuthorize.Output
+    /// Deny a client-initiated connection request
+    ///
+    /// The stored request is checked as for approve, then consumed. Nothing is created. The response sends the person back to the app with `error=access_denied`.
+    ///
+    /// - Remark: HTTP `POST /v1/connections/authorize/deny`.
+    /// - Remark: Generated from `#/paths//v1/connections/authorize/deny/post(deny_authorize)`.
+    func denyAuthorize(_ input: Operations.DenyAuthorize.Input) async throws -> Operations.DenyAuthorize.Output
+    /// Preview a client-initiated connection request
+    ///
+    /// Called by the sign-in page with the person's session and the browser's `X-Flowion-Grant-Nonce` and `X-Flowion-Csrf` headers (both generated by the page and kept in tab storage). Stores a ten-minute authorization request bound to the person, the app, these parameters and the two browser values, and returns what to show: the app, its scopes and the homes the person owns that the app's audience admits.
+    ///
+    /// - Remark: HTTP `GET /v1/connections/authorize/preview`.
+    /// - Remark: Generated from `#/paths//v1/connections/authorize/preview/get(preview_authorize)`.
+    func previewAuthorize(_ input: Operations.PreviewAuthorize.Input) async throws -> Operations.PreviewAuthorize.Output
     /// Completes an install/reconnect/approve flow after the vendor redirect.
     ///
     /// Requires only a valid bearer token — no organization role check happens
@@ -1088,9 +1222,11 @@ public protocol APIProtocol: Sendable {
     /// contact** — never an organization role, since the recipient isn't a
     /// member of anything yet. Either registers a new organization (always at
     /// the job's own organization number) or, for an existing one the caller
-    /// is Owner or Admin of with a matching number, moves the location into a
-    /// project the caller picks. A charge point id collision in the receiving
-    /// project refuses acceptance before anything moves.
+    /// is Owner or Admin of with a matching number, moves the location into an
+    /// operations project the caller picks, or one created for the purpose
+    /// (`newProject`). A charge point id collision in the receiving project, or a
+    /// receiving project that is not an operations project of the organization,
+    /// refuses acceptance before anything moves.
     ///
     /// - Remark: HTTP `POST /v1/handovers/{token}/accept`.
     /// - Remark: Generated from `#/paths//v1/handovers/{token}/accept/post(accept_handover)`.
@@ -1287,14 +1423,19 @@ public protocol APIProtocol: Sendable {
     func getInvitation(_ input: Operations.GetInvitation.Input) async throws -> Operations.GetInvitation.Output
     /// Redeems an invitation for the signed-in caller, creating their membership.
     ///
-    /// **Bound to the caller's verified email address.** Without that check an
+    /// **Bound to an address the caller has proven.** Without that check an
     /// invitation link is a bearer token for whoever it is forwarded to, which
     /// is a different and much worse thing than an invitation. An address the
     /// identity provider has not verified is no proof at all — anyone can type
-    /// a colleague's address into their own profile — so an unverified caller
-    /// is refused outright rather than compared.
+    /// a colleague's address into their own profile — so only two things count:
+    /// the verified address in the caller's token, which this route passes
+    /// along when there is one, and any address the account has confirmed by
+    /// email (spec 139, `POST /invitations/{token}/address-confirmation`).
+    /// Identity does the matching, and answers `403 emailNotVerified` when the
+    /// caller proves no address at all; this route no longer refuses early on
+    /// a token without one, because a confirmed address can still match.
     ///
-    /// A mismatched (but verified) address comes back as
+    /// An address that matches none of those comes back as
     /// `404 notFound`, exactly like a token that does not exist: telling the
     /// holder of a forwarded link "this was meant for someone else" discloses
     /// who, to precisely the person who should not learn it.
@@ -1306,6 +1447,45 @@ public protocol APIProtocol: Sendable {
     /// - Remark: HTTP `POST /v1/invitations/{token}/accept`.
     /// - Remark: Generated from `#/paths//v1/invitations/{token}/accept/post(accept_invitation)`.
     func acceptInvitation(_ input: Operations.AcceptInvitation.Input) async throws -> Operations.AcceptInvitation.Output
+    /// Emails the invited address a link and a code.
+    ///
+    /// What they prove is that the caller can read that address.
+    ///
+    /// Authorized by holding the invitation token, like `GET` and `accept`; a
+    /// signed-in caller is still required, because the confirmation is recorded
+    /// against that account and no other can complete it. There is no body and no
+    /// address field: the message goes to the address the invitation was sent to,
+    /// and the answer never names it.
+    ///
+    /// Limited per invitation and per account over the last hour (`429`, with
+    /// `Retry-After`). `502 confirmationNotSent` means nothing was stored, so a
+    /// retry is safe.
+    ///
+    /// - Remark: HTTP `POST /v1/invitations/{token}/address-confirmation`.
+    /// - Remark: Generated from `#/paths//v1/invitations/{token}/address-confirmation/post(request_address_confirmation)`.
+    func requestAddressConfirmation(_ input: Operations.RequestAddressConfirmation.Input) async throws -> Operations.RequestAddressConfirmation.Output
+    /// Reads an invitation, before deciding anything.
+    ///
+    /// Needs a sign-in, not an organization role. Before the caller's verified
+    /// address matches the invitation, the answer holds only the installer's name
+    /// and the kind of job; the customer, country, address and lines appear after
+    /// a match. An unknown, used, expired or unaddressed link is one `404`.
+    ///
+    /// - Remark: HTTP `GET /v1/job-invitations/{token}`.
+    /// - Remark: Generated from `#/paths//v1/job-invitations/{token}/get(get_job_invitation)`.
+    func getJobInvitation(_ input: Operations.GetJobInvitation.Input) async throws -> Operations.GetJobInvitation.Output
+    /// Accepts an invitation for an organization.
+    ///
+    /// Needs a sign-in and a proved email address matching the invitation, never
+    /// an organization role. Name exactly one of `existingOrganizationId`,
+    /// `newOrganization` and `owningOrganization`. A person who cannot create an
+    /// organization yet is told to finish account setup (`finishAccountSetup`,
+    /// with what is `missing`); nothing is used up, and the same link works when
+    /// they return. Any other refusal that is not listed is the one `404`.
+    ///
+    /// - Remark: HTTP `POST /v1/job-invitations/{token}/accept`.
+    /// - Remark: Generated from `#/paths//v1/job-invitations/{token}/accept/post(accept_job_invitation)`.
+    func acceptJobInvitation(_ input: Operations.AcceptJobInvitation.Input) async throws -> Operations.AcceptJobInvitation.Output
     /// Fetches a single location by id.
     ///
     /// Requires the caller to be at least a Member of the location's environment's
@@ -1352,6 +1532,33 @@ public protocol APIProtocol: Sendable {
     /// - Remark: HTTP `GET /v1/locations/{locationId}/access-policy/devices`.
     /// - Remark: Generated from `#/paths//v1/locations/{locationId}/access-policy/devices/get(list_location_devices_access)`.
     func listLocationDevicesAccess(_ input: Operations.ListLocationDevicesAccess.Input) async throws -> Operations.ListLocationDevicesAccess.Output
+    /// The offers waiting for the customer on a location.
+    ///
+    /// **Needs `asset.location.manage`** at the location's project: an Owner or Admin.
+    ///
+    /// This is the banner on the location in the console: the same offer the link
+    /// carries, for an Owner or Admin who did not get the link.
+    ///
+    /// - Remark: HTTP `GET /v1/locations/{locationId}/addition-offers`.
+    /// - Remark: Generated from `#/paths//v1/locations/{locationId}/addition-offers/get(list_location_addition_offers)`.
+    func listLocationAdditionOffers(_ input: Operations.ListLocationAdditionOffers.Input) async throws -> Operations.ListLocationAdditionOffers.Output
+    /// Accepts an offer on the location, as the link does.
+    ///
+    /// **Needs `asset.location.manage`** at the location's project.
+    ///
+    /// There is no link to match, so the proof is the permission: `jobs` asks identity
+    /// again, at the project that holds the location, before anything is accepted.
+    ///
+    /// - Remark: HTTP `POST /v1/locations/{locationId}/addition-offers/{offerId}/accept`.
+    /// - Remark: Generated from `#/paths//v1/locations/{locationId}/addition-offers/{offerId}/accept/post(accept_location_addition_offer)`.
+    func acceptLocationAdditionOffer(_ input: Operations.AcceptLocationAdditionOffer.Input) async throws -> Operations.AcceptLocationAdditionOffer.Output
+    /// Declines an offer on the location.
+    ///
+    /// **Needs `asset.location.manage`** at the location's project.
+    ///
+    /// - Remark: HTTP `POST /v1/locations/{locationId}/addition-offers/{offerId}/decline`.
+    /// - Remark: Generated from `#/paths//v1/locations/{locationId}/addition-offers/{offerId}/decline/post(decline_location_addition_offer)`.
+    func declineLocationAdditionOffer(_ input: Operations.DeclineLocationAdditionOffer.Input) async throws -> Operations.DeclineLocationAdditionOffer.Output
     /// Groups this location's allocation-log rows by hour, direction and reason.
     ///
     /// Across every circuit at the location, oldest bucket first. Requires the
@@ -1501,6 +1708,39 @@ public protocol APIProtocol: Sendable {
     /// - Remark: HTTP `GET /v1/locations/{locationId}/energy/prices`.
     /// - Remark: Generated from `#/paths//v1/locations/{locationId}/energy/prices/get(list_location_prices)`.
     func listLocationPrices(_ input: Operations.ListLocationPrices.Input) async throws -> Operations.ListLocationPrices.Output
+    /// List the home’s shared vehicle charging preferences.
+    ///
+    /// Saved intent only: this does not activate automatic charging, V2H or V2G.
+    ///
+    /// - Remark: HTTP `GET /v1/locations/{locationId}/home-vehicles`.
+    /// - Remark: Generated from `#/paths//v1/locations/{locationId}/home-vehicles/get(list_home_vehicles)`.
+    func listHomeVehicles(_ input: Operations.ListHomeVehicles.Input) async throws -> Operations.ListHomeVehicles.Output
+    /// Share a vehicle’s charging preferences with this home.
+    ///
+    /// Saved intent only: this does not activate automatic charging, V2H or V2G.
+    ///
+    /// - Remark: HTTP `POST /v1/locations/{locationId}/home-vehicles`.
+    /// - Remark: Generated from `#/paths//v1/locations/{locationId}/home-vehicles/post(attach_home_vehicle)`.
+    func attachHomeVehicle(_ input: Operations.AttachHomeVehicle.Input) async throws -> Operations.AttachHomeVehicle.Output
+    /// Replace shared vehicle charging preferences.
+    ///
+    /// Saved intent only: this does not activate automatic charging, V2H or V2G.
+    ///
+    /// - Remark: HTTP `PUT /v1/locations/{locationId}/home-vehicles/{homeVehicleId}`.
+    /// - Remark: Generated from `#/paths//v1/locations/{locationId}/home-vehicles/{homeVehicleId}/put(replace_home_vehicle)`.
+    func replaceHomeVehicle(_ input: Operations.ReplaceHomeVehicle.Input) async throws -> Operations.ReplaceHomeVehicle.Output
+    /// Stop sharing a vehicle’s charging preferences at this home.
+    ///
+    /// Saved intent only: this does not activate automatic charging, V2H or V2G.
+    ///
+    /// - Remark: HTTP `DELETE /v1/locations/{locationId}/home-vehicles/{homeVehicleId}`.
+    /// - Remark: Generated from `#/paths//v1/locations/{locationId}/home-vehicles/{homeVehicleId}/delete(remove_home_vehicle)`.
+    func removeHomeVehicle(_ input: Operations.RemoveHomeVehicle.Input) async throws -> Operations.RemoveHomeVehicle.Output
+    /// List a location’s inverters across its circuits.
+    ///
+    /// - Remark: HTTP `GET /v1/locations/{locationId}/inverters`.
+    /// - Remark: Generated from `#/paths//v1/locations/{locationId}/inverters/get(list_location_inverters)`.
+    func listLocationInverters(_ input: Operations.ListLocationInverters.Input) async throws -> Operations.ListLocationInverters.Output
     /// A calendar month at a location.
     ///
     /// The energy delivered, the sessions started and how many cards and apps
@@ -1522,6 +1762,16 @@ public protocol APIProtocol: Sendable {
     /// - Remark: HTTP `GET /v1/locations/{locationId}/occupancy`.
     /// - Remark: Generated from `#/paths//v1/locations/{locationId}/occupancy/get(get_location_occupancy)`.
     func getLocationOccupancy(_ input: Operations.GetLocationOccupancy.Input) async throws -> Operations.GetLocationOccupancy.Output
+    /// Save a location’s installed solar capacity.
+    ///
+    /// - Remark: HTTP `PUT /v1/locations/{locationId}/solar`.
+    /// - Remark: Generated from `#/paths//v1/locations/{locationId}/solar/put(set_location_solar_capacity)`.
+    func setLocationSolarCapacity(_ input: Operations.SetLocationSolarCapacity.Input) async throws -> Operations.SetLocationSolarCapacity.Output
+    /// Get a location’s estimated solar generation.
+    ///
+    /// - Remark: HTTP `GET /v1/locations/{locationId}/solar/forecast`.
+    /// - Remark: Generated from `#/paths//v1/locations/{locationId}/solar/forecast/get(get_location_solar_forecast)`.
+    func getLocationSolarForecast(_ input: Operations.GetLocationSolarForecast.Input) async throws -> Operations.GetLocationSolarForecast.Output
     /// A location's supply per line
     ///
     /// Every circuit on the location with its rating per line and its current on
@@ -1577,6 +1827,16 @@ public protocol APIProtocol: Sendable {
     /// - Remark: HTTP `GET /v1/locations/{locationId}/utilisation`.
     /// - Remark: Generated from `#/paths//v1/locations/{locationId}/utilisation/get(get_location_utilisation)`.
     func getLocationUtilisation(_ input: Operations.GetLocationUtilisation.Input) async throws -> Operations.GetLocationUtilisation.Output
+    /// Get a location's irradiance forecast.
+    ///
+    /// - Remark: HTTP `GET /v1/locations/{locationId}/weather`.
+    /// - Remark: Generated from `#/paths//v1/locations/{locationId}/weather/get(get_location_weather)`.
+    func getLocationWeather(_ input: Operations.GetLocationWeather.Input) async throws -> Operations.GetLocationWeather.Output
+    /// Get a location's complete cached irradiance time series.
+    ///
+    /// - Remark: HTTP `GET /v1/locations/{locationId}/weather/forecast`.
+    /// - Remark: Generated from `#/paths//v1/locations/{locationId}/weather/forecast/get(get_location_weather_forecast)`.
+    func getLocationWeatherForecast(_ input: Operations.GetLocationWeatherForecast.Input) async throws -> Operations.GetLocationWeatherForecast.Output
     /// Who may start a charge at a location.
     ///
     /// The allows bound at the organization, the project and the location, each
@@ -1588,10 +1848,22 @@ public protocol APIProtocol: Sendable {
     /// - Remark: HTTP `GET /v1/locations/{locationId}/who-can-charge`.
     /// - Remark: Generated from `#/paths//v1/locations/{locationId}/who-can-charge/get(who_can_charge_at_location)`.
     func whoCanChargeAtLocation(_ input: Operations.WhoCanChargeAtLocation.Input) async throws -> Operations.WhoCanChargeAtLocation.Output
+    /// Describes the signed-in person.
+    ///
+    /// Self only: the account is the token's, and an API key or an assistant is
+    /// refused. Reads the account's name and enrolment from `auth` and whether it has
+    /// proved an address from the address source; if any of them cannot be read the
+    /// answer is `503 tryAgainLater` and no field is guessed.
+    ///
+    /// - Remark: HTTP `GET /v1/me`.
+    /// - Remark: Generated from `#/paths//v1/me/get(get_my_profile)`.
+    func getMyProfile(_ input: Operations.GetMyProfile.Input) async throws -> Operations.GetMyProfile.Output
     /// Deletes the caller's account: every membership, in every organization.
     ///
-    /// The caller deletes their Identity Platform sign-in themselves afterwards,
-    /// with their own token. Idempotent: a caller with nothing left gets 204.
+    /// Everything the caller holds here goes first, and the account itself last.
+    /// Until the cutover the caller deletes their Identity Platform sign-in
+    /// themselves afterwards, with their own token. Idempotent: a caller with nothing
+    /// left gets 204.
     ///
     /// - Remark: HTTP `DELETE /v1/me`.
     /// - Remark: Generated from `#/paths//v1/me/delete(delete_account)`.
@@ -1613,16 +1885,173 @@ public protocol APIProtocol: Sendable {
     /// - Remark: HTTP `DELETE /v1/me/assistant-connections/{connectionId}`.
     /// - Remark: Generated from `#/paths//v1/me/assistant-connections/{connectionId}/delete(revoke_assistant_connection)`.
     func revokeAssistantConnection(_ input: Operations.RevokeAssistantConnection.Input) async throws -> Operations.RevokeAssistantConnection.Output
-    /// Starts a charge at one of the caller's chargers.
+    /// Reads the caller's autocharge switch.
+    ///
+    /// Says whether the switch is on, whether the location step was taken (the
+    /// switch cannot be turned on before it), and the notice to show beside it.
+    ///
+    /// - Remark: HTTP `GET /v1/me/autocharge`.
+    /// - Remark: Generated from `#/paths//v1/me/autocharge/get(get_my_autocharge)`.
+    func getMyAutocharge(_ input: Operations.GetMyAutocharge.Input) async throws -> Operations.GetMyAutocharge.Output
+    /// Turns the caller's autocharge switch on or off.
+    ///
+    /// Turning it on answers `409 locationStepRequired` until the caller has
+    /// taken the location step for one of their cars. Turning it off is always
+    /// allowed.
+    ///
+    /// - Remark: HTTP `PUT /v1/me/autocharge`.
+    /// - Remark: Generated from `#/paths//v1/me/autocharge/put(set_my_autocharge)`.
+    func setMyAutocharge(_ input: Operations.SetMyAutocharge.Input) async throws -> Operations.SetMyAutocharge.Output
+    /// The caller's profile image.
+    ///
+    /// `Cache-Control: private, no-cache`: revalidate with `If-None-Match`, and
+    /// the answer is `304` with no body while the image is unchanged (a
+    /// conditional-request detail, so it is not a modelled response).
+    ///
+    /// - Remark: HTTP `GET /v1/me/avatar`.
+    /// - Remark: Generated from `#/paths//v1/me/avatar/get(get_avatar)`.
+    func getAvatar(_ input: Operations.GetAvatar.Input) async throws -> Operations.GetAvatar.Output
+    /// Stores the caller's profile image, replacing any earlier one.
+    ///
+    /// The body is the image itself: a square JPEG, 64 to 1024 pixels a side, at
+    /// most 256 KiB. Judged from the bytes, not from `Content-Type`. EXIF, XMP and
+    /// comments are dropped before it is stored, and the `ETag` is of the stored
+    /// bytes.
+    ///
+    /// - Remark: HTTP `PUT /v1/me/avatar`.
+    /// - Remark: Generated from `#/paths//v1/me/avatar/put(put_avatar)`.
+    func putAvatar(_ input: Operations.PutAvatar.Input) async throws -> Operations.PutAvatar.Output
+    /// Removes the caller's profile image. Idempotent.
+    ///
+    /// - Remark: HTTP `DELETE /v1/me/avatar`.
+    /// - Remark: Generated from `#/paths//v1/me/avatar/delete(delete_avatar)`.
+    func deleteAvatar(_ input: Operations.DeleteAvatar.Input) async throws -> Operations.DeleteAvatar.Output
+    /// The account's cards, and where they work now.
+    ///
+    /// A card is its id, its last four characters and whether it is string-only;
+    /// never its value. `cardsOnAt` lists the places (a project, or one location
+    /// of it) where cards currently work for this account; empty means a card
+    /// added now would work nowhere. For the signed-in person only.
+    ///
+    /// - Remark: HTTP `GET /v1/me/cards`.
+    /// - Remark: Generated from `#/paths//v1/me/cards/get(list_my_cards)`.
+    func listMyCards(_ input: Operations.ListMyCards.Input) async throws -> Operations.ListMyCards.Output
+    /// Registers a card the phone read.
+    ///
+    /// The phone reads the card twice and must get the same UID (`readTwice`);
+    /// the UID is 4 or 7 bytes. Needs a sign-in within the last 5 minutes (`403
+    /// recentSignInRequired`, with `maxAgeSeconds`). Refused when none of the
+    /// places the account reaches has cards on (`403 cardsNotEnabled`), because
+    /// the card would work nowhere. A card already registered, to this account or
+    /// any other, is `409 cardHeldElsewhere` and says nothing about whose.
+    ///
+    /// A card is a convenience level credential: its number is not secret, so it
+    /// can be copied. It is the same trade a charger's own card makes.
+    ///
+    /// - Remark: HTTP `POST /v1/me/cards`.
+    /// - Remark: Generated from `#/paths//v1/me/cards/post(register_card)`.
+    func registerCard(_ input: Operations.RegisterCard.Input) async throws -> Operations.RegisterCard.Output
+    /// Opens a two-minute learn session: "tap your card on the charger you use".
+    ///
+    /// For a card the phone cannot read. The charger's own string is what is
+    /// learned, so the card then works at that charger model only (`stringOnly`).
+    /// At most one session is open (`409 learnAlreadyOpen`). Needs a sign-in
+    /// within the last 5 minutes, and a place that has cards on, the same as
+    /// registering a card.
+    ///
+    /// - Remark: HTTP `POST /v1/me/cards/learn`.
+    /// - Remark: Generated from `#/paths//v1/me/cards/learn/post(start_learn)`.
+    func startLearn(_ input: Operations.StartLearn.Input) async throws -> Operations.StartLearn.Output
+    /// Reads a learn session.
+    ///
+    /// Poll while the card is held to the charger. `candidate` appears once one
+    /// unknown string is unambiguous at a place the caller reaches; it shows the
+    /// last four characters and the charger model, never the whole string.
+    ///
+    /// - Remark: HTTP `GET /v1/me/cards/learn/{id}`.
+    /// - Remark: Generated from `#/paths//v1/me/cards/learn/{id}/get(get_learn)`.
+    func getLearn(_ input: Operations.GetLearn.Input) async throws -> Operations.GetLearn.Output
+    /// Cancels a learn session. Idempotent for a session that is already over.
+    ///
+    /// - Remark: HTTP `DELETE /v1/me/cards/learn/{id}`.
+    /// - Remark: Generated from `#/paths//v1/me/cards/learn/{id}/delete(cancel_learn)`.
+    func cancelLearn(_ input: Operations.CancelLearn.Input) async throws -> Operations.CancelLearn.Output
+    /// Keeps the offered candidate as a card.
+    ///
+    /// A string-only card: it works at the charger models that sent that string
+    /// until a phone read confirms how the model writes cards.
+    ///
+    /// - Remark: HTTP `POST /v1/me/cards/learn/{id}/confirm`.
+    /// - Remark: Generated from `#/paths//v1/me/cards/learn/{id}/confirm/post(confirm_learn)`.
+    func confirmLearn(_ input: Operations.ConfirmLearn.Input) async throws -> Operations.ConfirmLearn.Output
+    /// Removes one of the account's cards.
+    ///
+    /// It stops working at every charger of every project at once: the lists of
+    /// the chargers it was on are refreshed. Another account's card, a revoked
+    /// one and an unknown id are one `404`.
+    ///
+    /// - Remark: HTTP `DELETE /v1/me/cards/{id}`.
+    /// - Remark: Generated from `#/paths//v1/me/cards/{id}/delete(revoke_card)`.
+    func revokeCard(_ input: Operations.RevokeCard.Input) async throws -> Operations.RevokeCard.Output
+    /// When Flowion would charge a goal at one of the caller's chargers.
+    ///
+    /// A read with a body: the goal is not a resource, and nothing is written. It
+    /// is planned on the caller's own price, the one `price` shows, and only
+    /// where that price varies by time; a flat, covered or unset price answers
+    /// `409 notOffered`, because charging then simply starts now.
+    ///
+    /// - Remark: HTTP `POST /v1/me/chargers/{chargingStationId}/plan-preview`.
+    /// - Remark: Generated from `#/paths//v1/me/chargers/{chargingStationId}/plan-preview/post(preview_my_charging_plan)`.
+    func previewMyChargingPlan(_ input: Operations.PreviewMyChargingPlan.Input) async throws -> Operations.PreviewMyChargingPlan.Output
+    /// What charging costs at one of the caller's chargers, quarter by quarter.
+    ///
+    /// For the local today and tomorrow at the charger, with the price of the
+    /// current quarter broken into what it is made of. A state that leaves the
+    /// prices unknown (no tariff, no zone, no forecast yet) is a `200` whose
+    /// `outcome` says so.
+    ///
+    /// - Remark: HTTP `GET /v1/me/chargers/{chargingStationId}/price`.
+    /// - Remark: Generated from `#/paths//v1/me/chargers/{chargingStationId}/price/get(get_my_charger_price)`.
+    func getMyChargerPrice(_ input: Operations.GetMyChargerPrice.Input) async throws -> Operations.GetMyChargerPrice.Output
+    /// The person's Ready by on the session running at one of their chargers.
+    ///
+    /// - Remark: HTTP `GET /v1/me/chargers/{chargingStationId}/ready-by`.
+    /// - Remark: Generated from `#/paths//v1/me/chargers/{chargingStationId}/ready-by/get(get_my_ready_by)`.
+    func getMyReadyBy(_ input: Operations.GetMyReadyBy.Input) async throws -> Operations.GetMyReadyBy.Output
+    /// Sets the person's Ready by on the session running at their charger.
+    ///
+    /// Replaces any goal the session had. Only where the price at the charger
+    /// varies by time; otherwise `409 notOffered`.
+    ///
+    /// - Remark: HTTP `PUT /v1/me/chargers/{chargingStationId}/ready-by`.
+    /// - Remark: Generated from `#/paths//v1/me/chargers/{chargingStationId}/ready-by/put(set_my_ready_by)`.
+    func setMyReadyBy(_ input: Operations.SetMyReadyBy.Input) async throws -> Operations.SetMyReadyBy.Output
+    /// Clears the person's Ready by. Idempotent.
+    ///
+    /// - Remark: HTTP `DELETE /v1/me/chargers/{chargingStationId}/ready-by`.
+    /// - Remark: Generated from `#/paths//v1/me/chargers/{chargingStationId}/ready-by/delete(clear_my_ready_by)`.
+    func clearMyReadyBy(_ input: Operations.ClearMyReadyBy.Input) async throws -> Operations.ClearMyReadyBy.Output
+    /// Starts a charge at one of the caller's chargers, or at an open one.
     ///
     /// Started as the caller's own place membership: a charger that admits
     /// them, as their own card would be admitted, starts, and the session is
     /// theirs. When they hold a reservation at the charger, this claims it.
     ///
+    /// A caller with no place at the charger can still start one whose access is
+    /// `Open`, under their own per-project principal (made on the first start): the
+    /// charge is free, so there is no payment step. A `Paid` charger is `402
+    /// paymentRequired`; a private one is a `404`. A guest is held to the
+    /// concurrent-session limit (`409 tooManyOpenSessions`), and an anonymous
+    /// session must carry the App Attest headers (`401 deviceAttestationRequired`).
+    ///
     /// - Remark: HTTP `POST /v1/me/chargers/{chargingStationId}/start`.
     /// - Remark: Generated from `#/paths//v1/me/chargers/{chargingStationId}/start/post(start_charging)`.
     func startCharging(_ input: Operations.StartCharging.Input) async throws -> Operations.StartCharging.Output
-    /// Stops the charge running at one of the caller's chargers.
+    /// Stops a charge at one of the caller's chargers, or the caller's own.
+    ///
+    /// A caller with no place at the charger stops it only when the session
+    /// running there was charged to them or to an account claimed into theirs;
+    /// anyone else's session, no session and an unknown charger are the same `404`.
     ///
     /// - Remark: HTTP `POST /v1/me/chargers/{chargingStationId}/stop`.
     /// - Remark: Generated from `#/paths//v1/me/chargers/{chargingStationId}/stop/post(stop_charging)`.
@@ -1654,6 +2083,218 @@ public protocol APIProtocol: Sendable {
     /// - Remark: HTTP `GET /v1/me/charging/sessions/{transactionId}`.
     /// - Remark: Generated from `#/paths//v1/me/charging/sessions/{transactionId}/get(get_my_charging_session)`.
     func getMyChargingSession(_ input: Operations.GetMyChargingSession.Input) async throws -> Operations.GetMyChargingSession.Output
+    /// Register or refresh this iPhone or iPad for Lock Screen charging updates.
+    ///
+    /// - Remark: HTTP `PUT /v1/me/home-devices/{installationId}`.
+    /// - Remark: Generated from `#/paths//v1/me/home-devices/{installationId}/put(register_home_device)`.
+    func registerHomeDevice(_ input: Operations.RegisterHomeDevice.Input) async throws -> Operations.RegisterHomeDevice.Output
+    /// Retire this device at sign-out; its Lock Screen activities end.
+    ///
+    /// - Remark: HTTP `DELETE /v1/me/home-devices/{installationId}`.
+    /// - Remark: Generated from `#/paths//v1/me/home-devices/{installationId}/delete(retire_home_device)`.
+    func retireHomeDevice(_ input: Operations.RetireHomeDevice.Input) async throws -> Operations.RetireHomeDevice.Output
+    /// The homes the caller owns.
+    ///
+    /// A home whose place is still being completed is listed too, with
+    /// `placeState: "finishing"`. Chargers used is what asset counts in the
+    /// home's project.
+    ///
+    /// - Remark: HTTP `GET /v1/me/homes`.
+    /// - Remark: Generated from `#/paths//v1/me/homes/get(list_my_homes)`.
+    func listMyHomes(_ input: Operations.ListMyHomes.Input) async throws -> Operations.ListMyHomes.Output
+    /// Makes the caller a home.
+    ///
+    /// One idempotent operation in identity (organization, project, owner, the
+    /// owner's place and fixed limits), then the home's location in asset with its
+    /// price area (when given) and clock. Only the country is asked for: no street
+    /// address is collected or kept, the time zone comes from the country, and the
+    /// price area is chosen at the electricity step. A home is free: it has no billing account and asks
+    /// for no card. A repeated `requestId` answers `200` with the home it first
+    /// made and makes nothing new; a failure after identity is `503` and the same
+    /// `requestId` finishes it. At most two homes per person (`409 homeLimit`,
+    /// `limit: "homes"`). For the signed-in person only, who needs a verified
+    /// address; an API key or an assistant is refused.
+    ///
+    /// - Remark: HTTP `POST /v1/me/homes`.
+    /// - Remark: Generated from `#/paths//v1/me/homes/post(create_home)`.
+    func createHome(_ input: Operations.CreateHome.Input) async throws -> Operations.CreateHome.Output
+    /// Renames a home.
+    ///
+    /// Changes the home's organization name, which is what the Places list shows
+    /// and what `GET /me/homes` returns, and the name of the home's location. The
+    /// organization is written first and the location second, so a failure between
+    /// them is a `503` that the same request finishes. Idempotent: the same name
+    /// again changes nothing. The caller must own the home; anyone else's is `404`.
+    ///
+    /// - Remark: HTTP `PATCH /v1/me/homes/{organizationId}`.
+    /// - Remark: Generated from `#/paths//v1/me/homes/{organizationId}/patch(update_my_home)`.
+    func updateMyHome(_ input: Operations.UpdateMyHome.Input) async throws -> Operations.UpdateMyHome.Output
+    /// Takes a home down.
+    ///
+    /// The home's chargers are deprovisioned (the OCPP gateway closes their
+    /// sockets within about a minute), the owner's place is erased, and the
+    /// project and the organization are deleted, which frees the person's place
+    /// among their two homes and the charger count with it. It is the teardown
+    /// `DELETE /me` runs for a home, not a copy of it. A home with other people in
+    /// it (a member, an invitation out, another holder) is `409 homeHasMembers`
+    /// and nothing is removed. Past sessions are not erased.
+    ///
+    /// A failure part way is `500` and the same request finishes the work: every
+    /// step is idempotent. A home already gone is `404`, the answer for one that
+    /// never was the caller's, so a retry after a lost `204` reads `404` as done.
+    ///
+    /// - Remark: HTTP `DELETE /v1/me/homes/{organizationId}`.
+    /// - Remark: Generated from `#/paths//v1/me/homes/{organizationId}/delete(delete_my_home)`.
+    func deleteMyHome(_ input: Operations.DeleteMyHome.Input) async throws -> Operations.DeleteMyHome.Output
+    /// What the home's electricity is set to.
+    ///
+    /// The inverse of `PUT .../electricity`: the home's own (location-level)
+    /// supply contract as `byTheHour`, `fixed` (with the price, not the grid fee)
+    /// or `unknown`, and the price area and country the electricity step needs to
+    /// start from. A home with no contract, or no location yet, is `unknown` with
+    /// what is known. The caller must own the home; anyone else's is `404`.
+    ///
+    /// - Remark: HTTP `GET /v1/me/homes/{organizationId}/electricity`.
+    /// - Remark: Generated from `#/paths//v1/me/homes/{organizationId}/electricity/get(get_home_electricity)`.
+    func getHomeElectricity(_ input: Operations.GetHomeElectricity.Input) async throws -> Operations.GetHomeElectricity.Output
+    /// Sets what the home's electricity costs.
+    ///
+    /// Writes the home's location's supply contract: `spot` is the price area's
+    /// day-ahead price (in euro; a grid fee in kronor cannot be added to it and is
+    /// refused), `fixed` is one price every hour plus an optional grid fee and tax,
+    /// and `unknown` removes the contract. `priceArea` sets the home's price area
+    /// before the contract is written; `spot` with none given or known is
+    /// `422 priceAreaRequired`. Idempotent. The person must own the
+    /// home: anyone else's is `404`.
+    ///
+    /// - Remark: HTTP `PUT /v1/me/homes/{organizationId}/electricity`.
+    /// - Remark: Generated from `#/paths//v1/me/homes/{organizationId}/electricity/put(put_home_electricity)`.
+    func putHomeElectricity(_ input: Operations.PutHomeElectricity.Input) async throws -> Operations.PutHomeElectricity.Output
+    /// What electricity costs at a home.
+    ///
+    /// The price of the home's own electricity setting (`PUT .../electricity`),
+    /// independent of any charger: the shape of a charger's price without
+    /// `chargerId`, for the local today and tomorrow at the home, so the spot-price
+    /// card can be drawn for a home that has no charger yet. A home whose
+    /// electricity is unknown answers `story: none`. Nothing is converted between
+    /// currencies: an hourly price whose market reports in another currency is
+    /// `outcome: currencyMismatch`. The caller must own the home; anyone else's is
+    /// `404`.
+    ///
+    /// - Remark: HTTP `GET /v1/me/homes/{organizationId}/price`.
+    /// - Remark: Generated from `#/paths//v1/me/homes/{organizationId}/price/get(get_my_home_price)`.
+    func getMyHomePrice(_ input: Operations.GetMyHomePrice.Input) async throws -> Operations.GetMyHomePrice.Output
+    /// Update your visible installer chat and read receipt.
+    ///
+    /// - Remark: HTTP `PUT /v1/me/installer-activity`.
+    /// - Remark: Generated from `#/paths//v1/me/installer-activity/put(set_installer_activity)`.
+    func setInstallerActivity(_ input: Operations.SetInstallerActivity.Input) async throws -> Operations.SetInstallerActivity.Output
+    /// Follow commissioning progress for a visible job on your device.
+    ///
+    /// - Remark: HTTP `PUT /v1/me/installer-live-activities/{activityId}`.
+    /// - Remark: Generated from `#/paths//v1/me/installer-live-activities/{activityId}/put(register_installer_live_activity)`.
+    func registerInstallerLiveActivity(_ input: Operations.RegisterInstallerLiveActivity.Input) async throws -> Operations.RegisterInstallerLiveActivity.Output
+    /// Stop this person's Live Activity subscription.
+    ///
+    /// - Remark: HTTP `DELETE /v1/me/installer-live-activities/{activityId}`.
+    /// - Remark: Generated from `#/paths//v1/me/installer-live-activities/{activityId}/delete(unregister_installer_live_activity)`.
+    func unregisterInstallerLiveActivity(_ input: Operations.UnregisterInstallerLiveActivity.Input) async throws -> Operations.UnregisterInstallerLiveActivity.Output
+    /// Read your personal installer alert settings.
+    ///
+    /// - Remark: HTTP `GET /v1/me/installer-notification-settings`.
+    /// - Remark: Generated from `#/paths//v1/me/installer-notification-settings/get(get_installer_notification_settings)`.
+    func getInstallerNotificationSettings(_ input: Operations.GetInstallerNotificationSettings.Input) async throws -> Operations.GetInstallerNotificationSettings.Output
+    /// Update your personal installer alert settings.
+    ///
+    /// - Remark: HTTP `PUT /v1/me/installer-notification-settings`.
+    /// - Remark: Generated from `#/paths//v1/me/installer-notification-settings/put(set_installer_notification_settings)`.
+    func setInstallerNotificationSettings(_ input: Operations.SetInstallerNotificationSettings.Input) async throws -> Operations.SetInstallerNotificationSettings.Output
+    /// List your installer notifications.
+    ///
+    /// - Remark: HTTP `GET /v1/me/installer-notifications`.
+    /// - Remark: Generated from `#/paths//v1/me/installer-notifications/get(list_installer_notifications)`.
+    func listInstallerNotifications(_ input: Operations.ListInstallerNotifications.Input) async throws -> Operations.ListInstallerNotifications.Output
+    /// Mark your installer notifications as read.
+    ///
+    /// - Remark: HTTP `POST /v1/me/installer-notifications/read`.
+    /// - Remark: Generated from `#/paths//v1/me/installer-notifications/read/post(mark_installer_notifications_read)`.
+    func markInstallerNotificationsRead(_ input: Operations.MarkInstallerNotificationsRead.Input) async throws -> Operations.MarkInstallerNotificationsRead.Output
+    /// Register this installation for installer push alerts.
+    ///
+    /// - Remark: HTTP `PUT /v1/me/installer-push-devices/{installationId}`.
+    /// - Remark: Generated from `#/paths//v1/me/installer-push-devices/{installationId}/put(register_installer_push_device)`.
+    func registerInstallerPushDevice(_ input: Operations.RegisterInstallerPushDevice.Input) async throws -> Operations.RegisterInstallerPushDevice.Output
+    /// Stop installer push alerts on this installation.
+    ///
+    /// - Remark: HTTP `DELETE /v1/me/installer-push-devices/{installationId}`.
+    /// - Remark: Generated from `#/paths//v1/me/installer-push-devices/{installationId}/delete(unregister_installer_push_device)`.
+    func unregisterInstallerPushDevice(_ input: Operations.UnregisterInstallerPushDevice.Input) async throws -> Operations.UnregisterInstallerPushDevice.Output
+    /// Lists the job invitations addressed to you.
+    ///
+    /// Matched by every address your account has proved, so an invitation sent to
+    /// your second address is here too. Another person's invitation is never
+    /// listed. An account with no proved address has none.
+    ///
+    /// - Remark: HTTP `GET /v1/me/job-invitations`.
+    /// - Remark: Generated from `#/paths//v1/me/job-invitations/get(list_my_job_invitations)`.
+    func listMyJobInvitations(_ input: Operations.ListMyJobInvitations.Input) async throws -> Operations.ListMyJobInvitations.Output
+    /// Removes your address from the job an invitation was sent for.
+    ///
+    /// Needs a sign-in, not an organization role. The address held on the customer's
+    /// side of the invitation is erased; what the installer typed on the job is the
+    /// installer's own and stays. Pass `jobId` for an invitation that has been
+    /// accepted, which is no longer listed. `409 detachFirst` while your organization
+    /// is still linked to the job (leave it first), `409 handoverBegun` when leaving is
+    /// no longer possible and the request can be made again once the handover has
+    /// finished. Another person's invitation, or one that no longer exists, is
+    /// `404 notFound`.
+    ///
+    /// - Remark: HTTP `DELETE /v1/me/job-invitations/{invitationId}`.
+    /// - Remark: Generated from `#/paths//v1/me/job-invitations/{invitationId}/delete(remove_my_job_invitation)`.
+    func removeMyJobInvitation(_ input: Operations.RemoveMyJobInvitation.Input) async throws -> Operations.RemoveMyJobInvitation.Output
+    /// Declines an invitation addressed to you.
+    ///
+    /// The invitation ends and leaves your list. Send `block: true` to also stop
+    /// this installer from inviting your address again. Another person's
+    /// invitation, or one that no longer exists, is `404 notFound`.
+    ///
+    /// - Remark: HTTP `POST /v1/me/job-invitations/{invitationId}/decline`.
+    /// - Remark: Generated from `#/paths//v1/me/job-invitations/{invitationId}/decline/post(decline_my_job_invitation)`.
+    func declineMyJobInvitation(_ input: Operations.DeclineMyJobInvitation.Input) async throws -> Operations.DeclineMyJobInvitation.Output
+    /// Says what a scanned label means to the caller.
+    ///
+    /// Any signed-in person with a verified email may ask; an API key or an
+    /// assistant may not. `labelId` is the ID as scanned or typed: any case, with
+    /// or without the dash. Every answer is `200` with a `kind`; a stranger to the
+    /// charger is told only its name.
+    ///
+    /// - Remark: HTTP `GET /v1/me/labels/{labelId}`.
+    /// - Remark: Generated from `#/paths//v1/me/labels/{labelId}/get(get_my_label)`.
+    func getMyLabel(_ input: Operations.GetMyLabel.Input) async throws -> Operations.GetMyLabel.Output
+    /// Report a Lock Screen activity's update token.
+    ///
+    /// - Remark: HTTP `PUT /v1/me/live-activities/{activityId}`.
+    /// - Remark: Generated from `#/paths//v1/me/live-activities/{activityId}/put(register_home_live_activity)`.
+    func registerHomeLiveActivity(_ input: Operations.RegisterHomeLiveActivity.Input) async throws -> Operations.RegisterHomeLiveActivity.Output
+    /// The app saw a Lock Screen activity dismissed or ended.
+    ///
+    /// - Remark: HTTP `DELETE /v1/me/live-activities/{activityId}`.
+    /// - Remark: Generated from `#/paths//v1/me/live-activities/{activityId}/delete(end_home_live_activity)`.
+    func endHomeLiveActivity(_ input: Operations.EndHomeLiveActivity.Input) async throws -> Operations.EndHomeLiveActivity.Output
+    /// Streams nudges for the chargers in the caller's places.
+    ///
+    /// Opens a `text/event-stream` that stays open until the client closes it,
+    /// the caller loses their places' address, or 30 minutes pass. Each frame's
+    /// `event:` is its `type` and its `data:` a JSON [`MeLiveEventPayload`]. A
+    /// comment frame is sent every 15 s on an idle connection.
+    ///
+    /// Events are nudges to refetch, delivered best-effort: reconcile over REST
+    /// on every connect and reconnect rather than treating the stream as a
+    /// history.
+    ///
+    /// - Remark: HTTP `GET /v1/me/live-events`.
+    /// - Remark: Generated from `#/paths//v1/me/live-events/get(stream_my_live_events)`.
+    func streamMyLiveEvents(_ input: Operations.StreamMyLiveEvents.Input) async throws -> Operations.StreamMyLiveEvents.Output
     /// Sets the language notifications are worded in: `en` or `sv`.
     ///
     /// Titles and bodies are rendered when read, so this re-words the inbox's
@@ -1728,6 +2369,33 @@ public protocol APIProtocol: Sendable {
     /// - Remark: HTTP `GET /v1/me/places`.
     /// - Remark: Generated from `#/paths//v1/me/places/get(list_my_places)`.
     func listMyPlaces(_ input: Operations.ListMyPlaces.Input) async throws -> Operations.ListMyPlaces.Output
+    /// Resident invitations addressed to the caller.
+    ///
+    /// Matched on the caller's verified and confirmed addresses and no others, and
+    /// pending only. Each is the organization's name and the place, never who sent
+    /// it.
+    ///
+    /// - Remark: HTTP `GET /v1/me/resident-invitations`.
+    /// - Remark: Generated from `#/paths//v1/me/resident-invitations/get(list_my_resident_invitations)`.
+    func listMyResidentInvitations(_ input: Operations.ListMyResidentInvitations.Input) async throws -> Operations.ListMyResidentInvitations.Output
+    /// Accepts an invitation addressed to the caller.
+    ///
+    /// By id, under the same address rules as the link: the caller's verified
+    /// address must be the one invited. The terms must be acknowledged. An
+    /// invitation addressed to someone else is `404 invitationNotFound`, the same
+    /// answer as one that does not exist.
+    ///
+    /// - Remark: HTTP `POST /v1/me/resident-invitations/{invitationId}/accept`.
+    /// - Remark: Generated from `#/paths//v1/me/resident-invitations/{invitationId}/accept/post(accept_my_resident_invitation)`.
+    func acceptMyResidentInvitation(_ input: Operations.AcceptMyResidentInvitation.Input) async throws -> Operations.AcceptMyResidentInvitation.Output
+    /// Declines an invitation addressed to the caller.
+    ///
+    /// The invitation is kept as declined and leaves the list. One addressed to
+    /// someone else is `404 invitationNotFound`.
+    ///
+    /// - Remark: HTTP `POST /v1/me/resident-invitations/{invitationId}/decline`.
+    /// - Remark: Generated from `#/paths//v1/me/resident-invitations/{invitationId}/decline/post(decline_my_resident_invitation)`.
+    func declineMyResidentInvitation(_ input: Operations.DeclineMyResidentInvitation.Input) async throws -> Operations.DeclineMyResidentInvitation.Output
     /// Lists the brand accounts the caller has connected.
     ///
     /// No credential is ever returned.
@@ -1756,6 +2424,16 @@ public protocol APIProtocol: Sendable {
     /// - Remark: HTTP `DELETE /v1/me/vehicle-connections/{connectionId}`.
     /// - Remark: Generated from `#/paths//v1/me/vehicle-connections/{connectionId}/delete(disconnect_my_vehicle_connection)`.
     func disconnectMyVehicleConnection(_ input: Operations.DisconnectMyVehicleConnection.Input) async throws -> Operations.DisconnectMyVehicleConnection.Output
+    /// Withdraws the optional tracking step of one of the caller's connections.
+    ///
+    /// Flowion stops following the connection's cars and deletes the position it
+    /// holds for them, unless another of their connections still allows it. The
+    /// battery feature is untouched. Safe to repeat. A connection that is not the
+    /// caller's answers `404`.
+    ///
+    /// - Remark: HTTP `DELETE /v1/me/vehicle-connections/{connectionId}/tracking`.
+    /// - Remark: Generated from `#/paths//v1/me/vehicle-connections/{connectionId}/tracking/delete(withdraw_my_vehicle_tracking)`.
+    func withdrawMyVehicleTracking(_ input: Operations.WithdrawMyVehicleTracking.Input) async throws -> Operations.WithdrawMyVehicleTracking.Output
     /// Lists the vehicles in one of the caller's connected brand accounts.
     ///
     /// Carries the `notice` to show before the person confirms adding any. A
@@ -1809,6 +2487,17 @@ public protocol APIProtocol: Sendable {
     /// - Remark: HTTP `DELETE /v1/me/vehicles/{vehicleId}`.
     /// - Remark: Generated from `#/paths//v1/me/vehicles/{vehicleId}/delete(remove_my_vehicle)`.
     func removeMyVehicle(_ input: Operations.RemoveMyVehicle.Input) async throws -> Operations.RemoveMyVehicle.Output
+    /// Names the person a car starts charging for, or clears it.
+    ///
+    /// For a car that several people hold: any one of them with a live access may
+    /// name a current holder, or `null` to clear it. Without one, a car with two
+    /// holders who may both charge starts nobody. `vehicleId` is the caller's own
+    /// access id, as everywhere under `/me/vehicles`; a car that is not theirs
+    /// (another person's, a project's, one that does not exist) answers `404`.
+    ///
+    /// - Remark: HTTP `PUT /v1/me/vehicles/{vehicleId}/autocharge-for`.
+    /// - Remark: Generated from `#/paths//v1/me/vehicles/{vehicleId}/autocharge-for/put(set_my_vehicle_autocharge_for)`.
+    func setMyVehicleAutochargeFor(_ input: Operations.SetMyVehicleAutochargeFor.Input) async throws -> Operations.SetMyVehicleAutochargeFor.Output
     /// Lists the organizations the caller belongs to, paginated.
     ///
     /// Scoped by membership, any role — see this module's own doc comment.
@@ -1824,10 +2513,25 @@ public protocol APIProtocol: Sendable {
     func listOrganizations(_ input: Operations.ListOrganizations.Input) async throws -> Operations.ListOrganizations.Output
     /// Creates an organization and makes the caller its Owner.
     ///
-    /// Also creates the organization's default "prod" environment. This is
-    /// the only way an organization comes into being: there is no invite flow
-    /// for organization creation itself, only for adding members to one that
+    /// Creates no project: the organization's first project is made by
+    /// `POST /organizations/{organizationId}/projects` and becomes its default.
+    /// This is the only way an organization comes into being: there is no invite
+    /// flow for organization creation itself, only for adding members to one that
     /// already exists.
+    ///
+    /// **`Idempotency-Key` is optional.** The gateway remembers a successful
+    /// answer for 24 hours, for the caller who sent it, under that key. A retry
+    /// with the same key and an identical body gets that answer again (marked
+    /// `Idempotent-Replayed: true`) and nothing else happens: identity is not
+    /// asked, the signup is not reported and billing is not provisioned a second
+    /// time. The same key with a different body is `409 idempotencyKeyConflict`,
+    /// and a retry that arrives while the first request is still running is
+    /// `409 idempotencyKeyInFlight` with `Retry-After`. A request that failed
+    /// (the slug was taken, say) does not use the key up: send it again with the
+    /// same key and a corrected body. If the service that remembers keys is not
+    /// available, a request that carries a key is refused with `503
+    /// idempotencyStoreUnavailable` and nothing is created; a request without a
+    /// key is not affected.
     ///
     /// - Remark: HTTP `POST /v1/organizations`.
     /// - Remark: Generated from `#/paths//v1/organizations/post(create_organization)`.
@@ -2016,26 +2720,6 @@ public protocol APIProtocol: Sendable {
     /// - Remark: HTTP `GET /v1/organizations/{organizationId}/billing/payouts`.
     /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/billing/payouts/get(get_payouts)`.
     func getPayouts(_ input: Operations.GetPayouts.Input) async throws -> Operations.GetPayouts.Output
-    /// Requests (or resumes) Stripe Connect onboarding for driver payouts.
-    ///
-    /// Requires Owner or Admin. Creates the Standard account on the first
-    /// call; every call — including a later one against an already-onboarded
-    /// account — returns a fresh, single-use, short-lived Stripe-hosted link.
-    /// `returnUrl`/`refreshUrl` must be absolute `https://` URLs on this
-    /// deployment's own web origin (the console or the location), since Stripe
-    /// redirects the calling Admin's own browser there.
-    ///
-    /// Not idempotent. Returns `200`, not `201`, and names the operation
-    /// `request_onboarding_link` rather than a `create_*` id deliberately:
-    /// nothing addressable is created at a URI this API owns — the connected
-    /// account itself is reachable only through
-    /// `GET /organizations/{organizationId}/billing/payouts`, and the link
-    /// this returns is single-use and expires within minutes, so there is
-    /// nothing to point a `Location` header at.
-    ///
-    /// - Remark: HTTP `POST /v1/organizations/{organizationId}/billing/payouts/onboarding-link`.
-    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/billing/payouts/onboarding-link/post(request_onboarding_link)`.
-    func requestOnboardingLink(_ input: Operations.RequestOnboardingLink.Input) async throws -> Operations.RequestOnboardingLink.Output
     /// Begins adding or replacing the organization's payment method.
     ///
     /// Requires Owner or Admin. Lazily creates the organization's Stripe
@@ -2113,6 +2797,12 @@ public protocol APIProtocol: Sendable {
     /// Requires the caller to be an Owner or Admin of the organization
     /// (FR-017/FR-019).
     ///
+    /// Revoking `installer` is also refused (`openJobs`, 409) while the
+    /// organization has any open installer job, and the message names up to ten
+    /// of them; if the jobs service cannot answer, nothing is revoked
+    /// (`jobsServiceUnavailable`, 503). The organization's installations
+    /// projects remain after a revoke that goes through.
+    ///
     /// - Remark: HTTP `DELETE /v1/organizations/{organizationId}/capabilities/{capability}`.
     /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/capabilities/{capability}/delete(revoke_capability)`.
     func revokeCapability(_ input: Operations.RevokeCapability.Input) async throws -> Operations.RevokeCapability.Output
@@ -2159,12 +2849,25 @@ public protocol APIProtocol: Sendable {
     /// Lists an organization's synced Fortnox articles for a job line's picker.
     ///
     /// Empty (never an error) when the organization has no active Fortnox
-    /// installation. Requires the caller to be an Owner or Admin of the
-    /// organization and for it to hold the Installer capability.
+    /// installation. **Needs `connections.connection.manage`, or `jobs.job.manage`**
+    /// at the organization or at any one of its installations projects (whoever may
+    /// create a job), and the organization must hold the Installer capability.
     ///
     /// - Remark: HTTP `GET /v1/organizations/{organizationId}/connections/fortnox/articles`.
     /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/connections/fortnox/articles/get(list_synced_fortnox_articles)`.
     func listSyncedFortnoxArticles(_ input: Operations.ListSyncedFortnoxArticles.Input) async throws -> Operations.ListSyncedFortnoxArticles.Output
+    /// Lists an organization's synced Fortnox customers.
+    ///
+    /// The New job drawer's customer picker.
+    ///
+    /// Empty (never an error) when the organization has no active Fortnox
+    /// installation. **Needs `jobs.job.manage`** at the organization or at any one of
+    /// its installations projects (whoever may create a job), and the organization
+    /// must hold the Installer capability.
+    ///
+    /// - Remark: HTTP `GET /v1/organizations/{organizationId}/connections/fortnox/customers`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/connections/fortnox/customers/get(list_synced_fortnox_customers)`.
+    func listSyncedFortnoxCustomers(_ input: Operations.ListSyncedFortnoxCustomers.Input) async throws -> Operations.ListSyncedFortnoxCustomers.Output
     /// Narrows an installation's granted scopes or project reach.
     ///
     /// Requires the caller to be an Owner or Admin of the organization.
@@ -2264,6 +2967,29 @@ public protocol APIProtocol: Sendable {
     /// - Remark: HTTP `POST /v1/organizations/{organizationId}/customers`.
     /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/customers/post(create_customer)`.
     func createCustomer(_ input: Operations.CreateCustomer.Input) async throws -> Operations.CreateCustomer.Output
+    /// Chooses the project (office) that serves a customer.
+    ///
+    /// From then on, reach into this customer's stations takes the caller's
+    /// permission at that project, asked on every request: moving the customer to
+    /// another project changes the very next answer. The customer never sees it.
+    /// Needs `installer.customer.manage` at the organization.
+    ///
+    /// - Remark: HTTP `PUT /v1/organizations/{organizationId}/customers/{grantId}/serving-project`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/customers/{grantId}/serving-project/put(set_customer_serving_project)`.
+    func setCustomerServingProject(_ input: Operations.SetCustomerServingProject.Input) async throws -> Operations.SetCustomerServingProject.Output
+    /// Lists the sites a served customer's access grant covers.
+    ///
+    /// **Needs `installer.customer.operate`** at the project that serves the
+    /// customer (or at the organization, for a customer with no serving project),
+    /// and the organization must hold the Installer capability. Sites are the
+    /// grant's `site` scopes, named and addressed from asset, sorted by name;
+    /// `station` scopes are not sites and are omitted. A site that no longer
+    /// exists is omitted. Use a site's `id` as `existingLocationId` beside
+    /// `existingGrantId` when creating a job.
+    ///
+    /// - Remark: HTTP `GET /v1/organizations/{organizationId}/customers/{grantId}/sites`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/customers/{grantId}/sites/get(list_customer_sites)`.
+    func listCustomerSites(_ input: Operations.ListCustomerSites.Input) async throws -> Operations.ListCustomerSites.Output
     /// Submits a commissioning-class command for a granted station.
     ///
     /// A closed `kind` vocabulary — never billing, tariff, membership or
@@ -2279,30 +3005,128 @@ public protocol APIProtocol: Sendable {
     /// - Remark: HTTP `GET /v1/organizations/{organizationId}/customers/{grantId}/stations/{stationId}/diagnostics`.
     /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/customers/{grantId}/stations/{stationId}/diagnostics/get(get_diagnostics)`.
     func getDiagnostics(_ input: Operations.GetDiagnostics.Input) async throws -> Operations.GetDiagnostics.Output
-    /// Lists the installer's own technicians with their assigned-customer counts.
+    /// List a charger's matching device manuals
     ///
-    /// Never the full member list — `Owner`/`Admin` members are organization
-    /// management, not technicians, and are excluded.
+    /// - Remark: HTTP `GET /v1/organizations/{organizationId}/installer-assistant/chargers/{chargingStationId}/manuals`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/installer-assistant/chargers/{chargingStationId}/manuals/get(get_installer_charger_manuals)`.
+    func getInstallerChargerManuals(_ input: Operations.GetInstallerChargerManuals.Input) async throws -> Operations.GetInstallerChargerManuals.Output
+    /// Read a verified page of a charger's manual
     ///
-    /// - Remark: HTTP `GET /v1/organizations/{organizationId}/installer-team`.
-    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/installer-team/get(list_installer_team)`.
-    func listInstallerTeam(_ input: Operations.ListInstallerTeam.Input) async throws -> Operations.ListInstallerTeam.Output
-    /// Assigns a technician to one of the installer's customer grants.
+    /// - Remark: HTTP `GET /v1/organizations/{organizationId}/installer-assistant/chargers/{chargingStationId}/manuals/{documentId}/revisions/{revision}/pages/{page}`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/installer-assistant/chargers/{chargingStationId}/manuals/{documentId}/revisions/{revision}/pages/{page}/get(get_installer_charger_manual_page)`.
+    func getInstallerChargerManualPage(_ input: Operations.GetInstallerChargerManualPage.Input) async throws -> Operations.GetInstallerChargerManualPage.Output
+    /// List my installer chats
     ///
-    /// The grant must belong to this installer organization and be active —
-    /// checked by the authorization backend itself, not merely by this route.
+    /// - Remark: HTTP `GET /v1/organizations/{organizationId}/installer-assistant/conversations`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/installer-assistant/conversations/get(list_installer_chats)`.
+    func listInstallerChats(_ input: Operations.ListInstallerChats.Input) async throws -> Operations.ListInstallerChats.Output
+    /// Start an installer assistant conversation
     ///
-    /// - Remark: HTTP `POST /v1/organizations/{organizationId}/installer-team/{membershipId}/assignments`.
-    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/installer-team/{membershipId}/assignments/post(assign_technician)`.
-    func assignTechnician(_ input: Operations.AssignTechnician.Input) async throws -> Operations.AssignTechnician.Output
-    /// Unassigns a technician from one of the installer's customer grants.
+    /// For the signed-in person, in one installer organization. Starting one
+    /// preserves the person's previous installer conversations in that
+    /// organization. A person's own session only: an API key or an assistant
+    /// credential is refused. The assistant is free within a per-person daily
+    /// cap, so no card or allowance is involved.
     ///
-    /// Idempotent — unassigning a technician who was never assigned (or
-    /// already unassigned) still answers `204`.
+    /// - Remark: HTTP `POST /v1/organizations/{organizationId}/installer-assistant/conversations`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/installer-assistant/conversations/post(start_installer_assistant_conversation)`.
+    func startInstallerAssistantConversation(_ input: Operations.StartInstallerAssistantConversation.Input) async throws -> Operations.StartInstallerAssistantConversation.Output
+    /// Read my installer chat
     ///
-    /// - Remark: HTTP `DELETE /v1/organizations/{organizationId}/installer-team/{membershipId}/assignments/{grantId}`.
-    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/installer-team/{membershipId}/assignments/{grantId}/delete(unassign_technician)`.
-    func unassignTechnician(_ input: Operations.UnassignTechnician.Input) async throws -> Operations.UnassignTechnician.Output
+    /// - Remark: HTTP `GET /v1/organizations/{organizationId}/installer-assistant/conversations/{conversationId}`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/installer-assistant/conversations/{conversationId}/get(get_installer_chat)`.
+    func getInstallerChat(_ input: Operations.GetInstallerChat.Input) async throws -> Operations.GetInstallerChat.Output
+    /// Delete my installer chat
+    ///
+    /// - Remark: HTTP `DELETE /v1/organizations/{organizationId}/installer-assistant/conversations/{conversationId}`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/installer-assistant/conversations/{conversationId}/delete(delete_installer_chat)`.
+    func deleteInstallerChat(_ input: Operations.DeleteInstallerChat.Input) async throws -> Operations.DeleteInstallerChat.Output
+    /// Send an installer assistant message
+    ///
+    /// The body is `text/event-stream`. Each frame's `event:` is its `type`
+    /// (`delta`, `working`, `limit`, `done`) and its `data:` is one JSON
+    /// [`AssistantStreamEvent`]. The surface never sends `choice` or `proposal`:
+    /// the assistant only reads. The stream always ends with `done`; an outage
+    /// arrives as `done` with `unavailable`. Every message re-checks the person's
+    /// membership and the organization's Installer capability.
+    ///
+    /// - Remark: HTTP `POST /v1/organizations/{organizationId}/installer-assistant/conversations/{conversationId}/messages`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/installer-assistant/conversations/{conversationId}/messages/post(send_installer_assistant_message)`.
+    func sendInstallerAssistantMessage(_ input: Operations.SendInstallerAssistantMessage.Input) async throws -> Operations.SendInstallerAssistantMessage.Output
+    /// Send an installer assistant photo
+    ///
+    /// - Remark: HTTP `POST /v1/organizations/{organizationId}/installer-assistant/conversations/{conversationId}/photo-messages`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/installer-assistant/conversations/{conversationId}/photo-messages/post(send_installer_assistant_photo)`.
+    func sendInstallerAssistantPhoto(_ input: Operations.SendInstallerAssistantPhoto.Input) async throws -> Operations.SendInstallerAssistantPhoto.Output
+    /// Read an installer assistant turn
+    ///
+    /// The reply to the conversation's `turn`th message (from 1), as the frames it
+    /// streamed, so a reply whose stream broke is not lost. While `ended` is
+    /// `false` the reply is still being written: ask again. Only the person who
+    /// started the conversation may read it, and only a conversation of this
+    /// surface (any other id, a console conversation's included, is `404`).
+    ///
+    /// - Remark: HTTP `GET /v1/organizations/{organizationId}/installer-assistant/conversations/{conversationId}/turns/{turn}`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/installer-assistant/conversations/{conversationId}/turns/{turn}/get(get_installer_assistant_turn)`.
+    func getInstallerAssistantTurn(_ input: Operations.GetInstallerAssistantTurn.Input) async throws -> Operations.GetInstallerAssistantTurn.Output
+    /// Speak my completed installer assistant reply
+    ///
+    /// - Remark: HTTP `POST /v1/organizations/{organizationId}/installer-assistant/conversations/{conversationId}/turns/{turn}/speech`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/installer-assistant/conversations/{conversationId}/turns/{turn}/speech/post(generate_installer_speech)`.
+    func generateInstallerSpeech(_ input: Operations.GenerateInstallerSpeech.Input) async throws -> Operations.GenerateInstallerSpeech.Output
+    /// List manuals for an offline job pack
+    ///
+    /// - Remark: HTTP `GET /v1/organizations/{organizationId}/installer-assistant/jobs/{jobId}/manuals`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/installer-assistant/jobs/{jobId}/manuals/get(get_installer_job_manuals)`.
+    func getInstallerJobManuals(_ input: Operations.GetInstallerJobManuals.Input) async throws -> Operations.GetInstallerJobManuals.Output
+    /// Download a verified offline manual page
+    ///
+    /// - Remark: HTTP `GET /v1/organizations/{organizationId}/installer-assistant/jobs/{jobId}/manuals/{documentId}/revisions/{revision}/pages/{page}`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/installer-assistant/jobs/{jobId}/manuals/{documentId}/revisions/{revision}/pages/{page}/get(get_installer_job_manual_page)`.
+    func getInstallerJobManualPage(_ input: Operations.GetInstallerJobManualPage.Input) async throws -> Operations.GetInstallerJobManualPage.Output
+    /// Looks up a Swedish company for installation-job preparation.
+    ///
+    /// The installer confirms the company and separately confirms the site address.
+    ///
+    /// - Remark: HTTP `GET /v1/organizations/{organizationId}/installer-company-lookup`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/installer-company-lookup/get(lookup_installer_company)`.
+    func lookupInstallerCompany(_ input: Operations.LookupInstallerCompany.Input) async throws -> Operations.LookupInstallerCompany.Output
+    /// Reads company-wide installer settings.
+    ///
+    /// Requires membership and Installer capability.
+    ///
+    /// - Remark: HTTP `GET /v1/organizations/{organizationId}/installer-settings`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/installer-settings/get(get_installer_settings)`.
+    func getInstallerSettings(_ input: Operations.GetInstallerSettings.Input) async throws -> Operations.GetInstallerSettings.Output
+    /// Replaces the company's operating countries.
+    ///
+    /// Applies to every team member. An empty list clears the setting.
+    ///
+    /// - Remark: HTTP `PUT /v1/organizations/{organizationId}/installer-settings`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/installer-settings/put(update_installer_settings)`.
+    func updateInstallerSettings(_ input: Operations.UpdateInstallerSettings.Input) async throws -> Operations.UpdateInstallerSettings.Output
+    /// The visits to this organization's chargers.
+    ///
+    /// **Needs `installer.customer.read`** in this organization, as the list of
+    /// installers does. Each visit names the installer, the reason it gave, since when,
+    /// and the steps done, skipped and not tested.
+    ///
+    /// - Remark: HTTP `GET /v1/organizations/{organizationId}/installer-visits`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/installer-visits/get(list_installer_visits)`.
+    func listInstallerVisits(_ input: Operations.ListInstallerVisits.Input) async throws -> Operations.ListInstallerVisits.Output
+    /// Ends a visit now.
+    ///
+    /// **Needs `installer.customer.read`** in this organization, as the list does:
+    /// anyone who can see a visit can end it. Ending is protective and does not revoke
+    /// the installer's access (that stays `installer.customer.manage`). Every charger of the visit that is in
+    /// installer mode leaves it, the installer sees on the charger that the customer
+    /// ended it, and the installer cannot put the charger back in the mode for this
+    /// visit. Idempotent. `404` for a visit that is another organization's, and for
+    /// one that does not exist.
+    ///
+    /// - Remark: HTTP `POST /v1/organizations/{organizationId}/installer-visits/{jobId}/end`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/installer-visits/{jobId}/end/post(end_installer_visit)`.
+    func endInstallerVisit(_ input: Operations.EndInstallerVisit.Input) async throws -> Operations.EndInstallerVisit.Output
     /// Every installer holding a grant against this customer organization.
     ///
     /// Pending or active.
@@ -2366,19 +3190,58 @@ public protocol APIProtocol: Sendable {
     /// - Remark: HTTP `DELETE /v1/organizations/{organizationId}/invitations/{invitationId}`.
     /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/invitations/{invitationId}/delete(revoke_invitation)`.
     func revokeInvitation(_ input: Operations.RevokeInvitation.Input) async throws -> Operations.RevokeInvitation.Output
-    /// Lists this organization's jobs.
+    /// Lists this organization's jobs, across the projects the caller may read.
     ///
-    /// A `User`-role caller sees only the jobs they are assigned to; Owner and
-    /// Admin see every job.
+    /// A job belongs to one `installations` project, and every row names it
+    /// (`projectId`, `projectName`). Someone who holds `jobs.job.read` at the
+    /// organization sees every project's jobs; someone bound only at some projects
+    /// sees those projects' jobs. `projectId` narrows the list to one project.
+    /// A caller who does not manage jobs (`jobs.job.manage`) sees only the jobs
+    /// they are assigned to.
     ///
     /// - Remark: HTTP `GET /v1/organizations/{organizationId}/jobs`.
     /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/jobs/get(list_jobs)`.
     func listJobs(_ input: Operations.ListJobs.Input) async throws -> Operations.ListJobs.Output
-    /// Creates a job. **Admin**.
+    /// Creates a job in an `installations` project.
+    ///
+    /// **Needs `jobs.job.manage` at that project.**
+    ///
+    /// The job belongs to its project for life: a job filed in the wrong office is
+    /// cancelled and made again, never moved.
+    ///
+    /// A job either builds its location (`locationKind` `newLocation`, the default,
+    /// in the project named by `projectId`) or works on one that already exists
+    /// (`existingLocation`), naming one of:
+    ///
+    /// - `existingGrantId`, a customer this firm serves, with or without
+    ///   `existingLocationId` beside it. The job belongs to the project that serves
+    ///   the customer, so `projectId` may be left out and, if given, must be that
+    ///   project. The caller must reach the customer there
+    ///   (`installer.customer.operate`) and manage jobs there. A customer with no
+    ///   serving project can be worked on by people bound at the organization only,
+    ///   and `projectId` then says which office the job belongs to. With
+    ///   `existingLocationId` too, the job works on that one of the customer's
+    ///   sites, which must be a `site` scope of the grant; without it the job works
+    ///   under the grant as a whole.
+    /// - `existingLocationId` alone, a location in one of the firm's own
+    ///   `operations` projects, which the caller can read. No grant is involved.
+    ///
+    /// Either way the job only points at the location. It never moves it, and it
+    /// writes nothing to it.
     ///
     /// - Remark: HTTP `POST /v1/organizations/{organizationId}/jobs`.
     /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/jobs/post(create_job)`.
     func createJob(_ input: Operations.CreateJob.Input) async throws -> Operations.CreateJob.Output
+    /// Creates a job without sending a customer invitation.
+    ///
+    /// **Needs `jobs.job.manage` at the selected installations project.** The same
+    /// project, location and customer validation as Create job applies. The job is
+    /// immediately saved; the customer invitation requires a separate explicit
+    /// invitation request. Older services reject this operation before any write.
+    ///
+    /// - Remark: HTTP `POST /v1/organizations/{organizationId}/jobs/drafts`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/jobs/drafts/post(create_job_draft)`.
+    func createJobDraft(_ input: Operations.CreateJobDraft.Input) async throws -> Operations.CreateJobDraft.Output
     /// Fetches one job.
     ///
     /// A `User`-role caller who is not among this job's assignments gets the
@@ -2394,9 +3257,24 @@ public protocol APIProtocol: Sendable {
     /// the job unchanged; `lines` only replaces when `replaceLines` is `true`
     /// (an empty list is itself a valid replacement).
     ///
+    /// A changed `contact.email` ends the invitation sent to the old address and
+    /// sends a new one to the new; the response's `invitation` says where it
+    /// stands. `contact.email` must look like an address (`422`).
+    ///
     /// - Remark: HTTP `PATCH /v1/organizations/{organizationId}/jobs/{jobId}`.
     /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/jobs/{jobId}/patch(update_job)`.
     func updateJob(_ input: Operations.UpdateJob.Input) async throws -> Operations.UpdateJob.Output
+    /// Adds a circuit at the customer's site. **Admin, or an assigned member.**
+    ///
+    /// Only on an existing-location job that may add (its grant covers the site, or
+    /// the site is the firm's own). The circuit is created in the customer's project
+    /// under `circuit.parentId`, applies at once (it feeds only what this job adds),
+    /// and is listed on the job as an addition that waits for the customer. A charger
+    /// is added by `POST .../chargers`.
+    ///
+    /// - Remark: HTTP `POST /v1/organizations/{organizationId}/jobs/{jobId}/additions`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/jobs/{jobId}/additions/post(register_job_addition)`.
+    func registerJobAddition(_ input: Operations.RegisterJobAddition.Input) async throws -> Operations.RegisterJobAddition.Output
     /// Assigns a member to a job. **Admin**.
     ///
     /// - Remark: HTTP `POST /v1/organizations/{organizationId}/jobs/{jobId}/assignments`.
@@ -2422,13 +3300,44 @@ public protocol APIProtocol: Sendable {
     /// places the new charger on `circuitId`, and returns the installation
     /// address and a one-time password — the only place that password is ever
     /// shown (never logged, never returned again). The charger is born
-    /// limited and does **not** count against this organization's
-    /// subscription charger cap: this route does not check it, unlike the
-    /// ordinary charger-creation route.
+    /// limited, so unlike the ordinary charger-creation route this one never
+    /// asks for a card on file.
     ///
     /// - Remark: HTTP `POST /v1/organizations/{organizationId}/jobs/{jobId}/chargers`.
     /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/jobs/{jobId}/chargers/post(register_job_charger)`.
     func registerJobCharger(_ input: Operations.RegisterJobCharger.Input) async throws -> Operations.RegisterJobCharger.Output
+    /// Turns installer mode on or off for one charger of a job.
+    ///
+    /// **Needs `jobs.job.work` at the job's project**: an Admin or Owner, or a
+    /// member assigned to the job. Idempotent: `on: true` on an open period answers
+    /// it, `on: false` on none answers `off`. `404` for a charger that is not on the
+    /// job, `409 notAvailable` when it cannot take the mode (not a pure OCPP charger,
+    /// the job is not in progress, a revisit has no reason, the grant does not cover
+    /// it) and `409 alreadyHandedOver` once the location has been handed over.
+    ///
+    /// - Remark: HTTP `PUT /v1/organizations/{organizationId}/jobs/{jobId}/chargers/{stationId}/installer-mode`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/jobs/{jobId}/chargers/{stationId}/installer-mode/put(set_charger_installer_mode)`.
+    func setChargerInstallerMode(_ input: Operations.SetChargerInstallerMode.Input) async throws -> Operations.SetChargerInstallerMode.Output
+    /// Adds four hours to a charger's installer-mode time limit.
+    ///
+    /// **Needs `jobs.job.work` at the job's project.** Answers the charger with its
+    /// new `limitAt`. `409 notOn` when the charger is not in installer mode,
+    /// `409 alreadyHandedOver` once the location has been handed over, `404` for a
+    /// charger that is not on the job.
+    ///
+    /// - Remark: HTTP `POST /v1/organizations/{organizationId}/jobs/{jobId}/chargers/{stationId}/installer-mode/extend`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/jobs/{jobId}/chargers/{stationId}/installer-mode/extend/post(extend_installer_mode)`.
+    func extendInstallerMode(_ input: Operations.ExtendInstallerMode.Input) async throws -> Operations.ExtendInstallerMode.Output
+    /// Records the installer's word on one check of the walk-through.
+    ///
+    /// **Needs `jobs.job.work` at the job's project.** `state` is `done` or
+    /// `skipped`; `skipReason` is required for `skipped`. A check the system confirms
+    /// itself cannot be marked `done` by hand (`409 systemConfirmed`), only skipped
+    /// with a reason. `409 notOn` when the charger is not in installer mode.
+    ///
+    /// - Remark: HTTP `PUT /v1/organizations/{organizationId}/jobs/{jobId}/chargers/{stationId}/installer-mode/steps/{step}`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/jobs/{jobId}/chargers/{stationId}/installer-mode/steps/{step}/put(set_installer_mode_step)`.
+    func setInstallerModeStep(_ input: Operations.SetInstallerModeStep.Input) async throws -> Operations.SetInstallerModeStep.Output
     /// Sets a technician's note on one of a station's commissioning checks.
     ///
     /// **Admin, or an assigned member.**
@@ -2436,6 +3345,50 @@ public protocol APIProtocol: Sendable {
     /// - Remark: HTTP `PUT /v1/organizations/{organizationId}/jobs/{jobId}/checks/{stationId}/note`.
     /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/jobs/{jobId}/checks/{stationId}/note/put(set_check_note)`.
     func setCheckNote(_ input: Operations.SetCheckNote.Input) async throws -> Operations.SetCheckNote.Output
+    /// The circuits of a job's location.
+    ///
+    /// Whoever may read the job (`jobs.job.read`; a `User` only for a job they
+    /// are assigned to). A job the caller may not see is `404 notFound`, as for
+    /// `get_job`. A job with no location yet, or whose location has been handed
+    /// over to another organization, lists none.
+    ///
+    /// - Remark: HTTP `GET /v1/organizations/{organizationId}/jobs/{jobId}/circuits`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/jobs/{jobId}/circuits/get(list_job_circuits)`.
+    func listJobCircuits(_ input: Operations.ListJobCircuits.Input) async throws -> Operations.ListJobCircuits.Output
+    /// Ends a job that works on an existing location.
+    ///
+    /// **Needs `jobs.job.work` at the job's project** (an Admin, or a member
+    /// assigned to the job).
+    ///
+    /// The installer's word is enough: no acceptance is asked of the customer, and
+    /// nothing at the location changes. A job with an addition still waiting for the
+    /// customer cannot be ended this way (`422`), and neither can a job that builds
+    /// its location, which ends by handover.
+    ///
+    /// - Remark: HTTP `POST /v1/organizations/{organizationId}/jobs/{jobId}/complete`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/jobs/{jobId}/complete/post(complete_job)`.
+    func completeJob(_ input: Operations.CompleteJob.Input) async throws -> Operations.CompleteJob.Output
+    /// The connections a job's chargers were refused.
+    ///
+    /// Admin and Owner for any job, a `User` for a job they are assigned to
+    /// (`jobs.refusal.read`). A job the caller may not see is `404 notFound`, as
+    /// for `get_job`. Stations whose current project is outside the organization
+    /// (handed over) are omitted.
+    ///
+    /// - Remark: HTTP `GET /v1/organizations/{organizationId}/jobs/{jobId}/connection-refusals`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/jobs/{jobId}/connection-refusals/get(list_job_connection_refusals)`.
+    func listJobConnectionRefusals(_ input: Operations.ListJobConnectionRefusals.Input) async throws -> Operations.ListJobConnectionRefusals.Output
+    /// Tells the installer whether a customer is linked to the job.
+    ///
+    /// **Needs `jobs.job.read` at the job's project.** A job with no linked
+    /// customer is a normal `200` with `linked: false`. Nothing about the
+    /// customer is returned, only whether one is linked, whether access is arranged,
+    /// where the invitation stands and the choices the customer has recorded for
+    /// the new location, which the installer can read and not change.
+    ///
+    /// - Remark: HTTP `GET /v1/organizations/{organizationId}/jobs/{jobId}/customer-link`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/jobs/{jobId}/customer-link/get(get_customer_link)`.
+    func getCustomerLink(_ input: Operations.GetCustomerLink.Input) async throws -> Operations.GetCustomerLink.Output
     /// Each of the paired site's chargers and how far its commissioning has got.
     ///
     /// **Admin, or an assigned member.** Read-only; never starts a run. A charger
@@ -2466,8 +3419,8 @@ public protocol APIProtocol: Sendable {
     /// returned with them filled. Every Easee
     /// circuit has to be mapped, to a circuit of the job's location, no two to
     /// the same one, with its phase topology confirmed. Beyond the plan needs
-    /// `confirmOverPlan`. Does not count against the organization's
-    /// subscription charger cap.
+    /// `confirmOverPlan`. Never asks for a card on file: the chargers are
+    /// born limited.
     ///
     /// - Remark: HTTP `POST /v1/organizations/{organizationId}/jobs/{jobId}/easee/claims/{claimId}/mapping`.
     /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/jobs/{jobId}/easee/claims/{claimId}/mapping/post(apply_job_easee_mapping)`.
@@ -2485,12 +3438,24 @@ public protocol APIProtocol: Sendable {
     ///
     /// **Admin, or an assigned member.** Claims the site with the charger's
     /// serial number and PIN; nothing is imported until the mapping is applied
-    /// (`POST .../claims/{claimId}/mapping`). Does not count against the
-    /// organization's subscription charger cap.
+    /// (`POST .../claims/{claimId}/mapping`). Never asks for a card on file:
+    /// the chargers are born limited.
     ///
     /// - Remark: HTTP `POST /v1/organizations/{organizationId}/jobs/{jobId}/easee/pair`.
     /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/jobs/{jobId}/easee/pair/post(pair_job_easee_site)`.
     func pairJobEaseeSite(_ input: Operations.PairJobEaseeSite.Input) async throws -> Operations.PairJobEaseeSite.Output
+    /// Labels one outlet of a charger on this job.
+    ///
+    /// **Admin, or an assigned member** (`jobs.job.work`). The label must be
+    /// unused, or already this outlet's. Linking is idempotent for the identical
+    /// link. A label on another outlet is `409 labelLinkedElsewhere`, with
+    /// `movable: true` while it can still be moved; send `relink` to move it, which
+    /// also needs the caller to work on the outlet it is on. Labelling never blocks
+    /// handover. At most 30 attempts per person per 10 minutes (`429`).
+    ///
+    /// - Remark: HTTP `PUT /v1/organizations/{organizationId}/jobs/{jobId}/evses/{evseId}/label`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/jobs/{jobId}/evses/{evseId}/label/put(link_job_outlet_label)`.
+    func linkJobOutletLabel(_ input: Operations.LinkJobOutletLabel.Input) async throws -> Operations.LinkJobOutletLabel.Output
     /// Waives an expected charger. **Admin, or an assigned member.**
     ///
     /// It will never be filled, and no longer blocks marking the job ready
@@ -2499,6 +3464,22 @@ public protocol APIProtocol: Sendable {
     /// - Remark: HTTP `POST /v1/organizations/{organizationId}/jobs/{jobId}/expected-chargers/{expectedId}/waive`.
     /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/jobs/{jobId}/expected-chargers/{expectedId}/waive/post(waive_expected_charger)`.
     func waiveExpectedCharger(_ input: Operations.WaiveExpectedCharger.Input) async throws -> Operations.WaiveExpectedCharger.Output
+    /// Ends a job by running the location yourself.
+    ///
+    /// **Needs `jobs.job.manage` at the job's project and `identity.project.manage`
+    /// at the target project.** The location moves into the chosen `operations` project of this
+    /// organization in one transaction, its chargers go into service there, and the
+    /// job becomes handed over, with the organization itself as the receiving party.
+    /// No handover link is sent and no customer grant is created, and a link the job
+    /// was already offered with stops working. Refused with `409 handoverNotReady`
+    /// by the same gate as marking the job ready (an unfilled charger, one that never
+    /// connected through its installation address), and with `422` when the job
+    /// cannot end this way (not a new-location job, a customer already accepted, a
+    /// charge point id already in the target).
+    ///
+    /// - Remark: HTTP `POST /v1/organizations/{organizationId}/jobs/{jobId}/handover`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/jobs/{jobId}/handover/post(hand_over_job)`.
+    func handOverJob(_ input: Operations.HandOverJob.Input) async throws -> Operations.HandOverJob.Output
     /// Resends the handover link. **Admin.**
     ///
     /// Invalidates whichever link was live before — the old one stops working
@@ -2507,13 +3488,67 @@ public protocol APIProtocol: Sendable {
     /// - Remark: HTTP `POST /v1/organizations/{organizationId}/jobs/{jobId}/handover/resend`.
     /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/jobs/{jobId}/handover/resend/post(resend_handover_link)`.
     func resendHandoverLink(_ input: Operations.ResendHandoverLink.Input) async throws -> Operations.ResendHandoverLink.Output
+    /// Changes a circuit's rated current. **Admin, or an assigned member.**
+    ///
+    /// A rating that can only lower the power available applies at once and is
+    /// listed to the customer as already applied. A higher rating is held: the
+    /// circuit keeps its old value, and the energy controller keeps using it, until
+    /// the customer accepts. The held change applies at acceptance only if the
+    /// circuit still has the value it had here.
+    ///
+    /// - Remark: HTTP `POST /v1/organizations/{organizationId}/jobs/{jobId}/held-changes`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/jobs/{jobId}/held-changes/post(hold_circuit_change)`.
+    func holdCircuitChange(_ input: Operations.HoldCircuitChange.Input) async throws -> Operations.HoldCircuitChange.Output
+    /// Reads installer mode for every charger of a job.
+    ///
+    /// **Needs `jobs.job.read` at the job's project**; a member who sees only the
+    /// jobs they are assigned to is told `404` for any other, as for the job itself.
+    /// Evaluates each step's evidence while it reads, so the answer is what the
+    /// system sees now. A charger that cannot take the mode says so with
+    /// `installerModeAvailable: false`.
+    ///
+    /// - Remark: HTTP `GET /v1/organizations/{organizationId}/jobs/{jobId}/installer-mode`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/jobs/{jobId}/installer-mode/get(get_installer_mode)`.
+    func getInstallerMode(_ input: Operations.GetInstallerMode.Input) async throws -> Operations.GetInstallerMode.Output
+    /// Turns installer mode on or off for every charger of a job that can take it.
+    ///
+    /// **Needs `jobs.job.work` at the job's project.** A charger that cannot take
+    /// the mode is left as it is and says so (`installerModeAvailable: false`). The
+    /// answer is per charger. `409 alreadyHandedOver` once the location has been
+    /// handed over.
+    ///
+    /// - Remark: HTTP `POST /v1/organizations/{organizationId}/jobs/{jobId}/installer-mode`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/jobs/{jobId}/installer-mode/post(set_job_installer_mode)`.
+    func setJobInstallerMode(_ input: Operations.SetJobInstallerMode.Input) async throws -> Operations.SetJobInstallerMode.Output
+    /// Sends the customer's first invitation, or sends it again.
+    ///
+    /// **Needs `jobs.job.manage` at the job's project.** A fresh invitation replaces the usable one, which stops working. A cooldown
+    /// and caps apply: when one does, the answer is `429 rateLimited` with
+    /// `Retry-After`, and the job and its current invitation are unchanged. Returns
+    /// the job, whose `invitation` says where it stands.
+    ///
+    /// - Remark: HTTP `POST /v1/organizations/{organizationId}/jobs/{jobId}/invitation/resend`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/jobs/{jobId}/invitation/resend/post(resend_job_invitation)`.
+    func resendJobInvitation(_ input: Operations.ResendJobInvitation.Input) async throws -> Operations.ResendJobInvitation.Output
     /// Builds this job's location. **Admin, or an assigned member.**
     ///
-    /// A job builds exactly one location — a second call is refused.
+    /// A job builds exactly one location — a second call is refused. It is built in
+    /// the job's own project; the request names none.
     ///
     /// - Remark: HTTP `POST /v1/organizations/{organizationId}/jobs/{jobId}/location`.
     /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/jobs/{jobId}/location/post(create_job_location)`.
     func createJobLocation(_ input: Operations.CreateJobLocation.Input) async throws -> Operations.CreateJobLocation.Output
+    /// Asks the customer to accept everything this job added. **`jobs.job.manage`.**
+    ///
+    /// Opens the offer, or refreshes the one already open (a resend, with a new
+    /// thirty days and anything registered since), and sends a fresh single-use link,
+    /// bound to `contactEmail`, to an Owner or Admin of the organization that owns
+    /// the location. The same offer is also on the location in the console. Nothing
+    /// is counted before they accept.
+    ///
+    /// - Remark: HTTP `POST /v1/organizations/{organizationId}/jobs/{jobId}/offer`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/jobs/{jobId}/offer/post(offer_additions)`.
+    func offerAdditions(_ input: Operations.OfferAdditions.Input) async throws -> Operations.OfferAdditions.Output
     /// Marks a job ready for handover. **Admin, or an assigned member.**
     ///
     /// Refused (`409 handoverNotReady`) unless every expected charger is
@@ -2522,7 +3557,10 @@ public protocol APIProtocol: Sendable {
     /// commissioning check never blocks this. On success, `jobs` freezes the
     /// handover summary and sends the customer contact its link; this route
     /// re-fetches the job so the response carries that summary like every
-    /// other mutation in this module.
+    /// other mutation in this module. For a job whose customer is linked the
+    /// location moves to them at once and no link is sent: `handedOverToCustomer`
+    /// says which way it went, and `transferHeldReason` why a linked job was
+    /// offered by email instead.
     ///
     /// - Remark: HTTP `POST /v1/organizations/{organizationId}/jobs/{jobId}/ready`.
     /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/jobs/{jobId}/ready/post(mark_ready_for_handover)`.
@@ -2535,6 +3573,133 @@ public protocol APIProtocol: Sendable {
     /// - Remark: HTTP `DELETE /v1/organizations/{organizationId}/jobs/{jobId}/ready`.
     /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/jobs/{jobId}/ready/delete(withdraw_readiness)`.
     func withdrawReadiness(_ input: Operations.WithdrawReadiness.Input) async throws -> Operations.WithdrawReadiness.Output
+    /// Removes what this job added and the customer never accepted.
+    ///
+    /// **Needs `jobs.job.manage`** at the job's project.
+    ///
+    /// Chargers are deprovisioned and their connections closed, circuits are deleted
+    /// (the newest first), held ratings are dropped and an open offer is cancelled.
+    /// An accepted addition, and everything the customer already had, is never
+    /// touched. Cancelling a job does this by itself.
+    ///
+    /// - Remark: HTTP `POST /v1/organizations/{organizationId}/jobs/{jobId}/withdraw`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/jobs/{jobId}/withdraw/post(withdraw_additions)`.
+    func withdrawAdditions(_ input: Operations.WithdrawAdditions.Input) async throws -> Operations.WithdrawAdditions.Output
+    /// Read the latest Zaptec onboarding attempt for an authorized installation job.
+    ///
+    /// - Remark: HTTP `GET /v1/organizations/{organizationId}/jobs/{jobId}/zaptec/onboarding`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/jobs/{jobId}/zaptec/onboarding/get(get_job_zaptec_onboarding)`.
+    func getJobZaptecOnboarding(_ input: Operations.GetJobZaptecOnboarding.Input) async throws -> Operations.GetJobZaptecOnboarding.Output
+    /// Start a Zaptec onboarding attempt for an authorized installation job.
+    ///
+    /// - Remark: HTTP `POST /v1/organizations/{organizationId}/jobs/{jobId}/zaptec/onboarding`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/jobs/{jobId}/zaptec/onboarding/post(start_job_zaptec_onboarding)`.
+    func startJobZaptecOnboarding(_ input: Operations.StartJobZaptecOnboarding.Input) async throws -> Operations.StartJobZaptecOnboarding.Output
+    /// Read a Zaptec onboarding attempt for an authorized installation job.
+    ///
+    /// - Remark: HTTP `GET /v1/organizations/{organizationId}/jobs/{jobId}/zaptec/onboarding/{attemptId}`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/jobs/{jobId}/zaptec/onboarding/{attemptId}/get(get_job_zaptec_onboarding_attempt)`.
+    func getJobZaptecOnboardingAttempt(_ input: Operations.GetJobZaptecOnboardingAttempt.Input) async throws -> Operations.GetJobZaptecOnboardingAttempt.Output
+    /// Advance or reconcile Zaptec onboarding for an authorized installation job.
+    ///
+    /// - Remark: HTTP `POST /v1/organizations/{organizationId}/jobs/{jobId}/zaptec/onboarding/{attemptId}/advance`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/jobs/{jobId}/zaptec/onboarding/{attemptId}/advance/post(advance_job_zaptec_onboarding)`.
+    func advanceJobZaptecOnboarding(_ input: Operations.AdvanceJobZaptecOnboarding.Input) async throws -> Operations.AdvanceJobZaptecOnboarding.Output
+    /// Cancel uncommitted Zaptec onboarding for an authorized installation job.
+    ///
+    /// - Remark: HTTP `POST /v1/organizations/{organizationId}/jobs/{jobId}/zaptec/onboarding/{attemptId}/cancel`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/jobs/{jobId}/zaptec/onboarding/{attemptId}/cancel/post(cancel_job_zaptec_onboarding)`.
+    func cancelJobZaptecOnboarding(_ input: Operations.CancelJobZaptecOnboarding.Input) async throws -> Operations.CancelJobZaptecOnboarding.Output
+    /// Begin Zaptec consent for an authorized installation job.
+    ///
+    /// - Remark: HTTP `POST /v1/organizations/{organizationId}/jobs/{jobId}/zaptec/onboarding/{attemptId}/consent`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/jobs/{jobId}/zaptec/onboarding/{attemptId}/consent/post(begin_job_zaptec_consent)`.
+    func beginJobZaptecConsent(_ input: Operations.BeginJobZaptecConsent.Input) async throws -> Operations.BeginJobZaptecConsent.Output
+    /// Complete Zaptec consent for an authorized installation job.
+    ///
+    /// - Remark: HTTP `POST /v1/organizations/{organizationId}/jobs/{jobId}/zaptec/onboarding/{attemptId}/consent/complete`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/jobs/{jobId}/zaptec/onboarding/{attemptId}/consent/complete/post(complete_job_zaptec_consent)`.
+    func completeJobZaptecConsent(_ input: Operations.CompleteJobZaptecConsent.Input) async throws -> Operations.CompleteJobZaptecConsent.Output
+    /// Save reviewed Zaptec circuit mappings for an authorized installation job.
+    ///
+    /// - Remark: HTTP `PUT /v1/organizations/{organizationId}/jobs/{jobId}/zaptec/onboarding/{attemptId}/review`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/jobs/{jobId}/zaptec/onboarding/{attemptId}/review/put(confirm_job_zaptec_review)`.
+    func confirmJobZaptecReview(_ input: Operations.ConfirmJobZaptecReview.Input) async throws -> Operations.ConfirmJobZaptecReview.Output
+    /// Lists the jobs linked to this organization.
+    ///
+    /// **Needs `identity.member.read` at the organization**, which every member
+    /// holds. Each row is the same allow-listed view the single read returns, newest
+    /// first. A job whose link is not active is not listed.
+    ///
+    /// - Remark: HTTP `GET /v1/organizations/{organizationId}/linked-jobs`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/linked-jobs/get(list_linked_jobs)`.
+    func listLinkedJobs(_ input: Operations.ListLinkedJobs.Input) async throws -> Operations.ListLinkedJobs.Output
+    /// Reads one job linked to this organization.
+    ///
+    /// **Needs `identity.member.read` at the organization.** It is a `404`, with one
+    /// body, for a job that does not exist, one that is linked to another
+    /// organization and one whose link has ended.
+    ///
+    /// - Remark: HTTP `GET /v1/organizations/{organizationId}/linked-jobs/{jobId}`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/linked-jobs/{jobId}/get(get_linked_job)`.
+    func getLinkedJob(_ input: Operations.GetLinkedJob.Input) async throws -> Operations.GetLinkedJob.Output
+    /// Leaves a job the organization is linked to.
+    ///
+    /// **Needs `identity.project.manage` at the organization**, the same permission
+    /// as saying access is arranged. Without `confirm=true` nothing changes and the
+    /// answer says how many choices leaving would remove (`wouldRemove`); with it the
+    /// link ends, the choices recorded for this job are removed and cannot be
+    /// recovered, and the installer's job record stays, reading "customer declined".
+    /// The organization, its account, its other projects and its payout setup are not
+    /// touched, and nothing the installer wrote is removed. `409 handoverBegun` when
+    /// the location is already being handed over. A job that does not exist, one
+    /// linked to another organization and one whose link has ended are one `404`.
+    ///
+    /// - Remark: HTTP `DELETE /v1/organizations/{organizationId}/linked-jobs/{jobId}`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/linked-jobs/{jobId}/delete(detach_linked_job)`.
+    func detachLinkedJob(_ input: Operations.DetachLinkedJob.Input) async throws -> Operations.DetachLinkedJob.Output
+    /// Says whether access to the site is arranged.
+    ///
+    /// **Needs `identity.project.manage` at the organization**, the nearest
+    /// Admin permission for someone who may act for the customer. The installer
+    /// sees the time it was said. Sending `false` takes it back.
+    ///
+    /// - Remark: HTTP `PUT /v1/organizations/{organizationId}/linked-jobs/{jobId}/access-arranged`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/linked-jobs/{jobId}/access-arranged/put(set_access_arranged)`.
+    func setAccessArranged(_ input: Operations.SetAccessArranged.Input) async throws -> Operations.SetAccessArranged.Output
+    /// Lists the choices this organization has recorded for a linked job.
+    ///
+    /// **Needs `identity.member.read` at the organization**, which every member
+    /// holds. It is a `404`, with one body, for a job that does not exist, one that
+    /// is linked to another organization and one whose link has ended.
+    ///
+    /// - Remark: HTTP `GET /v1/organizations/{organizationId}/linked-jobs/{jobId}/intentions`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/linked-jobs/{jobId}/intentions/get(list_intentions)`.
+    func listIntentions(_ input: Operations.ListIntentions.Input) async throws -> Operations.ListIntentions.Output
+    /// Records a choice for the moment the location moves.
+    ///
+    /// **Needs the permission that already guards the thing chosen, in the
+    /// customer's own project of the link**: `pricing.tariff.manage` for
+    /// `assignTariff`, `authorization.access_policy.manage` for `setSiteAccess`,
+    /// `ocpp.settings.update` for `setDeviceSetting`. Recording the same choice again
+    /// returns the existing one with `200`; a changed device value replaces the old
+    /// one while it is still `recorded`. Nothing reaches a charger before the move.
+    /// A choice `jobs` refuses is a `422 invalidRequest` with a fixed sentence, never
+    /// the value sent.
+    ///
+    /// - Remark: HTTP `POST /v1/organizations/{organizationId}/linked-jobs/{jobId}/intentions`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/linked-jobs/{jobId}/intentions/post(record_intention)`.
+    func recordIntention(_ input: Operations.RecordIntention.Input) async throws -> Operations.RecordIntention.Output
+    /// Withdraws a choice while it is still only recorded.
+    ///
+    /// **Needs the permission that guards the thing the choice names, in the
+    /// customer's own project of the link**: the same one that recorded it. A choice
+    /// that has been applied, skipped or failed is history and answers `409
+    /// intentionNotRemovable`.
+    ///
+    /// - Remark: HTTP `DELETE /v1/organizations/{organizationId}/linked-jobs/{jobId}/intentions/{intentionId}`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/linked-jobs/{jobId}/intentions/{intentionId}/delete(remove_intention)`.
+    func removeIntention(_ input: Operations.RemoveIntention.Input) async throws -> Operations.RemoveIntention.Output
     /// Lists an organization's members, paginated.
     ///
     /// Requires `identity.member.read`, which every member holds — seeing who's
@@ -2668,14 +3833,15 @@ public protocol APIProtocol: Sendable {
     /// - Remark: HTTP `DELETE /v1/organizations/{organizationId}/payments/account`.
     /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/payments/account/delete(delete_payments_account)`.
     func deletePaymentsAccount(_ input: Operations.DeletePaymentsAccount.Input) async throws -> Operations.DeletePaymentsAccount.Output
-    /// Starts an embedded onboarding session for the organization's account.
+    /// Starts Stripe-hosted onboarding for the organization's account.
     ///
-    /// Requires Owner or Admin. The client secret is short-lived and is for
-    /// Connect.js only; the response is never cached.
+    /// Requires Owner or Admin. Returns a single-use URL to redirect the browser
+    /// to; Stripe sends it back to `returnPath` on the console when the flow ends
+    /// or the link is used up. The response is never cached.
     ///
-    /// - Remark: HTTP `POST /v1/organizations/{organizationId}/payments/account/session`.
-    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/payments/account/session/post(create_payments_account_session)`.
-    func createPaymentsAccountSession(_ input: Operations.CreatePaymentsAccountSession.Input) async throws -> Operations.CreatePaymentsAccountSession.Output
+    /// - Remark: HTTP `POST /v1/organizations/{organizationId}/payments/account/link`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/payments/account/link/post(create_payments_account_link)`.
+    func createPaymentsAccountLink(_ input: Operations.CreatePaymentsAccountLink.Input) async throws -> Operations.CreatePaymentsAccountLink.Output
     /// Lists the permission policies a binding can name.
     ///
     /// The managed ones, then the organization's own. Requires `identity.policy.read`.
@@ -2722,6 +3888,11 @@ public protocol APIProtocol: Sendable {
     /// resource is assigned to the caller (an installer's job) is held under neither,
     /// because a simulation names no resource.
     ///
+    /// With `replace`, a draft document stands in for a policy's stored one for
+    /// every binding that names it, so an edit can be previewed before it is saved.
+    /// A draft that would not be accepted as a write is refused with the write's own
+    /// code (`permission_policy.invalid_document` and the others).
+    ///
     /// Requires `identity.policy.explain`. Nothing is attached, detached or recorded.
     ///
     /// - Remark: HTTP `POST /v1/organizations/{organizationId}/permission-policies/simulate`.
@@ -2740,6 +3911,11 @@ public protocol APIProtocol: Sendable {
     /// who holds the policy holds the new document on their very next request. A
     /// managed policy is never edited (`permission_policy.managed_immutable`).
     ///
+    /// Send `expectedVersion` (the `version` you read) to make the write
+    /// conditional: when the policy has since changed nothing is written and the
+    /// answer is `409 permission_policy.stale`. Without it the write is
+    /// unconditional, as before.
+    ///
     /// - Remark: HTTP `PUT /v1/organizations/{organizationId}/permission-policies/{policyId}`.
     /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/permission-policies/{policyId}/put(update_permission_policy)`.
     func updatePermissionPolicy(_ input: Operations.UpdatePermissionPolicy.Input) async throws -> Operations.UpdatePermissionPolicy.Output
@@ -2753,6 +3929,15 @@ public protocol APIProtocol: Sendable {
     /// - Remark: HTTP `DELETE /v1/organizations/{organizationId}/permission-policies/{policyId}`.
     /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/permission-policies/{policyId}/delete(delete_permission_policy)`.
     func deletePermissionPolicy(_ input: Operations.DeletePermissionPolicy.Input) async throws -> Operations.DeletePermissionPolicy.Output
+    /// Lists who holds a permission policy.
+    ///
+    /// One row per binding (a member who holds it at two projects appears twice) and
+    /// one per invitation that has not been accepted and names it, newest first.
+    /// Requires `identity.policy.read`. A policy of another organization is `404`.
+    ///
+    /// - Remark: HTTP `GET /v1/organizations/{organizationId}/permission-policies/{policyId}/holders`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/permission-policies/{policyId}/holders/get(list_permission_policy_holders)`.
+    func listPermissionPolicyHolders(_ input: Operations.ListPermissionPolicyHolders.Input) async throws -> Operations.ListPermissionPolicyHolders.Output
     /// Lists an organization's environments, paginated.
     ///
     /// Requires only membership in the organization (any role) — this lists
@@ -2764,9 +3949,29 @@ public protocol APIProtocol: Sendable {
     /// - Remark: HTTP `GET /v1/organizations/{organizationId}/projects`.
     /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/projects/get(list_projects)`.
     func listProjects(_ input: Operations.ListProjects.Input) async throws -> Operations.ListProjects.Output
-    /// Creates an environment in the organization.
+    /// Creates a project in the organization.
     ///
-    /// Requires the caller to be an Owner or Admin.
+    /// Requires `identity.project.manage`. The first project an organization
+    /// creates becomes its default.
+    ///
+    /// **Choosing `kind: installations`** needs the organization to hold the
+    /// Installer capability. If it does not, this request grants it, attributed
+    /// to the caller, in the same step as the project, and the caller must hold
+    /// `identity.capability.manage` as well: without it nothing is granted or
+    /// created. Once the capability is held, `identity.project.manage` is enough.
+    ///
+    /// **`Idempotency-Key` is optional.** The gateway remembers a successful
+    /// answer for 24 hours, for the caller who sent it, for this organization and
+    /// under that key. A retry with the same key and an identical body gets that
+    /// answer again (marked `Idempotent-Replayed: true`) and nothing else happens:
+    /// no second project, and nothing granted a second time. The same key with a
+    /// different body is `409 idempotencyKeyConflict`, and a retry that arrives
+    /// while the first request is still running is `409 idempotencyKeyInFlight`
+    /// with `Retry-After`. A request that failed (the name or slug was taken, say)
+    /// does not use the key up: send it again with the same key and a corrected
+    /// body. If the service that remembers keys is not available, a request that
+    /// carries a key is refused with `503 idempotencyStoreUnavailable` and nothing
+    /// is created; a request without a key is not affected.
     ///
     /// - Remark: HTTP `POST /v1/organizations/{organizationId}/projects`.
     /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/projects/post(create_project)`.
@@ -2814,11 +4019,19 @@ public protocol APIProtocol: Sendable {
     /// something a `User`-role member's per-environment grants ever cover,
     /// however many environments they can reach.
     ///
-    /// Always refused for the organization's current default environment
-    /// (`cannotDeleteDefault`) — redesignate the default first with
-    /// `POST /organizations/{organizationId}/projects/{projectId}/default`.
-    /// Since every organization always has exactly one default, this also
-    /// guarantees an organization can never end up with zero environments.
+    /// Any project may be deleted, the organization's last one included: an
+    /// organization with no project is a legitimate state, and projects have no
+    /// default to protect.
+    ///
+    /// Refused (`openJobs`) while the project holds the location of an
+    /// installer job that is neither handed over nor cancelled, and the message
+    /// names those jobs. If the jobs service cannot answer, the project is not
+    /// deleted (`jobsServiceUnavailable`): a deletion cannot be undone.
+    ///
+    /// And refused (`servesCustomerGrants`) while the project is the serving office
+    /// of an active customer grant: move each customer to another project or revoke
+    /// the grant first. If `authorization` cannot answer, nothing is deleted
+    /// (`authorizationUnavailable`).
     ///
     /// - Remark: HTTP `DELETE /v1/organizations/{organizationId}/projects/{projectId}`.
     /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/projects/{projectId}/delete(delete_project)`.
@@ -2828,13 +4041,17 @@ public protocol APIProtocol: Sendable {
     /// - Remark: HTTP `GET /v1/organizations/{organizationId}/projects/{projectId}/connections`.
     /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/projects/{projectId}/connections/get(list_project_connections)`.
     func listProjectConnections(_ input: Operations.ListProjectConnections.Input) async throws -> Operations.ListProjectConnections.Output
-    /// Redesignates the organization's default environment.
+    /// Deprecated: projects no longer have a default.
     ///
-    /// Idempotent when `projectId` is already the default. Requires the
-    /// caller to be an Owner or Admin.
+    /// Answers `410 Gone` with `projectsHaveNoDefault` to a caller who may manage
+    /// the organization's projects (Owner or Admin). An organization's
+    /// projects are all alike: none is the default, none is protected from
+    /// deletion, and none is where a short charger URL leads (that URL is gone
+    /// too). Listing an organization's projects returns them oldest first.
     ///
     /// - Remark: HTTP `POST /v1/organizations/{organizationId}/projects/{projectId}/default`.
     /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/projects/{projectId}/default/post(set_default_project)`.
+    @available(*, deprecated)
     func setDefaultProject(_ input: Operations.SetDefaultProject.Input) async throws -> Operations.SetDefaultProject.Output
     /// Lists every permission a policy can name.
     ///
@@ -2845,36 +4062,6 @@ public protocol APIProtocol: Sendable {
     /// - Remark: HTTP `GET /v1/permissions`.
     /// - Remark: Generated from `#/paths//v1/permissions/get(list_permissions)`.
     func listPermissions(_ input: Operations.ListPermissions.Input) async throws -> Operations.ListPermissions.Output
-    /// Lists issued certificates across the whole platform.
-    ///
-    /// Requires the platform-operator role — a customer's role in their own
-    /// organization grants no access here, since certificates are not scoped
-    /// to any one organization's console. Cursor-paginated: pass the previous
-    /// page's `nextCursor` back as `cursor` to fetch the next page; omit
-    /// `cursor` for the first page.
-    ///
-    /// - Remark: HTTP `GET /v1/platform/certificates`.
-    /// - Remark: Generated from `#/paths//v1/platform/certificates/get(list_certificates)`.
-    func listCertificates(_ input: Operations.ListCertificates.Input) async throws -> Operations.ListCertificates.Output
-    /// Returns the certificate hierarchy's health.
-    ///
-    /// Reports any sub-CA whose validity ends before certificates it has
-    /// signed, and when a CRL was last published. Requires the
-    /// platform-operator role — a customer's role in their own organization
-    /// grants no access here, since the certificate hierarchy is not scoped to
-    /// any one organization's console.
-    ///
-    /// - Remark: HTTP `GET /v1/platform/certificates/hierarchy-health`.
-    /// - Remark: Generated from `#/paths//v1/platform/certificates/hierarchy-health/get(get_hierarchy_health)`.
-    func getHierarchyHealth(_ input: Operations.GetHierarchyHealth.Input) async throws -> Operations.GetHierarchyHealth.Output
-    /// Unlinks an organization's connected account, whatever its status.
-    ///
-    /// Platform operators only. The reason is required and is recorded with
-    /// the operator and the time. The Stripe account itself is not closed.
-    ///
-    /// - Remark: HTTP `POST /v1/platform/organizations/{organizationId}/payments/account/unlink`.
-    /// - Remark: Generated from `#/paths//v1/platform/organizations/{organizationId}/payments/account/unlink/post(unlink_payments_account)`.
-    func unlinkPaymentsAccount(_ input: Operations.UnlinkPaymentsAccount.Input) async throws -> Operations.UnlinkPaymentsAccount.Output
     /// Fetches one principal.
     ///
     /// - Remark: HTTP `GET /v1/principals/{principalId}`.
@@ -2957,7 +4144,7 @@ public protocol APIProtocol: Sendable {
     /// - Remark: HTTP `GET /v1/projects/{projectId}/authorization-settings`.
     /// - Remark: Generated from `#/paths//v1/projects/{projectId}/authorization-settings/get(get_project_authorization_settings)`.
     func getProjectAuthorizationSettings(_ input: Operations.GetProjectAuthorizationSettings.Input) async throws -> Operations.GetProjectAuthorizationSettings.Output
-    /// Updates a project's rate-limit and/or master-pass settings.
+    /// Updates a project's rate-limit, master-pass and/or credentials settings.
     ///
     /// Every field is independently optional -- see
     /// [`UpdateProjectAuthorizationSettingsRequest`]'s own doc comment for the
@@ -3036,6 +4223,29 @@ public protocol APIProtocol: Sendable {
     /// - Remark: HTTP `GET /v1/projects/{projectId}/charging-stations/needs-attention`.
     /// - Remark: Generated from `#/paths//v1/projects/{projectId}/charging-stations/needs-attention/get(get_needs_attention)`.
     func getNeedsAttention(_ input: Operations.GetNeedsAttention.Input) async throws -> Operations.GetNeedsAttention.Output
+    /// Links a label to an outlet, or replaces the outlet's.
+    ///
+    /// Requires `asset.charger.update` on the charger. The label must be unused
+    /// or already this outlet's; linking is idempotent for the identical link. An
+    /// outlet that already has a different label is `409 outletHasLabel` unless
+    /// `replace` is `true`, which retires the old label as `replaced`. A label
+    /// linked to another outlet is `409 labelLinkedElsewhere`, with `movable:
+    /// true` while it can still be moved; `relink` moves it, and also needs
+    /// `asset.charger.update` on the outlet it is on. At most 30 attempts per
+    /// person per 10 minutes (`429`).
+    ///
+    /// - Remark: HTTP `PUT /v1/projects/{projectId}/charging-stations/{chargingStationId}/evses/{evseId}/label`.
+    /// - Remark: Generated from `#/paths//v1/projects/{projectId}/charging-stations/{chargingStationId}/evses/{evseId}/label/put(link_outlet_label)`.
+    func linkOutletLabel(_ input: Operations.LinkOutletLabel.Input) async throws -> Operations.LinkOutletLabel.Output
+    /// Takes the label off an outlet.
+    ///
+    /// Requires `asset.charger.update` on the charger. The label is retired as
+    /// damaged and never comes back (a label is consumed by its outlet, ADR-0286);
+    /// there is no parameter. An outlet with no label is `204` too.
+    ///
+    /// - Remark: HTTP `DELETE /v1/projects/{projectId}/charging-stations/{chargingStationId}/evses/{evseId}/label`.
+    /// - Remark: Generated from `#/paths//v1/projects/{projectId}/charging-stations/{chargingStationId}/evses/{evseId}/label/delete(unlink_outlet_label)`.
+    func unlinkOutletLabel(_ input: Operations.UnlinkOutletLabel.Input) async throws -> Operations.UnlinkOutletLabel.Output
     /// Every connector in this environment currently in a bad state.
     ///
     /// "Bad state" means `Faulted` or `Unavailable` — this is the environment
@@ -3342,6 +4552,35 @@ public protocol APIProtocol: Sendable {
     /// - Remark: HTTP `POST /v1/projects/{projectId}/locations`.
     /// - Remark: Generated from `#/paths//v1/projects/{projectId}/locations/post(create_location)`.
     func createLocation(_ input: Operations.CreateLocation.Input) async throws -> Operations.CreateLocation.Output
+    /// Reads a location's autocharge setting.
+    ///
+    /// `enabled` is what is in force, `default` is what it would be without the
+    /// operator's choice, and `reason` says why the default is what it is (a price
+    /// is in effect, none is, or the location is public).
+    ///
+    /// - Remark: HTTP `GET /v1/projects/{projectId}/locations/{locationId}/autocharge`.
+    /// - Remark: Generated from `#/paths//v1/projects/{projectId}/locations/{locationId}/autocharge/get(get_location_autocharge)`.
+    func getLocationAutocharge(_ input: Operations.GetLocationAutocharge.Input) async throws -> Operations.GetLocationAutocharge.Output
+    /// Turns autocharge on or off at a location, or returns it to its default.
+    ///
+    /// `enabled: null` returns the location to its default. A public location
+    /// answers `409 publicLocation`: it is never autocharged.
+    ///
+    /// - Remark: HTTP `PUT /v1/projects/{projectId}/locations/{locationId}/autocharge`.
+    /// - Remark: Generated from `#/paths//v1/projects/{projectId}/locations/{locationId}/autocharge/put(set_location_autocharge)`.
+    func setLocationAutocharge(_ input: Operations.SetLocationAutocharge.Input) async throws -> Operations.SetLocationAutocharge.Output
+    /// Sets or clears one location's own switch for id-token credentials.
+    ///
+    /// `on` lets cards and tags start a charge at this location although the
+    /// project's `credentialsMode` is `off`; `off` stops them here although it is
+    /// `on`; `null` makes the location follow the project again. Requires
+    /// `authorization.access_policy.manage`, the same permission as the location's
+    /// access policy. The location must belong to `projectId`, otherwise it is a
+    /// `404`.
+    ///
+    /// - Remark: HTTP `PUT /v1/projects/{projectId}/locations/{locationId}/credentials-policy`.
+    /// - Remark: Generated from `#/paths//v1/projects/{projectId}/locations/{locationId}/credentials-policy/put(set_location_credentials_policy)`.
+    func setLocationCredentialsPolicy(_ input: Operations.SetLocationCredentialsPolicy.Input) async throws -> Operations.SetLocationCredentialsPolicy.Output
     /// What the caller may do at a project.
     ///
     /// The permissions the caller holds at this project, in the mode their
@@ -3386,6 +4625,31 @@ public protocol APIProtocol: Sendable {
     /// - Remark: HTTP `PUT /v1/projects/{projectId}/principals/by-reference/{provider}/{externalId}`.
     /// - Remark: Generated from `#/paths//v1/projects/{projectId}/principals/by-reference/{provider}/{externalId}/put(upsert_principal_by_reference)`.
     func upsertPrincipalByReference(_ input: Operations.UpsertPrincipalByReference.Input) async throws -> Operations.UpsertPrincipalByReference.Output
+    /// Preview names and email addresses for charging invitations
+    ///
+    /// - Remark: HTTP `POST /v1/projects/{projectId}/resident-imports/preview`.
+    /// - Remark: Generated from `#/paths//v1/projects/{projectId}/resident-imports/preview/post(preview_resident_import)`.
+    func previewResidentImport(_ input: Operations.PreviewResidentImport.Input) async throws -> Operations.PreviewResidentImport.Output
+    /// List resident charging invitations
+    ///
+    /// - Remark: HTTP `GET /v1/projects/{projectId}/resident-invitations`.
+    /// - Remark: Generated from `#/paths//v1/projects/{projectId}/resident-invitations/get(list_resident_invitations)`.
+    func listResidentInvitations(_ input: Operations.ListResidentInvitations.Input) async throws -> Operations.ListResidentInvitations.Output
+    /// Invite a resident to accept charging access
+    ///
+    /// - Remark: HTTP `POST /v1/projects/{projectId}/resident-invitations`.
+    /// - Remark: Generated from `#/paths//v1/projects/{projectId}/resident-invitations/post(invite_resident)`.
+    func inviteResident(_ input: Operations.InviteResident.Input) async throws -> Operations.InviteResident.Output
+    /// Withdraw an invitation or remove resident charging access
+    ///
+    /// - Remark: HTTP `DELETE /v1/projects/{projectId}/resident-invitations/{invitationId}`.
+    /// - Remark: Generated from `#/paths//v1/projects/{projectId}/resident-invitations/{invitationId}/delete(revoke_resident_invitation)`.
+    func revokeResidentInvitation(_ input: Operations.RevokeResidentInvitation.Input) async throws -> Operations.RevokeResidentInvitation.Output
+    /// Resend a resident charging invitation
+    ///
+    /// - Remark: HTTP `POST /v1/projects/{projectId}/resident-invitations/{invitationId}/resend`.
+    /// - Remark: Generated from `#/paths//v1/projects/{projectId}/resident-invitations/{invitationId}/resend/post(resend_resident_invitation)`.
+    func resendResidentInvitation(_ input: Operations.ResendResidentInvitation.Input) async throws -> Operations.ResendResidentInvitation.Output
     /// A calendar month of charging, per person.
     ///
     /// One row for each person who charged in the month, named, with how many
@@ -3939,6 +5203,103 @@ public protocol APIProtocol: Sendable {
     /// - Remark: HTTP `GET /v1/projects/{projectId}/who-can-charge`.
     /// - Remark: Generated from `#/paths//v1/projects/{projectId}/who-can-charge/get(who_can_charge_at_project)`.
     func whoCanChargeAtProject(_ input: Operations.WhoCanChargeAtProject.Input) async throws -> Operations.WhoCanChargeAtProject.Output
+    /// Read the latest Zaptec onboarding attempt for the current home owner.
+    ///
+    /// - Remark: HTTP `GET /v1/projects/{projectId}/zaptec/onboarding`.
+    /// - Remark: Generated from `#/paths//v1/projects/{projectId}/zaptec/onboarding/get(get_owner_zaptec_onboarding)`.
+    func getOwnerZaptecOnboarding(_ input: Operations.GetOwnerZaptecOnboarding.Input) async throws -> Operations.GetOwnerZaptecOnboarding.Output
+    /// Start a Zaptec onboarding attempt for the current home owner.
+    ///
+    /// - Remark: HTTP `POST /v1/projects/{projectId}/zaptec/onboarding`.
+    /// - Remark: Generated from `#/paths//v1/projects/{projectId}/zaptec/onboarding/post(start_owner_zaptec_onboarding)`.
+    func startOwnerZaptecOnboarding(_ input: Operations.StartOwnerZaptecOnboarding.Input) async throws -> Operations.StartOwnerZaptecOnboarding.Output
+    /// Read a Zaptec onboarding attempt for the current home owner.
+    ///
+    /// - Remark: HTTP `GET /v1/projects/{projectId}/zaptec/onboarding/{attemptId}`.
+    /// - Remark: Generated from `#/paths//v1/projects/{projectId}/zaptec/onboarding/{attemptId}/get(get_owner_zaptec_onboarding_attempt)`.
+    func getOwnerZaptecOnboardingAttempt(_ input: Operations.GetOwnerZaptecOnboardingAttempt.Input) async throws -> Operations.GetOwnerZaptecOnboardingAttempt.Output
+    /// Advance or reconcile Zaptec onboarding for the current home owner.
+    ///
+    /// - Remark: HTTP `POST /v1/projects/{projectId}/zaptec/onboarding/{attemptId}/advance`.
+    /// - Remark: Generated from `#/paths//v1/projects/{projectId}/zaptec/onboarding/{attemptId}/advance/post(advance_owner_zaptec_onboarding)`.
+    func advanceOwnerZaptecOnboarding(_ input: Operations.AdvanceOwnerZaptecOnboarding.Input) async throws -> Operations.AdvanceOwnerZaptecOnboarding.Output
+    /// Cancel an uncommitted Zaptec onboarding attempt for the current home owner.
+    ///
+    /// - Remark: HTTP `POST /v1/projects/{projectId}/zaptec/onboarding/{attemptId}/cancel`.
+    /// - Remark: Generated from `#/paths//v1/projects/{projectId}/zaptec/onboarding/{attemptId}/cancel/post(cancel_owner_zaptec_onboarding)`.
+    func cancelOwnerZaptecOnboarding(_ input: Operations.CancelOwnerZaptecOnboarding.Input) async throws -> Operations.CancelOwnerZaptecOnboarding.Output
+    /// Begin Zaptec consent for the current home owner.
+    ///
+    /// - Remark: HTTP `POST /v1/projects/{projectId}/zaptec/onboarding/{attemptId}/consent`.
+    /// - Remark: Generated from `#/paths//v1/projects/{projectId}/zaptec/onboarding/{attemptId}/consent/post(begin_owner_zaptec_consent)`.
+    func beginOwnerZaptecConsent(_ input: Operations.BeginOwnerZaptecConsent.Input) async throws -> Operations.BeginOwnerZaptecConsent.Output
+    /// Complete Zaptec consent for the current home owner.
+    ///
+    /// - Remark: HTTP `POST /v1/projects/{projectId}/zaptec/onboarding/{attemptId}/consent/complete`.
+    /// - Remark: Generated from `#/paths//v1/projects/{projectId}/zaptec/onboarding/{attemptId}/consent/complete/post(complete_owner_zaptec_consent)`.
+    func completeOwnerZaptecConsent(_ input: Operations.CompleteOwnerZaptecConsent.Input) async throws -> Operations.CompleteOwnerZaptecConsent.Output
+    /// Save reviewed Zaptec circuit mappings for the current home owner.
+    ///
+    /// - Remark: HTTP `PUT /v1/projects/{projectId}/zaptec/onboarding/{attemptId}/review`.
+    /// - Remark: Generated from `#/paths//v1/projects/{projectId}/zaptec/onboarding/{attemptId}/review/put(confirm_owner_zaptec_review)`.
+    func confirmOwnerZaptecReview(_ input: Operations.ConfirmOwnerZaptecReview.Input) async throws -> Operations.ConfirmOwnerZaptecReview.Output
+    /// Public charging locations from NOBIL (currently Norway and Sweden).
+    ///
+    /// Static catalogue data, not live availability, a tariff, or a charging grant.
+    /// Every location is directionsOnly and uses a catalogue ID that cannot be sent
+    /// to Flowion's charger commands. Missing operator, connector or power metadata
+    /// remains unknown; ownership is never presented as operation. Source contact
+    /// and editor details are discarded. At most 500 source locations per box are
+    /// retained. X-Catalogue-Coverage=limited asks the caller to use a smaller box.
+    /// Cursor pages use ascending source IDs; source edits between requests may
+    /// add/remove locations. This is not a frozen snapshot or an exhaustive survey.
+    ///
+    /// - Remark: HTTP `GET /v1/public/charging-locations`.
+    /// - Remark: Generated from `#/paths//v1/public/charging-locations/get(list_public_charging_locations)`.
+    func listPublicChargingLocations(_ input: Operations.ListPublicChargingLocations.Input) async throws -> Operations.ListPublicChargingLocations.Output
+    /// Says who invited you, and that a decision is waiting.
+    ///
+    /// **Changes nothing.** No token or sign-in is needed. Safe for a mail scanner to open: it reads
+    /// whether a decision is pending and nothing more, and the answer holds no
+    /// customer, address or job. An unknown link, a used one and one whose decision
+    /// has been taken are the same `404`. Limited per client address.
+    ///
+    /// - Remark: HTTP `GET /v1/public/job-invitation-decisions/{decisionToken}`.
+    /// - Remark: Generated from `#/paths//v1/public/job-invitation-decisions/{decisionToken}/get(get_invitation_decision)`.
+    func getInvitationDecision(_ input: Operations.GetInvitationDecision.Input) async throws -> Operations.GetInvitationDecision.Output
+    /// Takes a decision on a job invitation.
+    ///
+    /// Decline it, decline and block the sender, report it, or remove your data.
+    /// No token or sign-in is needed. The same decision sent again is answered the
+    /// same way (`200`), so a double click or a retry is harmless; a link that is
+    /// unknown, or whose invitation was decided otherwise, is the same `404` as on
+    /// `GET`. Limited per client address.
+    ///
+    /// - Remark: HTTP `POST /v1/public/job-invitation-decisions/{decisionToken}`.
+    /// - Remark: Generated from `#/paths//v1/public/job-invitation-decisions/{decisionToken}/post(decide_invitation)`.
+    func decideInvitation(_ input: Operations.DecideInvitation.Input) async throws -> Operations.DecideInvitation.Output
+    /// Says what a printed charger label is, to anyone.
+    ///
+    /// No token is needed or read; one that is sent is ignored. `labelId` is the ID
+    /// as printed, scanned or typed: any case, with or without the dash. The answer
+    /// is `live` (with the outlet's number), `notSetUp`, `retired` or
+    /// `unrecognised`, and never a name, place, organization, project, price or
+    /// person. Every caller is told the same, so a shared cache may hold it for a
+    /// minute. Limited per client address.
+    ///
+    /// - Remark: HTTP `GET /v1/public/labels/{labelId}`.
+    /// - Remark: Generated from `#/paths//v1/public/labels/{labelId}/get(get_public_label)`.
+    func getPublicLabel(_ input: Operations.GetPublicLabel.Input) async throws -> Operations.GetPublicLabel.Output
+    /// Read a charging invitation for the signed-in recipient
+    ///
+    /// - Remark: HTTP `GET /v1/resident-invitations/{token}`.
+    /// - Remark: Generated from `#/paths//v1/resident-invitations/{token}/get(get_resident_invitation)`.
+    func getResidentInvitation(_ input: Operations.GetResidentInvitation.Input) async throws -> Operations.GetResidentInvitation.Output
+    /// Accept charging terms and activate resident access
+    ///
+    /// - Remark: HTTP `POST /v1/resident-invitations/{token}/accept`.
+    /// - Remark: Generated from `#/paths//v1/resident-invitations/{token}/accept/post(accept_resident_invitation)`.
+    func acceptResidentInvitation(_ input: Operations.AcceptResidentInvitation.Input) async throws -> Operations.AcceptResidentInvitation.Output
     /// Fetches a single transaction's detail by id.
     ///
     /// Requires at least `User` in the organization that owns the charging
@@ -4186,6 +5547,85 @@ public protocol APIProtocol: Sendable {
 
 /// Convenience overloads for operation inputs.
 extension APIProtocol {
+    /// Reads what the customer is asked to accept, before deciding anything.
+    ///
+    /// **`require_auth` only**, like a handover: the caller's verified email, if any,
+    /// is compared by `jobs` with the address the link was sent to. A link that is
+    /// unknown, used, expired, withdrawn, or addressed to someone else is the same
+    /// `404`.
+    ///
+    /// - Remark: HTTP `GET /v1/addition-offers/{token}`.
+    /// - Remark: Generated from `#/paths//v1/addition-offers/{token}/get(get_addition_offer)`.
+    public func getAdditionOffer(
+        path: Operations.GetAdditionOffer.Input.Path,
+        headers: Operations.GetAdditionOffer.Input.Headers = .init()
+    ) async throws -> Operations.GetAdditionOffer.Output {
+        try await getAdditionOffer(Operations.GetAdditionOffer.Input(
+            path: path,
+            headers: headers
+        ))
+    }
+    /// Accepts everything in the offer, all or nothing.
+    ///
+    /// Every added charger leaves its limitation and is counted from this moment,
+    /// every held rating applies, both organizations' audit trails record it and the
+    /// job ends. The caller must have a **verified email** equal to the one the link
+    /// was sent to, and hold `asset.location.manage` at the location's project (an
+    /// Owner or Admin). A circuit that changed while the offer waited refuses the
+    /// whole acceptance (`staleCircuit`) and sends the offer back to the installer.
+    ///
+    /// - Remark: HTTP `POST /v1/addition-offers/{token}/accept`.
+    /// - Remark: Generated from `#/paths//v1/addition-offers/{token}/accept/post(accept_addition_offer)`.
+    public func acceptAdditionOffer(
+        path: Operations.AcceptAdditionOffer.Input.Path,
+        headers: Operations.AcceptAdditionOffer.Input.Headers = .init()
+    ) async throws -> Operations.AcceptAdditionOffer.Output {
+        try await acceptAdditionOffer(Operations.AcceptAdditionOffer.Input(
+            path: path,
+            headers: headers
+        ))
+    }
+    /// Declines the offer.
+    ///
+    /// Nothing goes into service and no held rating applies. The additions stay
+    /// limited and are marked declined; the job is back with the installer, who may
+    /// amend and offer again. Needs the same verified email and the same permission
+    /// as accepting.
+    ///
+    /// - Remark: HTTP `POST /v1/addition-offers/{token}/decline`.
+    /// - Remark: Generated from `#/paths//v1/addition-offers/{token}/decline/post(decline_addition_offer)`.
+    public func declineAdditionOffer(
+        path: Operations.DeclineAdditionOffer.Input.Path,
+        headers: Operations.DeclineAdditionOffer.Input.Headers = .init(),
+        body: Operations.DeclineAdditionOffer.Input.Body
+    ) async throws -> Operations.DeclineAdditionOffer.Output {
+        try await declineAdditionOffer(Operations.DeclineAdditionOffer.Input(
+            path: path,
+            headers: headers,
+            body: body
+        ))
+    }
+    /// Finishes proving an invited address, with the emailed link token or code.
+    ///
+    /// Authorized by the proof itself, for the signed-in caller only: a link or
+    /// code belongs to the account that asked for it, and another account holding
+    /// it gets the same `404` as a wrong one. Idempotent: completing a completed
+    /// link again is `200` and changes nothing.
+    ///
+    /// After `200` the address counts for this account, so accepting the
+    /// invitation succeeds. Confirming the address never joins anyone by itself.
+    ///
+    /// - Remark: HTTP `POST /v1/address-confirmations/complete`.
+    /// - Remark: Generated from `#/paths//v1/address-confirmations/complete/post(complete_address_confirmation)`.
+    public func completeAddressConfirmation(
+        headers: Operations.CompleteAddressConfirmation.Input.Headers = .init(),
+        body: Operations.CompleteAddressConfirmation.Input.Body
+    ) async throws -> Operations.CompleteAddressConfirmation.Output {
+        try await completeAddressConfirmation(Operations.CompleteAddressConfirmation.Input(
+            headers: headers,
+            body: body
+        ))
+    }
     /// Approve an assistant connection
     ///
     /// Called by the console's consent page with the customer's own session.
@@ -4235,6 +5675,25 @@ extension APIProtocol {
             headers: headers
         ))
     }
+    /// List my assistant conversations
+    ///
+    /// The signed-in member's own conversations in the project and the request's
+    /// mode, newest activity first, kept for 30 days after their last message.
+    /// Also says how many conversations the organization may still start today.
+    /// Reading costs nothing: no model is asked and nothing is metered. A
+    /// person's own session only.
+    ///
+    /// - Remark: HTTP `GET /v1/assistant/conversations`.
+    /// - Remark: Generated from `#/paths//v1/assistant/conversations/get(list_assistant_conversations)`.
+    public func listAssistantConversations(
+        query: Operations.ListAssistantConversations.Input.Query,
+        headers: Operations.ListAssistantConversations.Input.Headers = .init()
+    ) async throws -> Operations.ListAssistantConversations.Output {
+        try await listAssistantConversations(Operations.ListAssistantConversations.Input(
+            query: query,
+            headers: headers
+        ))
+    }
     /// Start an assistant conversation
     ///
     /// For the signed-in member, in one project and the request's mode. Starting
@@ -4251,6 +5710,27 @@ extension APIProtocol {
         try await startAssistantConversation(Operations.StartAssistantConversation.Input(
             headers: headers,
             body: body
+        ))
+    }
+    /// Read my assistant conversation
+    ///
+    /// The whole conversation as stored: what the member said, the assistant's
+    /// replies as the frames they streamed, what it read and what became of each
+    /// proposal. Read-only, and it works on a closed conversation. Only the
+    /// member's own conversation in this project and mode: anything else is
+    /// `404`. A person's own session only.
+    ///
+    /// - Remark: HTTP `GET /v1/assistant/conversations/{conversationId}`.
+    /// - Remark: Generated from `#/paths//v1/assistant/conversations/{conversationId}/get(get_assistant_conversation)`.
+    public func getAssistantConversation(
+        path: Operations.GetAssistantConversation.Input.Path,
+        query: Operations.GetAssistantConversation.Input.Query,
+        headers: Operations.GetAssistantConversation.Input.Headers = .init()
+    ) async throws -> Operations.GetAssistantConversation.Output {
+        try await getAssistantConversation(Operations.GetAssistantConversation.Input(
+            path: path,
+            query: query,
+            headers: headers
         ))
     }
     /// Send an assistant message
@@ -5618,7 +7098,7 @@ extension APIProtocol {
     }
     /// Deletes a circuit.
     ///
-    /// Refused with 409 in two cases: this is the location's last remaining
+    /// Refused with 409 when inverters remain attached (`hasInverters`), or in either of these cases: this is the location's last remaining
     /// circuit (`lastCircuitOnLocation` — a location always keeps at least a Main
     /// circuit), or other circuits are still fed from it (`hasChildCircuits` —
     /// move or remove those first). Requires the caller to be an Owner or
@@ -5751,6 +7231,75 @@ extension APIProtocol {
             headers: headers
         ))
     }
+    /// List a circuit’s inverters.
+    ///
+    /// - Remark: HTTP `GET /v1/circuits/{circuitId}/inverters`.
+    /// - Remark: Generated from `#/paths//v1/circuits/{circuitId}/inverters/get(list_circuit_inverters)`.
+    public func listCircuitInverters(
+        path: Operations.ListCircuitInverters.Input.Path,
+        headers: Operations.ListCircuitInverters.Input.Headers = .init()
+    ) async throws -> Operations.ListCircuitInverters.Output {
+        try await listCircuitInverters(Operations.ListCircuitInverters.Input(
+            path: path,
+            headers: headers
+        ))
+    }
+    /// Register an inverter on a circuit.
+    ///
+    /// - Remark: HTTP `POST /v1/circuits/{circuitId}/inverters`.
+    /// - Remark: Generated from `#/paths//v1/circuits/{circuitId}/inverters/post(create_inverter)`.
+    public func createInverter(
+        path: Operations.CreateInverter.Input.Path,
+        headers: Operations.CreateInverter.Input.Headers = .init(),
+        body: Operations.CreateInverter.Input.Body
+    ) async throws -> Operations.CreateInverter.Output {
+        try await createInverter(Operations.CreateInverter.Input(
+            path: path,
+            headers: headers,
+            body: body
+        ))
+    }
+    /// Get an inverter on its assigned circuit.
+    ///
+    /// - Remark: HTTP `GET /v1/circuits/{circuitId}/inverters/{inverterId}`.
+    /// - Remark: Generated from `#/paths//v1/circuits/{circuitId}/inverters/{inverterId}/get(get_inverter)`.
+    public func getInverter(
+        path: Operations.GetInverter.Input.Path,
+        headers: Operations.GetInverter.Input.Headers = .init()
+    ) async throws -> Operations.GetInverter.Output {
+        try await getInverter(Operations.GetInverter.Input(
+            path: path,
+            headers: headers
+        ))
+    }
+    /// Replace inverter metadata.
+    ///
+    /// - Remark: HTTP `PUT /v1/circuits/{circuitId}/inverters/{inverterId}`.
+    /// - Remark: Generated from `#/paths//v1/circuits/{circuitId}/inverters/{inverterId}/put(update_inverter)`.
+    public func updateInverter(
+        path: Operations.UpdateInverter.Input.Path,
+        headers: Operations.UpdateInverter.Input.Headers = .init(),
+        body: Operations.UpdateInverter.Input.Body
+    ) async throws -> Operations.UpdateInverter.Output {
+        try await updateInverter(Operations.UpdateInverter.Input(
+            path: path,
+            headers: headers,
+            body: body
+        ))
+    }
+    /// Remove an inverter from inventory.
+    ///
+    /// - Remark: HTTP `DELETE /v1/circuits/{circuitId}/inverters/{inverterId}`.
+    /// - Remark: Generated from `#/paths//v1/circuits/{circuitId}/inverters/{inverterId}/delete(delete_inverter)`.
+    public func deleteInverter(
+        path: Operations.DeleteInverter.Input.Path,
+        headers: Operations.DeleteInverter.Input.Headers = .init()
+    ) async throws -> Operations.DeleteInverter.Output {
+        try await deleteInverter(Operations.DeleteInverter.Input(
+            path: path,
+            headers: headers
+        ))
+    }
     /// Renames a circuit.
     ///
     /// The name is trimmed, must not be empty, and is at most 100 characters.
@@ -5811,7 +7360,7 @@ extension APIProtocol {
             headers: headers
         ))
     }
-    /// List submitted connection apps for platform review
+    /// List connection apps and edits awaiting platform review
     ///
     /// - Remark: HTTP `GET /v1/connection-app-reviews`.
     /// - Remark: Generated from `#/paths//v1/connection-app-reviews/get(list_reviewable_connection_apps)`.
@@ -5890,6 +7439,98 @@ extension APIProtocol {
         headers: Operations.ConnectionProjects.Input.Headers = .init()
     ) async throws -> Operations.ConnectionProjects.Output {
         try await connectionProjects(Operations.ConnectionProjects.Input(
+            query: query,
+            headers: headers
+        ))
+    }
+    /// List the chargers of a project this connection reaches
+    ///
+    /// Each charger of the project with its state, the session running on it if there is one, and when it last made contact. Needs the `chargers:read` scope, granted to the connection and covering this project. At most 50 chargers are returned.
+    ///
+    /// - Remark: HTTP `GET /v1/connection/projects/{projectId}/chargers`.
+    /// - Remark: Generated from `#/paths//v1/connection/projects/{projectId}/chargers/get(list_provider_project_chargers)`.
+    public func listProviderProjectChargers(
+        path: Operations.ListProviderProjectChargers.Input.Path,
+        headers: Operations.ListProviderProjectChargers.Input.Headers = .init()
+    ) async throws -> Operations.ListProviderProjectChargers.Output {
+        try await listProviderProjectChargers(Operations.ListProviderProjectChargers.Input(
+            path: path,
+            headers: headers
+        ))
+    }
+    /// Read the price of electricity at a project this connection reaches
+    ///
+    /// What electricity costs at the project now, or the reason the price is unknown. Needs the `prices:read` scope, granted to the connection and covering this project.
+    ///
+    /// - Remark: HTTP `GET /v1/connection/projects/{projectId}/price`.
+    /// - Remark: Generated from `#/paths//v1/connection/projects/{projectId}/price/get(get_provider_project_price)`.
+    public func getProviderProjectPrice(
+        path: Operations.GetProviderProjectPrice.Input.Path,
+        headers: Operations.GetProviderProjectPrice.Input.Headers = .init()
+    ) async throws -> Operations.GetProviderProjectPrice.Output {
+        try await getProviderProjectPrice(Operations.GetProviderProjectPrice.Input(
+            path: path,
+            headers: headers
+        ))
+    }
+    /// List the charging sessions of a project this connection reaches
+    ///
+    /// Charging sessions at the project, most recently started first, within a window of at most 90 days (30 by default), paged by `cursor`. Needs the `sessions:read` scope, granted to the connection and covering this project. A session carries no information that identifies a person.
+    ///
+    /// - Remark: HTTP `GET /v1/connection/projects/{projectId}/sessions`.
+    /// - Remark: Generated from `#/paths//v1/connection/projects/{projectId}/sessions/get(list_provider_project_sessions)`.
+    public func listProviderProjectSessions(
+        path: Operations.ListProviderProjectSessions.Input.Path,
+        query: Operations.ListProviderProjectSessions.Input.Query = .init(),
+        headers: Operations.ListProviderProjectSessions.Input.Headers = .init()
+    ) async throws -> Operations.ListProviderProjectSessions.Output {
+        try await listProviderProjectSessions(Operations.ListProviderProjectSessions.Input(
+            path: path,
+            query: query,
+            headers: headers
+        ))
+    }
+    /// Approve a client-initiated connection request
+    ///
+    /// Called by the sign-in page with the same session and browser headers the preview was given. `connections` checks the stored request (this person, this app, not expired, not used, the browser values and the parameters unchanged) before anything is issued, then creates the connection and a one-time code in one transaction. A retry with the same `Idempotency-Key` returns the same `redirectTo` until the code is redeemed, and `409 idempotencyKeyConflict` after.
+    ///
+    /// - Remark: HTTP `POST /v1/connections/authorize/approve`.
+    /// - Remark: Generated from `#/paths//v1/connections/authorize/approve/post(approve_authorize)`.
+    public func approveAuthorize(
+        headers: Operations.ApproveAuthorize.Input.Headers,
+        body: Operations.ApproveAuthorize.Input.Body
+    ) async throws -> Operations.ApproveAuthorize.Output {
+        try await approveAuthorize(Operations.ApproveAuthorize.Input(
+            headers: headers,
+            body: body
+        ))
+    }
+    /// Deny a client-initiated connection request
+    ///
+    /// The stored request is checked as for approve, then consumed. Nothing is created. The response sends the person back to the app with `error=access_denied`.
+    ///
+    /// - Remark: HTTP `POST /v1/connections/authorize/deny`.
+    /// - Remark: Generated from `#/paths//v1/connections/authorize/deny/post(deny_authorize)`.
+    public func denyAuthorize(
+        headers: Operations.DenyAuthorize.Input.Headers,
+        body: Operations.DenyAuthorize.Input.Body
+    ) async throws -> Operations.DenyAuthorize.Output {
+        try await denyAuthorize(Operations.DenyAuthorize.Input(
+            headers: headers,
+            body: body
+        ))
+    }
+    /// Preview a client-initiated connection request
+    ///
+    /// Called by the sign-in page with the person's session and the browser's `X-Flowion-Grant-Nonce` and `X-Flowion-Csrf` headers (both generated by the page and kept in tab storage). Stores a ten-minute authorization request bound to the person, the app, these parameters and the two browser values, and returns what to show: the app, its scopes and the homes the person owns that the app's audience admits.
+    ///
+    /// - Remark: HTTP `GET /v1/connections/authorize/preview`.
+    /// - Remark: Generated from `#/paths//v1/connections/authorize/preview/get(preview_authorize)`.
+    public func previewAuthorize(
+        query: Operations.PreviewAuthorize.Input.Query,
+        headers: Operations.PreviewAuthorize.Input.Headers
+    ) async throws -> Operations.PreviewAuthorize.Output {
+        try await previewAuthorize(Operations.PreviewAuthorize.Input(
             query: query,
             headers: headers
         ))
@@ -6205,9 +7846,11 @@ extension APIProtocol {
     /// contact** — never an organization role, since the recipient isn't a
     /// member of anything yet. Either registers a new organization (always at
     /// the job's own organization number) or, for an existing one the caller
-    /// is Owner or Admin of with a matching number, moves the location into a
-    /// project the caller picks. A charge point id collision in the receiving
-    /// project refuses acceptance before anything moves.
+    /// is Owner or Admin of with a matching number, moves the location into an
+    /// operations project the caller picks, or one created for the purpose
+    /// (`newProject`). A charge point id collision in the receiving project, or a
+    /// receiving project that is not an operations project of the organization,
+    /// refuses acceptance before anything moves.
     ///
     /// - Remark: HTTP `POST /v1/handovers/{token}/accept`.
     /// - Remark: Generated from `#/paths//v1/handovers/{token}/accept/post(accept_handover)`.
@@ -6556,14 +8199,19 @@ extension APIProtocol {
     }
     /// Redeems an invitation for the signed-in caller, creating their membership.
     ///
-    /// **Bound to the caller's verified email address.** Without that check an
+    /// **Bound to an address the caller has proven.** Without that check an
     /// invitation link is a bearer token for whoever it is forwarded to, which
     /// is a different and much worse thing than an invitation. An address the
     /// identity provider has not verified is no proof at all — anyone can type
-    /// a colleague's address into their own profile — so an unverified caller
-    /// is refused outright rather than compared.
+    /// a colleague's address into their own profile — so only two things count:
+    /// the verified address in the caller's token, which this route passes
+    /// along when there is one, and any address the account has confirmed by
+    /// email (spec 139, `POST /invitations/{token}/address-confirmation`).
+    /// Identity does the matching, and answers `403 emailNotVerified` when the
+    /// caller proves no address at all; this route no longer refuses early on
+    /// a token without one, because a confirmed address can still match.
     ///
-    /// A mismatched (but verified) address comes back as
+    /// An address that matches none of those comes back as
     /// `404 notFound`, exactly like a token that does not exist: telling the
     /// holder of a forwarded link "this was meant for someone else" discloses
     /// who, to precisely the person who should not learn it.
@@ -6581,6 +8229,71 @@ extension APIProtocol {
         try await acceptInvitation(Operations.AcceptInvitation.Input(
             path: path,
             headers: headers
+        ))
+    }
+    /// Emails the invited address a link and a code.
+    ///
+    /// What they prove is that the caller can read that address.
+    ///
+    /// Authorized by holding the invitation token, like `GET` and `accept`; a
+    /// signed-in caller is still required, because the confirmation is recorded
+    /// against that account and no other can complete it. There is no body and no
+    /// address field: the message goes to the address the invitation was sent to,
+    /// and the answer never names it.
+    ///
+    /// Limited per invitation and per account over the last hour (`429`, with
+    /// `Retry-After`). `502 confirmationNotSent` means nothing was stored, so a
+    /// retry is safe.
+    ///
+    /// - Remark: HTTP `POST /v1/invitations/{token}/address-confirmation`.
+    /// - Remark: Generated from `#/paths//v1/invitations/{token}/address-confirmation/post(request_address_confirmation)`.
+    public func requestAddressConfirmation(
+        path: Operations.RequestAddressConfirmation.Input.Path,
+        headers: Operations.RequestAddressConfirmation.Input.Headers = .init()
+    ) async throws -> Operations.RequestAddressConfirmation.Output {
+        try await requestAddressConfirmation(Operations.RequestAddressConfirmation.Input(
+            path: path,
+            headers: headers
+        ))
+    }
+    /// Reads an invitation, before deciding anything.
+    ///
+    /// Needs a sign-in, not an organization role. Before the caller's verified
+    /// address matches the invitation, the answer holds only the installer's name
+    /// and the kind of job; the customer, country, address and lines appear after
+    /// a match. An unknown, used, expired or unaddressed link is one `404`.
+    ///
+    /// - Remark: HTTP `GET /v1/job-invitations/{token}`.
+    /// - Remark: Generated from `#/paths//v1/job-invitations/{token}/get(get_job_invitation)`.
+    public func getJobInvitation(
+        path: Operations.GetJobInvitation.Input.Path,
+        headers: Operations.GetJobInvitation.Input.Headers = .init()
+    ) async throws -> Operations.GetJobInvitation.Output {
+        try await getJobInvitation(Operations.GetJobInvitation.Input(
+            path: path,
+            headers: headers
+        ))
+    }
+    /// Accepts an invitation for an organization.
+    ///
+    /// Needs a sign-in and a proved email address matching the invitation, never
+    /// an organization role. Name exactly one of `existingOrganizationId`,
+    /// `newOrganization` and `owningOrganization`. A person who cannot create an
+    /// organization yet is told to finish account setup (`finishAccountSetup`,
+    /// with what is `missing`); nothing is used up, and the same link works when
+    /// they return. Any other refusal that is not listed is the one `404`.
+    ///
+    /// - Remark: HTTP `POST /v1/job-invitations/{token}/accept`.
+    /// - Remark: Generated from `#/paths//v1/job-invitations/{token}/accept/post(accept_job_invitation)`.
+    public func acceptJobInvitation(
+        path: Operations.AcceptJobInvitation.Input.Path,
+        headers: Operations.AcceptJobInvitation.Input.Headers = .init(),
+        body: Operations.AcceptJobInvitation.Input.Body
+    ) async throws -> Operations.AcceptJobInvitation.Output {
+        try await acceptJobInvitation(Operations.AcceptJobInvitation.Input(
+            path: path,
+            headers: headers,
+            body: body
         ))
     }
     /// Fetches a single location by id.
@@ -6679,6 +8392,59 @@ extension APIProtocol {
         try await listLocationDevicesAccess(Operations.ListLocationDevicesAccess.Input(
             path: path,
             headers: headers
+        ))
+    }
+    /// The offers waiting for the customer on a location.
+    ///
+    /// **Needs `asset.location.manage`** at the location's project: an Owner or Admin.
+    ///
+    /// This is the banner on the location in the console: the same offer the link
+    /// carries, for an Owner or Admin who did not get the link.
+    ///
+    /// - Remark: HTTP `GET /v1/locations/{locationId}/addition-offers`.
+    /// - Remark: Generated from `#/paths//v1/locations/{locationId}/addition-offers/get(list_location_addition_offers)`.
+    public func listLocationAdditionOffers(
+        path: Operations.ListLocationAdditionOffers.Input.Path,
+        headers: Operations.ListLocationAdditionOffers.Input.Headers = .init()
+    ) async throws -> Operations.ListLocationAdditionOffers.Output {
+        try await listLocationAdditionOffers(Operations.ListLocationAdditionOffers.Input(
+            path: path,
+            headers: headers
+        ))
+    }
+    /// Accepts an offer on the location, as the link does.
+    ///
+    /// **Needs `asset.location.manage`** at the location's project.
+    ///
+    /// There is no link to match, so the proof is the permission: `jobs` asks identity
+    /// again, at the project that holds the location, before anything is accepted.
+    ///
+    /// - Remark: HTTP `POST /v1/locations/{locationId}/addition-offers/{offerId}/accept`.
+    /// - Remark: Generated from `#/paths//v1/locations/{locationId}/addition-offers/{offerId}/accept/post(accept_location_addition_offer)`.
+    public func acceptLocationAdditionOffer(
+        path: Operations.AcceptLocationAdditionOffer.Input.Path,
+        headers: Operations.AcceptLocationAdditionOffer.Input.Headers = .init()
+    ) async throws -> Operations.AcceptLocationAdditionOffer.Output {
+        try await acceptLocationAdditionOffer(Operations.AcceptLocationAdditionOffer.Input(
+            path: path,
+            headers: headers
+        ))
+    }
+    /// Declines an offer on the location.
+    ///
+    /// **Needs `asset.location.manage`** at the location's project.
+    ///
+    /// - Remark: HTTP `POST /v1/locations/{locationId}/addition-offers/{offerId}/decline`.
+    /// - Remark: Generated from `#/paths//v1/locations/{locationId}/addition-offers/{offerId}/decline/post(decline_location_addition_offer)`.
+    public func declineLocationAdditionOffer(
+        path: Operations.DeclineLocationAdditionOffer.Input.Path,
+        headers: Operations.DeclineLocationAdditionOffer.Input.Headers = .init(),
+        body: Operations.DeclineLocationAdditionOffer.Input.Body
+    ) async throws -> Operations.DeclineLocationAdditionOffer.Output {
+        try await declineLocationAdditionOffer(Operations.DeclineLocationAdditionOffer.Input(
+            path: path,
+            headers: headers,
+            body: body
         ))
     }
     /// Groups this location's allocation-log rows by hour, direction and reason.
@@ -6982,6 +8748,85 @@ extension APIProtocol {
             headers: headers
         ))
     }
+    /// List the home’s shared vehicle charging preferences.
+    ///
+    /// Saved intent only: this does not activate automatic charging, V2H or V2G.
+    ///
+    /// - Remark: HTTP `GET /v1/locations/{locationId}/home-vehicles`.
+    /// - Remark: Generated from `#/paths//v1/locations/{locationId}/home-vehicles/get(list_home_vehicles)`.
+    public func listHomeVehicles(
+        path: Operations.ListHomeVehicles.Input.Path,
+        headers: Operations.ListHomeVehicles.Input.Headers = .init()
+    ) async throws -> Operations.ListHomeVehicles.Output {
+        try await listHomeVehicles(Operations.ListHomeVehicles.Input(
+            path: path,
+            headers: headers
+        ))
+    }
+    /// Share a vehicle’s charging preferences with this home.
+    ///
+    /// Saved intent only: this does not activate automatic charging, V2H or V2G.
+    ///
+    /// - Remark: HTTP `POST /v1/locations/{locationId}/home-vehicles`.
+    /// - Remark: Generated from `#/paths//v1/locations/{locationId}/home-vehicles/post(attach_home_vehicle)`.
+    public func attachHomeVehicle(
+        path: Operations.AttachHomeVehicle.Input.Path,
+        headers: Operations.AttachHomeVehicle.Input.Headers = .init(),
+        body: Operations.AttachHomeVehicle.Input.Body
+    ) async throws -> Operations.AttachHomeVehicle.Output {
+        try await attachHomeVehicle(Operations.AttachHomeVehicle.Input(
+            path: path,
+            headers: headers,
+            body: body
+        ))
+    }
+    /// Replace shared vehicle charging preferences.
+    ///
+    /// Saved intent only: this does not activate automatic charging, V2H or V2G.
+    ///
+    /// - Remark: HTTP `PUT /v1/locations/{locationId}/home-vehicles/{homeVehicleId}`.
+    /// - Remark: Generated from `#/paths//v1/locations/{locationId}/home-vehicles/{homeVehicleId}/put(replace_home_vehicle)`.
+    public func replaceHomeVehicle(
+        path: Operations.ReplaceHomeVehicle.Input.Path,
+        headers: Operations.ReplaceHomeVehicle.Input.Headers = .init(),
+        body: Operations.ReplaceHomeVehicle.Input.Body
+    ) async throws -> Operations.ReplaceHomeVehicle.Output {
+        try await replaceHomeVehicle(Operations.ReplaceHomeVehicle.Input(
+            path: path,
+            headers: headers,
+            body: body
+        ))
+    }
+    /// Stop sharing a vehicle’s charging preferences at this home.
+    ///
+    /// Saved intent only: this does not activate automatic charging, V2H or V2G.
+    ///
+    /// - Remark: HTTP `DELETE /v1/locations/{locationId}/home-vehicles/{homeVehicleId}`.
+    /// - Remark: Generated from `#/paths//v1/locations/{locationId}/home-vehicles/{homeVehicleId}/delete(remove_home_vehicle)`.
+    public func removeHomeVehicle(
+        path: Operations.RemoveHomeVehicle.Input.Path,
+        query: Operations.RemoveHomeVehicle.Input.Query,
+        headers: Operations.RemoveHomeVehicle.Input.Headers = .init()
+    ) async throws -> Operations.RemoveHomeVehicle.Output {
+        try await removeHomeVehicle(Operations.RemoveHomeVehicle.Input(
+            path: path,
+            query: query,
+            headers: headers
+        ))
+    }
+    /// List a location’s inverters across its circuits.
+    ///
+    /// - Remark: HTTP `GET /v1/locations/{locationId}/inverters`.
+    /// - Remark: Generated from `#/paths//v1/locations/{locationId}/inverters/get(list_location_inverters)`.
+    public func listLocationInverters(
+        path: Operations.ListLocationInverters.Input.Path,
+        headers: Operations.ListLocationInverters.Input.Headers = .init()
+    ) async throws -> Operations.ListLocationInverters.Output {
+        try await listLocationInverters(Operations.ListLocationInverters.Input(
+            path: path,
+            headers: headers
+        ))
+    }
     /// A calendar month at a location.
     ///
     /// The energy delivered, the sessions started and how many cards and apps
@@ -7017,6 +8862,34 @@ extension APIProtocol {
         headers: Operations.GetLocationOccupancy.Input.Headers = .init()
     ) async throws -> Operations.GetLocationOccupancy.Output {
         try await getLocationOccupancy(Operations.GetLocationOccupancy.Input(
+            path: path,
+            headers: headers
+        ))
+    }
+    /// Save a location’s installed solar capacity.
+    ///
+    /// - Remark: HTTP `PUT /v1/locations/{locationId}/solar`.
+    /// - Remark: Generated from `#/paths//v1/locations/{locationId}/solar/put(set_location_solar_capacity)`.
+    public func setLocationSolarCapacity(
+        path: Operations.SetLocationSolarCapacity.Input.Path,
+        headers: Operations.SetLocationSolarCapacity.Input.Headers = .init(),
+        body: Operations.SetLocationSolarCapacity.Input.Body
+    ) async throws -> Operations.SetLocationSolarCapacity.Output {
+        try await setLocationSolarCapacity(Operations.SetLocationSolarCapacity.Input(
+            path: path,
+            headers: headers,
+            body: body
+        ))
+    }
+    /// Get a location’s estimated solar generation.
+    ///
+    /// - Remark: HTTP `GET /v1/locations/{locationId}/solar/forecast`.
+    /// - Remark: Generated from `#/paths//v1/locations/{locationId}/solar/forecast/get(get_location_solar_forecast)`.
+    public func getLocationSolarForecast(
+        path: Operations.GetLocationSolarForecast.Input.Path,
+        headers: Operations.GetLocationSolarForecast.Input.Headers = .init()
+    ) async throws -> Operations.GetLocationSolarForecast.Output {
+        try await getLocationSolarForecast(Operations.GetLocationSolarForecast.Input(
             path: path,
             headers: headers
         ))
@@ -7128,6 +9001,34 @@ extension APIProtocol {
             headers: headers
         ))
     }
+    /// Get a location's irradiance forecast.
+    ///
+    /// - Remark: HTTP `GET /v1/locations/{locationId}/weather`.
+    /// - Remark: Generated from `#/paths//v1/locations/{locationId}/weather/get(get_location_weather)`.
+    public func getLocationWeather(
+        path: Operations.GetLocationWeather.Input.Path,
+        query: Operations.GetLocationWeather.Input.Query = .init(),
+        headers: Operations.GetLocationWeather.Input.Headers = .init()
+    ) async throws -> Operations.GetLocationWeather.Output {
+        try await getLocationWeather(Operations.GetLocationWeather.Input(
+            path: path,
+            query: query,
+            headers: headers
+        ))
+    }
+    /// Get a location's complete cached irradiance time series.
+    ///
+    /// - Remark: HTTP `GET /v1/locations/{locationId}/weather/forecast`.
+    /// - Remark: Generated from `#/paths//v1/locations/{locationId}/weather/forecast/get(get_location_weather_forecast)`.
+    public func getLocationWeatherForecast(
+        path: Operations.GetLocationWeatherForecast.Input.Path,
+        headers: Operations.GetLocationWeatherForecast.Input.Headers = .init()
+    ) async throws -> Operations.GetLocationWeatherForecast.Output {
+        try await getLocationWeatherForecast(Operations.GetLocationWeatherForecast.Input(
+            path: path,
+            headers: headers
+        ))
+    }
     /// Who may start a charge at a location.
     ///
     /// The allows bound at the organization, the project and the location, each
@@ -7149,15 +9050,35 @@ extension APIProtocol {
             headers: headers
         ))
     }
+    /// Describes the signed-in person.
+    ///
+    /// Self only: the account is the token's, and an API key or an assistant is
+    /// refused. Reads the account's name and enrolment from `auth` and whether it has
+    /// proved an address from the address source; if any of them cannot be read the
+    /// answer is `503 tryAgainLater` and no field is guessed.
+    ///
+    /// - Remark: HTTP `GET /v1/me`.
+    /// - Remark: Generated from `#/paths//v1/me/get(get_my_profile)`.
+    public func getMyProfile(headers: Operations.GetMyProfile.Input.Headers = .init()) async throws -> Operations.GetMyProfile.Output {
+        try await getMyProfile(Operations.GetMyProfile.Input(headers: headers))
+    }
     /// Deletes the caller's account: every membership, in every organization.
     ///
-    /// The caller deletes their Identity Platform sign-in themselves afterwards,
-    /// with their own token. Idempotent: a caller with nothing left gets 204.
+    /// Everything the caller holds here goes first, and the account itself last.
+    /// Until the cutover the caller deletes their Identity Platform sign-in
+    /// themselves afterwards, with their own token. Idempotent: a caller with nothing
+    /// left gets 204.
     ///
     /// - Remark: HTTP `DELETE /v1/me`.
     /// - Remark: Generated from `#/paths//v1/me/delete(delete_account)`.
-    public func deleteAccount(headers: Operations.DeleteAccount.Input.Headers = .init()) async throws -> Operations.DeleteAccount.Output {
-        try await deleteAccount(Operations.DeleteAccount.Input(headers: headers))
+    public func deleteAccount(
+        headers: Operations.DeleteAccount.Input.Headers = .init(),
+        body: Operations.DeleteAccount.Input.Body? = nil
+    ) async throws -> Operations.DeleteAccount.Output {
+        try await deleteAccount(Operations.DeleteAccount.Input(
+            headers: headers,
+            body: body
+        ))
     }
     /// List my assistant connections
     ///
@@ -7186,11 +9107,274 @@ extension APIProtocol {
             headers: headers
         ))
     }
-    /// Starts a charge at one of the caller's chargers.
+    /// Reads the caller's autocharge switch.
+    ///
+    /// Says whether the switch is on, whether the location step was taken (the
+    /// switch cannot be turned on before it), and the notice to show beside it.
+    ///
+    /// - Remark: HTTP `GET /v1/me/autocharge`.
+    /// - Remark: Generated from `#/paths//v1/me/autocharge/get(get_my_autocharge)`.
+    public func getMyAutocharge(headers: Operations.GetMyAutocharge.Input.Headers = .init()) async throws -> Operations.GetMyAutocharge.Output {
+        try await getMyAutocharge(Operations.GetMyAutocharge.Input(headers: headers))
+    }
+    /// Turns the caller's autocharge switch on or off.
+    ///
+    /// Turning it on answers `409 locationStepRequired` until the caller has
+    /// taken the location step for one of their cars. Turning it off is always
+    /// allowed.
+    ///
+    /// - Remark: HTTP `PUT /v1/me/autocharge`.
+    /// - Remark: Generated from `#/paths//v1/me/autocharge/put(set_my_autocharge)`.
+    public func setMyAutocharge(
+        headers: Operations.SetMyAutocharge.Input.Headers = .init(),
+        body: Operations.SetMyAutocharge.Input.Body
+    ) async throws -> Operations.SetMyAutocharge.Output {
+        try await setMyAutocharge(Operations.SetMyAutocharge.Input(
+            headers: headers,
+            body: body
+        ))
+    }
+    /// The caller's profile image.
+    ///
+    /// `Cache-Control: private, no-cache`: revalidate with `If-None-Match`, and
+    /// the answer is `304` with no body while the image is unchanged (a
+    /// conditional-request detail, so it is not a modelled response).
+    ///
+    /// - Remark: HTTP `GET /v1/me/avatar`.
+    /// - Remark: Generated from `#/paths//v1/me/avatar/get(get_avatar)`.
+    public func getAvatar(headers: Operations.GetAvatar.Input.Headers = .init()) async throws -> Operations.GetAvatar.Output {
+        try await getAvatar(Operations.GetAvatar.Input(headers: headers))
+    }
+    /// Stores the caller's profile image, replacing any earlier one.
+    ///
+    /// The body is the image itself: a square JPEG, 64 to 1024 pixels a side, at
+    /// most 256 KiB. Judged from the bytes, not from `Content-Type`. EXIF, XMP and
+    /// comments are dropped before it is stored, and the `ETag` is of the stored
+    /// bytes.
+    ///
+    /// - Remark: HTTP `PUT /v1/me/avatar`.
+    /// - Remark: Generated from `#/paths//v1/me/avatar/put(put_avatar)`.
+    public func putAvatar(
+        headers: Operations.PutAvatar.Input.Headers = .init(),
+        body: Operations.PutAvatar.Input.Body
+    ) async throws -> Operations.PutAvatar.Output {
+        try await putAvatar(Operations.PutAvatar.Input(
+            headers: headers,
+            body: body
+        ))
+    }
+    /// Removes the caller's profile image. Idempotent.
+    ///
+    /// - Remark: HTTP `DELETE /v1/me/avatar`.
+    /// - Remark: Generated from `#/paths//v1/me/avatar/delete(delete_avatar)`.
+    public func deleteAvatar(headers: Operations.DeleteAvatar.Input.Headers = .init()) async throws -> Operations.DeleteAvatar.Output {
+        try await deleteAvatar(Operations.DeleteAvatar.Input(headers: headers))
+    }
+    /// The account's cards, and where they work now.
+    ///
+    /// A card is its id, its last four characters and whether it is string-only;
+    /// never its value. `cardsOnAt` lists the places (a project, or one location
+    /// of it) where cards currently work for this account; empty means a card
+    /// added now would work nowhere. For the signed-in person only.
+    ///
+    /// - Remark: HTTP `GET /v1/me/cards`.
+    /// - Remark: Generated from `#/paths//v1/me/cards/get(list_my_cards)`.
+    public func listMyCards(headers: Operations.ListMyCards.Input.Headers = .init()) async throws -> Operations.ListMyCards.Output {
+        try await listMyCards(Operations.ListMyCards.Input(headers: headers))
+    }
+    /// Registers a card the phone read.
+    ///
+    /// The phone reads the card twice and must get the same UID (`readTwice`);
+    /// the UID is 4 or 7 bytes. Needs a sign-in within the last 5 minutes (`403
+    /// recentSignInRequired`, with `maxAgeSeconds`). Refused when none of the
+    /// places the account reaches has cards on (`403 cardsNotEnabled`), because
+    /// the card would work nowhere. A card already registered, to this account or
+    /// any other, is `409 cardHeldElsewhere` and says nothing about whose.
+    ///
+    /// A card is a convenience level credential: its number is not secret, so it
+    /// can be copied. It is the same trade a charger's own card makes.
+    ///
+    /// - Remark: HTTP `POST /v1/me/cards`.
+    /// - Remark: Generated from `#/paths//v1/me/cards/post(register_card)`.
+    public func registerCard(
+        headers: Operations.RegisterCard.Input.Headers = .init(),
+        body: Operations.RegisterCard.Input.Body
+    ) async throws -> Operations.RegisterCard.Output {
+        try await registerCard(Operations.RegisterCard.Input(
+            headers: headers,
+            body: body
+        ))
+    }
+    /// Opens a two-minute learn session: "tap your card on the charger you use".
+    ///
+    /// For a card the phone cannot read. The charger's own string is what is
+    /// learned, so the card then works at that charger model only (`stringOnly`).
+    /// At most one session is open (`409 learnAlreadyOpen`). Needs a sign-in
+    /// within the last 5 minutes, and a place that has cards on, the same as
+    /// registering a card.
+    ///
+    /// - Remark: HTTP `POST /v1/me/cards/learn`.
+    /// - Remark: Generated from `#/paths//v1/me/cards/learn/post(start_learn)`.
+    public func startLearn(headers: Operations.StartLearn.Input.Headers = .init()) async throws -> Operations.StartLearn.Output {
+        try await startLearn(Operations.StartLearn.Input(headers: headers))
+    }
+    /// Reads a learn session.
+    ///
+    /// Poll while the card is held to the charger. `candidate` appears once one
+    /// unknown string is unambiguous at a place the caller reaches; it shows the
+    /// last four characters and the charger model, never the whole string.
+    ///
+    /// - Remark: HTTP `GET /v1/me/cards/learn/{id}`.
+    /// - Remark: Generated from `#/paths//v1/me/cards/learn/{id}/get(get_learn)`.
+    public func getLearn(
+        path: Operations.GetLearn.Input.Path,
+        headers: Operations.GetLearn.Input.Headers = .init()
+    ) async throws -> Operations.GetLearn.Output {
+        try await getLearn(Operations.GetLearn.Input(
+            path: path,
+            headers: headers
+        ))
+    }
+    /// Cancels a learn session. Idempotent for a session that is already over.
+    ///
+    /// - Remark: HTTP `DELETE /v1/me/cards/learn/{id}`.
+    /// - Remark: Generated from `#/paths//v1/me/cards/learn/{id}/delete(cancel_learn)`.
+    public func cancelLearn(
+        path: Operations.CancelLearn.Input.Path,
+        headers: Operations.CancelLearn.Input.Headers = .init()
+    ) async throws -> Operations.CancelLearn.Output {
+        try await cancelLearn(Operations.CancelLearn.Input(
+            path: path,
+            headers: headers
+        ))
+    }
+    /// Keeps the offered candidate as a card.
+    ///
+    /// A string-only card: it works at the charger models that sent that string
+    /// until a phone read confirms how the model writes cards.
+    ///
+    /// - Remark: HTTP `POST /v1/me/cards/learn/{id}/confirm`.
+    /// - Remark: Generated from `#/paths//v1/me/cards/learn/{id}/confirm/post(confirm_learn)`.
+    public func confirmLearn(
+        path: Operations.ConfirmLearn.Input.Path,
+        headers: Operations.ConfirmLearn.Input.Headers = .init()
+    ) async throws -> Operations.ConfirmLearn.Output {
+        try await confirmLearn(Operations.ConfirmLearn.Input(
+            path: path,
+            headers: headers
+        ))
+    }
+    /// Removes one of the account's cards.
+    ///
+    /// It stops working at every charger of every project at once: the lists of
+    /// the chargers it was on are refreshed. Another account's card, a revoked
+    /// one and an unknown id are one `404`.
+    ///
+    /// - Remark: HTTP `DELETE /v1/me/cards/{id}`.
+    /// - Remark: Generated from `#/paths//v1/me/cards/{id}/delete(revoke_card)`.
+    public func revokeCard(
+        path: Operations.RevokeCard.Input.Path,
+        headers: Operations.RevokeCard.Input.Headers = .init()
+    ) async throws -> Operations.RevokeCard.Output {
+        try await revokeCard(Operations.RevokeCard.Input(
+            path: path,
+            headers: headers
+        ))
+    }
+    /// When Flowion would charge a goal at one of the caller's chargers.
+    ///
+    /// A read with a body: the goal is not a resource, and nothing is written. It
+    /// is planned on the caller's own price, the one `price` shows, and only
+    /// where that price varies by time; a flat, covered or unset price answers
+    /// `409 notOffered`, because charging then simply starts now.
+    ///
+    /// - Remark: HTTP `POST /v1/me/chargers/{chargingStationId}/plan-preview`.
+    /// - Remark: Generated from `#/paths//v1/me/chargers/{chargingStationId}/plan-preview/post(preview_my_charging_plan)`.
+    public func previewMyChargingPlan(
+        path: Operations.PreviewMyChargingPlan.Input.Path,
+        headers: Operations.PreviewMyChargingPlan.Input.Headers = .init(),
+        body: Operations.PreviewMyChargingPlan.Input.Body
+    ) async throws -> Operations.PreviewMyChargingPlan.Output {
+        try await previewMyChargingPlan(Operations.PreviewMyChargingPlan.Input(
+            path: path,
+            headers: headers,
+            body: body
+        ))
+    }
+    /// What charging costs at one of the caller's chargers, quarter by quarter.
+    ///
+    /// For the local today and tomorrow at the charger, with the price of the
+    /// current quarter broken into what it is made of. A state that leaves the
+    /// prices unknown (no tariff, no zone, no forecast yet) is a `200` whose
+    /// `outcome` says so.
+    ///
+    /// - Remark: HTTP `GET /v1/me/chargers/{chargingStationId}/price`.
+    /// - Remark: Generated from `#/paths//v1/me/chargers/{chargingStationId}/price/get(get_my_charger_price)`.
+    public func getMyChargerPrice(
+        path: Operations.GetMyChargerPrice.Input.Path,
+        headers: Operations.GetMyChargerPrice.Input.Headers = .init()
+    ) async throws -> Operations.GetMyChargerPrice.Output {
+        try await getMyChargerPrice(Operations.GetMyChargerPrice.Input(
+            path: path,
+            headers: headers
+        ))
+    }
+    /// The person's Ready by on the session running at one of their chargers.
+    ///
+    /// - Remark: HTTP `GET /v1/me/chargers/{chargingStationId}/ready-by`.
+    /// - Remark: Generated from `#/paths//v1/me/chargers/{chargingStationId}/ready-by/get(get_my_ready_by)`.
+    public func getMyReadyBy(
+        path: Operations.GetMyReadyBy.Input.Path,
+        headers: Operations.GetMyReadyBy.Input.Headers = .init()
+    ) async throws -> Operations.GetMyReadyBy.Output {
+        try await getMyReadyBy(Operations.GetMyReadyBy.Input(
+            path: path,
+            headers: headers
+        ))
+    }
+    /// Sets the person's Ready by on the session running at their charger.
+    ///
+    /// Replaces any goal the session had. Only where the price at the charger
+    /// varies by time; otherwise `409 notOffered`.
+    ///
+    /// - Remark: HTTP `PUT /v1/me/chargers/{chargingStationId}/ready-by`.
+    /// - Remark: Generated from `#/paths//v1/me/chargers/{chargingStationId}/ready-by/put(set_my_ready_by)`.
+    public func setMyReadyBy(
+        path: Operations.SetMyReadyBy.Input.Path,
+        headers: Operations.SetMyReadyBy.Input.Headers = .init(),
+        body: Operations.SetMyReadyBy.Input.Body
+    ) async throws -> Operations.SetMyReadyBy.Output {
+        try await setMyReadyBy(Operations.SetMyReadyBy.Input(
+            path: path,
+            headers: headers,
+            body: body
+        ))
+    }
+    /// Clears the person's Ready by. Idempotent.
+    ///
+    /// - Remark: HTTP `DELETE /v1/me/chargers/{chargingStationId}/ready-by`.
+    /// - Remark: Generated from `#/paths//v1/me/chargers/{chargingStationId}/ready-by/delete(clear_my_ready_by)`.
+    public func clearMyReadyBy(
+        path: Operations.ClearMyReadyBy.Input.Path,
+        headers: Operations.ClearMyReadyBy.Input.Headers = .init()
+    ) async throws -> Operations.ClearMyReadyBy.Output {
+        try await clearMyReadyBy(Operations.ClearMyReadyBy.Input(
+            path: path,
+            headers: headers
+        ))
+    }
+    /// Starts a charge at one of the caller's chargers, or at an open one.
     ///
     /// Started as the caller's own place membership: a charger that admits
     /// them, as their own card would be admitted, starts, and the session is
     /// theirs. When they hold a reservation at the charger, this claims it.
+    ///
+    /// A caller with no place at the charger can still start one whose access is
+    /// `Open`, under their own per-project principal (made on the first start): the
+    /// charge is free, so there is no payment step. A `Paid` charger is `402
+    /// paymentRequired`; a private one is a `404`. A guest is held to the
+    /// concurrent-session limit (`409 tooManyOpenSessions`), and an anonymous
+    /// session must carry the App Attest headers (`401 deviceAttestationRequired`).
     ///
     /// - Remark: HTTP `POST /v1/me/chargers/{chargingStationId}/start`.
     /// - Remark: Generated from `#/paths//v1/me/chargers/{chargingStationId}/start/post(start_charging)`.
@@ -7203,7 +9387,11 @@ extension APIProtocol {
             headers: headers
         ))
     }
-    /// Stops the charge running at one of the caller's chargers.
+    /// Stops a charge at one of the caller's chargers, or the caller's own.
+    ///
+    /// A caller with no place at the charger stops it only when the session
+    /// running there was charged to them or to an account claimed into theirs;
+    /// anyone else's session, no session and an unknown charger are the same `404`.
     ///
     /// - Remark: HTTP `POST /v1/me/chargers/{chargingStationId}/stop`.
     /// - Remark: Generated from `#/paths//v1/me/chargers/{chargingStationId}/stop/post(stop_charging)`.
@@ -7258,6 +9446,412 @@ extension APIProtocol {
             path: path,
             headers: headers
         ))
+    }
+    /// Register or refresh this iPhone or iPad for Lock Screen charging updates.
+    ///
+    /// - Remark: HTTP `PUT /v1/me/home-devices/{installationId}`.
+    /// - Remark: Generated from `#/paths//v1/me/home-devices/{installationId}/put(register_home_device)`.
+    public func registerHomeDevice(
+        path: Operations.RegisterHomeDevice.Input.Path,
+        headers: Operations.RegisterHomeDevice.Input.Headers = .init(),
+        body: Operations.RegisterHomeDevice.Input.Body
+    ) async throws -> Operations.RegisterHomeDevice.Output {
+        try await registerHomeDevice(Operations.RegisterHomeDevice.Input(
+            path: path,
+            headers: headers,
+            body: body
+        ))
+    }
+    /// Retire this device at sign-out; its Lock Screen activities end.
+    ///
+    /// - Remark: HTTP `DELETE /v1/me/home-devices/{installationId}`.
+    /// - Remark: Generated from `#/paths//v1/me/home-devices/{installationId}/delete(retire_home_device)`.
+    public func retireHomeDevice(
+        path: Operations.RetireHomeDevice.Input.Path,
+        headers: Operations.RetireHomeDevice.Input.Headers = .init()
+    ) async throws -> Operations.RetireHomeDevice.Output {
+        try await retireHomeDevice(Operations.RetireHomeDevice.Input(
+            path: path,
+            headers: headers
+        ))
+    }
+    /// The homes the caller owns.
+    ///
+    /// A home whose place is still being completed is listed too, with
+    /// `placeState: "finishing"`. Chargers used is what asset counts in the
+    /// home's project.
+    ///
+    /// - Remark: HTTP `GET /v1/me/homes`.
+    /// - Remark: Generated from `#/paths//v1/me/homes/get(list_my_homes)`.
+    public func listMyHomes(headers: Operations.ListMyHomes.Input.Headers = .init()) async throws -> Operations.ListMyHomes.Output {
+        try await listMyHomes(Operations.ListMyHomes.Input(headers: headers))
+    }
+    /// Makes the caller a home.
+    ///
+    /// One idempotent operation in identity (organization, project, owner, the
+    /// owner's place and fixed limits), then the home's location in asset with its
+    /// price area (when given) and clock. Only the country is asked for: no street
+    /// address is collected or kept, the time zone comes from the country, and the
+    /// price area is chosen at the electricity step. A home is free: it has no billing account and asks
+    /// for no card. A repeated `requestId` answers `200` with the home it first
+    /// made and makes nothing new; a failure after identity is `503` and the same
+    /// `requestId` finishes it. At most two homes per person (`409 homeLimit`,
+    /// `limit: "homes"`). For the signed-in person only, who needs a verified
+    /// address; an API key or an assistant is refused.
+    ///
+    /// - Remark: HTTP `POST /v1/me/homes`.
+    /// - Remark: Generated from `#/paths//v1/me/homes/post(create_home)`.
+    public func createHome(
+        headers: Operations.CreateHome.Input.Headers = .init(),
+        body: Operations.CreateHome.Input.Body
+    ) async throws -> Operations.CreateHome.Output {
+        try await createHome(Operations.CreateHome.Input(
+            headers: headers,
+            body: body
+        ))
+    }
+    /// Renames a home.
+    ///
+    /// Changes the home's organization name, which is what the Places list shows
+    /// and what `GET /me/homes` returns, and the name of the home's location. The
+    /// organization is written first and the location second, so a failure between
+    /// them is a `503` that the same request finishes. Idempotent: the same name
+    /// again changes nothing. The caller must own the home; anyone else's is `404`.
+    ///
+    /// - Remark: HTTP `PATCH /v1/me/homes/{organizationId}`.
+    /// - Remark: Generated from `#/paths//v1/me/homes/{organizationId}/patch(update_my_home)`.
+    public func updateMyHome(
+        path: Operations.UpdateMyHome.Input.Path,
+        headers: Operations.UpdateMyHome.Input.Headers = .init(),
+        body: Operations.UpdateMyHome.Input.Body
+    ) async throws -> Operations.UpdateMyHome.Output {
+        try await updateMyHome(Operations.UpdateMyHome.Input(
+            path: path,
+            headers: headers,
+            body: body
+        ))
+    }
+    /// Takes a home down.
+    ///
+    /// The home's chargers are deprovisioned (the OCPP gateway closes their
+    /// sockets within about a minute), the owner's place is erased, and the
+    /// project and the organization are deleted, which frees the person's place
+    /// among their two homes and the charger count with it. It is the teardown
+    /// `DELETE /me` runs for a home, not a copy of it. A home with other people in
+    /// it (a member, an invitation out, another holder) is `409 homeHasMembers`
+    /// and nothing is removed. Past sessions are not erased.
+    ///
+    /// A failure part way is `500` and the same request finishes the work: every
+    /// step is idempotent. A home already gone is `404`, the answer for one that
+    /// never was the caller's, so a retry after a lost `204` reads `404` as done.
+    ///
+    /// - Remark: HTTP `DELETE /v1/me/homes/{organizationId}`.
+    /// - Remark: Generated from `#/paths//v1/me/homes/{organizationId}/delete(delete_my_home)`.
+    public func deleteMyHome(
+        path: Operations.DeleteMyHome.Input.Path,
+        headers: Operations.DeleteMyHome.Input.Headers = .init()
+    ) async throws -> Operations.DeleteMyHome.Output {
+        try await deleteMyHome(Operations.DeleteMyHome.Input(
+            path: path,
+            headers: headers
+        ))
+    }
+    /// What the home's electricity is set to.
+    ///
+    /// The inverse of `PUT .../electricity`: the home's own (location-level)
+    /// supply contract as `byTheHour`, `fixed` (with the price, not the grid fee)
+    /// or `unknown`, and the price area and country the electricity step needs to
+    /// start from. A home with no contract, or no location yet, is `unknown` with
+    /// what is known. The caller must own the home; anyone else's is `404`.
+    ///
+    /// - Remark: HTTP `GET /v1/me/homes/{organizationId}/electricity`.
+    /// - Remark: Generated from `#/paths//v1/me/homes/{organizationId}/electricity/get(get_home_electricity)`.
+    public func getHomeElectricity(
+        path: Operations.GetHomeElectricity.Input.Path,
+        headers: Operations.GetHomeElectricity.Input.Headers = .init()
+    ) async throws -> Operations.GetHomeElectricity.Output {
+        try await getHomeElectricity(Operations.GetHomeElectricity.Input(
+            path: path,
+            headers: headers
+        ))
+    }
+    /// Sets what the home's electricity costs.
+    ///
+    /// Writes the home's location's supply contract: `spot` is the price area's
+    /// day-ahead price (in euro; a grid fee in kronor cannot be added to it and is
+    /// refused), `fixed` is one price every hour plus an optional grid fee and tax,
+    /// and `unknown` removes the contract. `priceArea` sets the home's price area
+    /// before the contract is written; `spot` with none given or known is
+    /// `422 priceAreaRequired`. Idempotent. The person must own the
+    /// home: anyone else's is `404`.
+    ///
+    /// - Remark: HTTP `PUT /v1/me/homes/{organizationId}/electricity`.
+    /// - Remark: Generated from `#/paths//v1/me/homes/{organizationId}/electricity/put(put_home_electricity)`.
+    public func putHomeElectricity(
+        path: Operations.PutHomeElectricity.Input.Path,
+        headers: Operations.PutHomeElectricity.Input.Headers = .init(),
+        body: Operations.PutHomeElectricity.Input.Body
+    ) async throws -> Operations.PutHomeElectricity.Output {
+        try await putHomeElectricity(Operations.PutHomeElectricity.Input(
+            path: path,
+            headers: headers,
+            body: body
+        ))
+    }
+    /// What electricity costs at a home.
+    ///
+    /// The price of the home's own electricity setting (`PUT .../electricity`),
+    /// independent of any charger: the shape of a charger's price without
+    /// `chargerId`, for the local today and tomorrow at the home, so the spot-price
+    /// card can be drawn for a home that has no charger yet. A home whose
+    /// electricity is unknown answers `story: none`. Nothing is converted between
+    /// currencies: an hourly price whose market reports in another currency is
+    /// `outcome: currencyMismatch`. The caller must own the home; anyone else's is
+    /// `404`.
+    ///
+    /// - Remark: HTTP `GET /v1/me/homes/{organizationId}/price`.
+    /// - Remark: Generated from `#/paths//v1/me/homes/{organizationId}/price/get(get_my_home_price)`.
+    public func getMyHomePrice(
+        path: Operations.GetMyHomePrice.Input.Path,
+        headers: Operations.GetMyHomePrice.Input.Headers = .init()
+    ) async throws -> Operations.GetMyHomePrice.Output {
+        try await getMyHomePrice(Operations.GetMyHomePrice.Input(
+            path: path,
+            headers: headers
+        ))
+    }
+    /// Update your visible installer chat and read receipt.
+    ///
+    /// - Remark: HTTP `PUT /v1/me/installer-activity`.
+    /// - Remark: Generated from `#/paths//v1/me/installer-activity/put(set_installer_activity)`.
+    public func setInstallerActivity(
+        headers: Operations.SetInstallerActivity.Input.Headers = .init(),
+        body: Operations.SetInstallerActivity.Input.Body
+    ) async throws -> Operations.SetInstallerActivity.Output {
+        try await setInstallerActivity(Operations.SetInstallerActivity.Input(
+            headers: headers,
+            body: body
+        ))
+    }
+    /// Follow commissioning progress for a visible job on your device.
+    ///
+    /// - Remark: HTTP `PUT /v1/me/installer-live-activities/{activityId}`.
+    /// - Remark: Generated from `#/paths//v1/me/installer-live-activities/{activityId}/put(register_installer_live_activity)`.
+    public func registerInstallerLiveActivity(
+        path: Operations.RegisterInstallerLiveActivity.Input.Path,
+        headers: Operations.RegisterInstallerLiveActivity.Input.Headers = .init(),
+        body: Operations.RegisterInstallerLiveActivity.Input.Body
+    ) async throws -> Operations.RegisterInstallerLiveActivity.Output {
+        try await registerInstallerLiveActivity(Operations.RegisterInstallerLiveActivity.Input(
+            path: path,
+            headers: headers,
+            body: body
+        ))
+    }
+    /// Stop this person's Live Activity subscription.
+    ///
+    /// - Remark: HTTP `DELETE /v1/me/installer-live-activities/{activityId}`.
+    /// - Remark: Generated from `#/paths//v1/me/installer-live-activities/{activityId}/delete(unregister_installer_live_activity)`.
+    public func unregisterInstallerLiveActivity(
+        path: Operations.UnregisterInstallerLiveActivity.Input.Path,
+        headers: Operations.UnregisterInstallerLiveActivity.Input.Headers = .init()
+    ) async throws -> Operations.UnregisterInstallerLiveActivity.Output {
+        try await unregisterInstallerLiveActivity(Operations.UnregisterInstallerLiveActivity.Input(
+            path: path,
+            headers: headers
+        ))
+    }
+    /// Read your personal installer alert settings.
+    ///
+    /// - Remark: HTTP `GET /v1/me/installer-notification-settings`.
+    /// - Remark: Generated from `#/paths//v1/me/installer-notification-settings/get(get_installer_notification_settings)`.
+    public func getInstallerNotificationSettings(headers: Operations.GetInstallerNotificationSettings.Input.Headers = .init()) async throws -> Operations.GetInstallerNotificationSettings.Output {
+        try await getInstallerNotificationSettings(Operations.GetInstallerNotificationSettings.Input(headers: headers))
+    }
+    /// Update your personal installer alert settings.
+    ///
+    /// - Remark: HTTP `PUT /v1/me/installer-notification-settings`.
+    /// - Remark: Generated from `#/paths//v1/me/installer-notification-settings/put(set_installer_notification_settings)`.
+    public func setInstallerNotificationSettings(
+        headers: Operations.SetInstallerNotificationSettings.Input.Headers = .init(),
+        body: Operations.SetInstallerNotificationSettings.Input.Body
+    ) async throws -> Operations.SetInstallerNotificationSettings.Output {
+        try await setInstallerNotificationSettings(Operations.SetInstallerNotificationSettings.Input(
+            headers: headers,
+            body: body
+        ))
+    }
+    /// List your installer notifications.
+    ///
+    /// - Remark: HTTP `GET /v1/me/installer-notifications`.
+    /// - Remark: Generated from `#/paths//v1/me/installer-notifications/get(list_installer_notifications)`.
+    public func listInstallerNotifications(
+        query: Operations.ListInstallerNotifications.Input.Query = .init(),
+        headers: Operations.ListInstallerNotifications.Input.Headers = .init()
+    ) async throws -> Operations.ListInstallerNotifications.Output {
+        try await listInstallerNotifications(Operations.ListInstallerNotifications.Input(
+            query: query,
+            headers: headers
+        ))
+    }
+    /// Mark your installer notifications as read.
+    ///
+    /// - Remark: HTTP `POST /v1/me/installer-notifications/read`.
+    /// - Remark: Generated from `#/paths//v1/me/installer-notifications/read/post(mark_installer_notifications_read)`.
+    public func markInstallerNotificationsRead(
+        headers: Operations.MarkInstallerNotificationsRead.Input.Headers = .init(),
+        body: Operations.MarkInstallerNotificationsRead.Input.Body
+    ) async throws -> Operations.MarkInstallerNotificationsRead.Output {
+        try await markInstallerNotificationsRead(Operations.MarkInstallerNotificationsRead.Input(
+            headers: headers,
+            body: body
+        ))
+    }
+    /// Register this installation for installer push alerts.
+    ///
+    /// - Remark: HTTP `PUT /v1/me/installer-push-devices/{installationId}`.
+    /// - Remark: Generated from `#/paths//v1/me/installer-push-devices/{installationId}/put(register_installer_push_device)`.
+    public func registerInstallerPushDevice(
+        path: Operations.RegisterInstallerPushDevice.Input.Path,
+        headers: Operations.RegisterInstallerPushDevice.Input.Headers = .init(),
+        body: Operations.RegisterInstallerPushDevice.Input.Body
+    ) async throws -> Operations.RegisterInstallerPushDevice.Output {
+        try await registerInstallerPushDevice(Operations.RegisterInstallerPushDevice.Input(
+            path: path,
+            headers: headers,
+            body: body
+        ))
+    }
+    /// Stop installer push alerts on this installation.
+    ///
+    /// - Remark: HTTP `DELETE /v1/me/installer-push-devices/{installationId}`.
+    /// - Remark: Generated from `#/paths//v1/me/installer-push-devices/{installationId}/delete(unregister_installer_push_device)`.
+    public func unregisterInstallerPushDevice(
+        path: Operations.UnregisterInstallerPushDevice.Input.Path,
+        headers: Operations.UnregisterInstallerPushDevice.Input.Headers = .init()
+    ) async throws -> Operations.UnregisterInstallerPushDevice.Output {
+        try await unregisterInstallerPushDevice(Operations.UnregisterInstallerPushDevice.Input(
+            path: path,
+            headers: headers
+        ))
+    }
+    /// Lists the job invitations addressed to you.
+    ///
+    /// Matched by every address your account has proved, so an invitation sent to
+    /// your second address is here too. Another person's invitation is never
+    /// listed. An account with no proved address has none.
+    ///
+    /// - Remark: HTTP `GET /v1/me/job-invitations`.
+    /// - Remark: Generated from `#/paths//v1/me/job-invitations/get(list_my_job_invitations)`.
+    public func listMyJobInvitations(headers: Operations.ListMyJobInvitations.Input.Headers = .init()) async throws -> Operations.ListMyJobInvitations.Output {
+        try await listMyJobInvitations(Operations.ListMyJobInvitations.Input(headers: headers))
+    }
+    /// Removes your address from the job an invitation was sent for.
+    ///
+    /// Needs a sign-in, not an organization role. The address held on the customer's
+    /// side of the invitation is erased; what the installer typed on the job is the
+    /// installer's own and stays. Pass `jobId` for an invitation that has been
+    /// accepted, which is no longer listed. `409 detachFirst` while your organization
+    /// is still linked to the job (leave it first), `409 handoverBegun` when leaving is
+    /// no longer possible and the request can be made again once the handover has
+    /// finished. Another person's invitation, or one that no longer exists, is
+    /// `404 notFound`.
+    ///
+    /// - Remark: HTTP `DELETE /v1/me/job-invitations/{invitationId}`.
+    /// - Remark: Generated from `#/paths//v1/me/job-invitations/{invitationId}/delete(remove_my_job_invitation)`.
+    public func removeMyJobInvitation(
+        path: Operations.RemoveMyJobInvitation.Input.Path,
+        query: Operations.RemoveMyJobInvitation.Input.Query = .init(),
+        headers: Operations.RemoveMyJobInvitation.Input.Headers = .init()
+    ) async throws -> Operations.RemoveMyJobInvitation.Output {
+        try await removeMyJobInvitation(Operations.RemoveMyJobInvitation.Input(
+            path: path,
+            query: query,
+            headers: headers
+        ))
+    }
+    /// Declines an invitation addressed to you.
+    ///
+    /// The invitation ends and leaves your list. Send `block: true` to also stop
+    /// this installer from inviting your address again. Another person's
+    /// invitation, or one that no longer exists, is `404 notFound`.
+    ///
+    /// - Remark: HTTP `POST /v1/me/job-invitations/{invitationId}/decline`.
+    /// - Remark: Generated from `#/paths//v1/me/job-invitations/{invitationId}/decline/post(decline_my_job_invitation)`.
+    public func declineMyJobInvitation(
+        path: Operations.DeclineMyJobInvitation.Input.Path,
+        headers: Operations.DeclineMyJobInvitation.Input.Headers = .init(),
+        body: Operations.DeclineMyJobInvitation.Input.Body
+    ) async throws -> Operations.DeclineMyJobInvitation.Output {
+        try await declineMyJobInvitation(Operations.DeclineMyJobInvitation.Input(
+            path: path,
+            headers: headers,
+            body: body
+        ))
+    }
+    /// Says what a scanned label means to the caller.
+    ///
+    /// Any signed-in person with a verified email may ask; an API key or an
+    /// assistant may not. `labelId` is the ID as scanned or typed: any case, with
+    /// or without the dash. Every answer is `200` with a `kind`; a stranger to the
+    /// charger is told only its name.
+    ///
+    /// - Remark: HTTP `GET /v1/me/labels/{labelId}`.
+    /// - Remark: Generated from `#/paths//v1/me/labels/{labelId}/get(get_my_label)`.
+    public func getMyLabel(
+        path: Operations.GetMyLabel.Input.Path,
+        headers: Operations.GetMyLabel.Input.Headers = .init()
+    ) async throws -> Operations.GetMyLabel.Output {
+        try await getMyLabel(Operations.GetMyLabel.Input(
+            path: path,
+            headers: headers
+        ))
+    }
+    /// Report a Lock Screen activity's update token.
+    ///
+    /// - Remark: HTTP `PUT /v1/me/live-activities/{activityId}`.
+    /// - Remark: Generated from `#/paths//v1/me/live-activities/{activityId}/put(register_home_live_activity)`.
+    public func registerHomeLiveActivity(
+        path: Operations.RegisterHomeLiveActivity.Input.Path,
+        headers: Operations.RegisterHomeLiveActivity.Input.Headers = .init(),
+        body: Operations.RegisterHomeLiveActivity.Input.Body
+    ) async throws -> Operations.RegisterHomeLiveActivity.Output {
+        try await registerHomeLiveActivity(Operations.RegisterHomeLiveActivity.Input(
+            path: path,
+            headers: headers,
+            body: body
+        ))
+    }
+    /// The app saw a Lock Screen activity dismissed or ended.
+    ///
+    /// - Remark: HTTP `DELETE /v1/me/live-activities/{activityId}`.
+    /// - Remark: Generated from `#/paths//v1/me/live-activities/{activityId}/delete(end_home_live_activity)`.
+    public func endHomeLiveActivity(
+        path: Operations.EndHomeLiveActivity.Input.Path,
+        query: Operations.EndHomeLiveActivity.Input.Query,
+        headers: Operations.EndHomeLiveActivity.Input.Headers = .init()
+    ) async throws -> Operations.EndHomeLiveActivity.Output {
+        try await endHomeLiveActivity(Operations.EndHomeLiveActivity.Input(
+            path: path,
+            query: query,
+            headers: headers
+        ))
+    }
+    /// Streams nudges for the chargers in the caller's places.
+    ///
+    /// Opens a `text/event-stream` that stays open until the client closes it,
+    /// the caller loses their places' address, or 30 minutes pass. Each frame's
+    /// `event:` is its `type` and its `data:` a JSON [`MeLiveEventPayload`]. A
+    /// comment frame is sent every 15 s on an idle connection.
+    ///
+    /// Events are nudges to refetch, delivered best-effort: reconcile over REST
+    /// on every connect and reconnect rather than treating the stream as a
+    /// history.
+    ///
+    /// - Remark: HTTP `GET /v1/me/live-events`.
+    /// - Remark: Generated from `#/paths//v1/me/live-events/get(stream_my_live_events)`.
+    public func streamMyLiveEvents(headers: Operations.StreamMyLiveEvents.Input.Headers = .init()) async throws -> Operations.StreamMyLiveEvents.Output {
+        try await streamMyLiveEvents(Operations.StreamMyLiveEvents.Input(headers: headers))
     }
     /// Sets the language notifications are worded in: `en` or `sv`.
     ///
@@ -7375,6 +9969,53 @@ extension APIProtocol {
     public func listMyPlaces(headers: Operations.ListMyPlaces.Input.Headers = .init()) async throws -> Operations.ListMyPlaces.Output {
         try await listMyPlaces(Operations.ListMyPlaces.Input(headers: headers))
     }
+    /// Resident invitations addressed to the caller.
+    ///
+    /// Matched on the caller's verified and confirmed addresses and no others, and
+    /// pending only. Each is the organization's name and the place, never who sent
+    /// it.
+    ///
+    /// - Remark: HTTP `GET /v1/me/resident-invitations`.
+    /// - Remark: Generated from `#/paths//v1/me/resident-invitations/get(list_my_resident_invitations)`.
+    public func listMyResidentInvitations(headers: Operations.ListMyResidentInvitations.Input.Headers = .init()) async throws -> Operations.ListMyResidentInvitations.Output {
+        try await listMyResidentInvitations(Operations.ListMyResidentInvitations.Input(headers: headers))
+    }
+    /// Accepts an invitation addressed to the caller.
+    ///
+    /// By id, under the same address rules as the link: the caller's verified
+    /// address must be the one invited. The terms must be acknowledged. An
+    /// invitation addressed to someone else is `404 invitationNotFound`, the same
+    /// answer as one that does not exist.
+    ///
+    /// - Remark: HTTP `POST /v1/me/resident-invitations/{invitationId}/accept`.
+    /// - Remark: Generated from `#/paths//v1/me/resident-invitations/{invitationId}/accept/post(accept_my_resident_invitation)`.
+    public func acceptMyResidentInvitation(
+        path: Operations.AcceptMyResidentInvitation.Input.Path,
+        headers: Operations.AcceptMyResidentInvitation.Input.Headers = .init(),
+        body: Operations.AcceptMyResidentInvitation.Input.Body
+    ) async throws -> Operations.AcceptMyResidentInvitation.Output {
+        try await acceptMyResidentInvitation(Operations.AcceptMyResidentInvitation.Input(
+            path: path,
+            headers: headers,
+            body: body
+        ))
+    }
+    /// Declines an invitation addressed to the caller.
+    ///
+    /// The invitation is kept as declined and leaves the list. One addressed to
+    /// someone else is `404 invitationNotFound`.
+    ///
+    /// - Remark: HTTP `POST /v1/me/resident-invitations/{invitationId}/decline`.
+    /// - Remark: Generated from `#/paths//v1/me/resident-invitations/{invitationId}/decline/post(decline_my_resident_invitation)`.
+    public func declineMyResidentInvitation(
+        path: Operations.DeclineMyResidentInvitation.Input.Path,
+        headers: Operations.DeclineMyResidentInvitation.Input.Headers = .init()
+    ) async throws -> Operations.DeclineMyResidentInvitation.Output {
+        try await declineMyResidentInvitation(Operations.DeclineMyResidentInvitation.Input(
+            path: path,
+            headers: headers
+        ))
+    }
     /// Lists the brand accounts the caller has connected.
     ///
     /// No credential is ever returned.
@@ -7420,6 +10061,24 @@ extension APIProtocol {
         try await disconnectMyVehicleConnection(Operations.DisconnectMyVehicleConnection.Input(
             path: path,
             query: query,
+            headers: headers
+        ))
+    }
+    /// Withdraws the optional tracking step of one of the caller's connections.
+    ///
+    /// Flowion stops following the connection's cars and deletes the position it
+    /// holds for them, unless another of their connections still allows it. The
+    /// battery feature is untouched. Safe to repeat. A connection that is not the
+    /// caller's answers `404`.
+    ///
+    /// - Remark: HTTP `DELETE /v1/me/vehicle-connections/{connectionId}/tracking`.
+    /// - Remark: Generated from `#/paths//v1/me/vehicle-connections/{connectionId}/tracking/delete(withdraw_my_vehicle_tracking)`.
+    public func withdrawMyVehicleTracking(
+        path: Operations.WithdrawMyVehicleTracking.Input.Path,
+        headers: Operations.WithdrawMyVehicleTracking.Input.Headers = .init()
+    ) async throws -> Operations.WithdrawMyVehicleTracking.Output {
+        try await withdrawMyVehicleTracking(Operations.WithdrawMyVehicleTracking.Input(
+            path: path,
             headers: headers
         ))
     }
@@ -7522,6 +10181,27 @@ extension APIProtocol {
             headers: headers
         ))
     }
+    /// Names the person a car starts charging for, or clears it.
+    ///
+    /// For a car that several people hold: any one of them with a live access may
+    /// name a current holder, or `null` to clear it. Without one, a car with two
+    /// holders who may both charge starts nobody. `vehicleId` is the caller's own
+    /// access id, as everywhere under `/me/vehicles`; a car that is not theirs
+    /// (another person's, a project's, one that does not exist) answers `404`.
+    ///
+    /// - Remark: HTTP `PUT /v1/me/vehicles/{vehicleId}/autocharge-for`.
+    /// - Remark: Generated from `#/paths//v1/me/vehicles/{vehicleId}/autocharge-for/put(set_my_vehicle_autocharge_for)`.
+    public func setMyVehicleAutochargeFor(
+        path: Operations.SetMyVehicleAutochargeFor.Input.Path,
+        headers: Operations.SetMyVehicleAutochargeFor.Input.Headers = .init(),
+        body: Operations.SetMyVehicleAutochargeFor.Input.Body
+    ) async throws -> Operations.SetMyVehicleAutochargeFor.Output {
+        try await setMyVehicleAutochargeFor(Operations.SetMyVehicleAutochargeFor.Input(
+            path: path,
+            headers: headers,
+            body: body
+        ))
+    }
     /// Lists the organizations the caller belongs to, paginated.
     ///
     /// Scoped by membership, any role — see this module's own doc comment.
@@ -7545,10 +10225,25 @@ extension APIProtocol {
     }
     /// Creates an organization and makes the caller its Owner.
     ///
-    /// Also creates the organization's default "prod" environment. This is
-    /// the only way an organization comes into being: there is no invite flow
-    /// for organization creation itself, only for adding members to one that
+    /// Creates no project: the organization's first project is made by
+    /// `POST /organizations/{organizationId}/projects` and becomes its default.
+    /// This is the only way an organization comes into being: there is no invite
+    /// flow for organization creation itself, only for adding members to one that
     /// already exists.
+    ///
+    /// **`Idempotency-Key` is optional.** The gateway remembers a successful
+    /// answer for 24 hours, for the caller who sent it, under that key. A retry
+    /// with the same key and an identical body gets that answer again (marked
+    /// `Idempotent-Replayed: true`) and nothing else happens: identity is not
+    /// asked, the signup is not reported and billing is not provisioned a second
+    /// time. The same key with a different body is `409 idempotencyKeyConflict`,
+    /// and a retry that arrives while the first request is still running is
+    /// `409 idempotencyKeyInFlight` with `Retry-After`. A request that failed
+    /// (the slug was taken, say) does not use the key up: send it again with the
+    /// same key and a corrected body. If the service that remembers keys is not
+    /// available, a request that carries a key is refused with `503
+    /// idempotencyStoreUnavailable` and nothing is created; a request without a
+    /// key is not affected.
     ///
     /// - Remark: HTTP `POST /v1/organizations`.
     /// - Remark: Generated from `#/paths//v1/organizations/post(create_organization)`.
@@ -7907,36 +10602,6 @@ extension APIProtocol {
             headers: headers
         ))
     }
-    /// Requests (or resumes) Stripe Connect onboarding for driver payouts.
-    ///
-    /// Requires Owner or Admin. Creates the Standard account on the first
-    /// call; every call — including a later one against an already-onboarded
-    /// account — returns a fresh, single-use, short-lived Stripe-hosted link.
-    /// `returnUrl`/`refreshUrl` must be absolute `https://` URLs on this
-    /// deployment's own web origin (the console or the location), since Stripe
-    /// redirects the calling Admin's own browser there.
-    ///
-    /// Not idempotent. Returns `200`, not `201`, and names the operation
-    /// `request_onboarding_link` rather than a `create_*` id deliberately:
-    /// nothing addressable is created at a URI this API owns — the connected
-    /// account itself is reachable only through
-    /// `GET /organizations/{organizationId}/billing/payouts`, and the link
-    /// this returns is single-use and expires within minutes, so there is
-    /// nothing to point a `Location` header at.
-    ///
-    /// - Remark: HTTP `POST /v1/organizations/{organizationId}/billing/payouts/onboarding-link`.
-    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/billing/payouts/onboarding-link/post(request_onboarding_link)`.
-    public func requestOnboardingLink(
-        path: Operations.RequestOnboardingLink.Input.Path,
-        headers: Operations.RequestOnboardingLink.Input.Headers = .init(),
-        body: Operations.RequestOnboardingLink.Input.Body
-    ) async throws -> Operations.RequestOnboardingLink.Output {
-        try await requestOnboardingLink(Operations.RequestOnboardingLink.Input(
-            path: path,
-            headers: headers,
-            body: body
-        ))
-    }
     /// Begins adding or replacing the organization's payment method.
     ///
     /// Requires Owner or Admin. Lazily creates the organization's Stripe
@@ -8074,6 +10739,12 @@ extension APIProtocol {
     /// Requires the caller to be an Owner or Admin of the organization
     /// (FR-017/FR-019).
     ///
+    /// Revoking `installer` is also refused (`openJobs`, 409) while the
+    /// organization has any open installer job, and the message names up to ten
+    /// of them; if the jobs service cannot answer, nothing is revoked
+    /// (`jobsServiceUnavailable`, 503). The organization's installations
+    /// projects remain after a revoke that goes through.
+    ///
     /// - Remark: HTTP `DELETE /v1/organizations/{organizationId}/capabilities/{capability}`.
     /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/capabilities/{capability}/delete(revoke_capability)`.
     public func revokeCapability(
@@ -8204,8 +10875,9 @@ extension APIProtocol {
     /// Lists an organization's synced Fortnox articles for a job line's picker.
     ///
     /// Empty (never an error) when the organization has no active Fortnox
-    /// installation. Requires the caller to be an Owner or Admin of the
-    /// organization and for it to hold the Installer capability.
+    /// installation. **Needs `connections.connection.manage`, or `jobs.job.manage`**
+    /// at the organization or at any one of its installations projects (whoever may
+    /// create a job), and the organization must hold the Installer capability.
     ///
     /// - Remark: HTTP `GET /v1/organizations/{organizationId}/connections/fortnox/articles`.
     /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/connections/fortnox/articles/get(list_synced_fortnox_articles)`.
@@ -8215,6 +10887,28 @@ extension APIProtocol {
         headers: Operations.ListSyncedFortnoxArticles.Input.Headers = .init()
     ) async throws -> Operations.ListSyncedFortnoxArticles.Output {
         try await listSyncedFortnoxArticles(Operations.ListSyncedFortnoxArticles.Input(
+            path: path,
+            query: query,
+            headers: headers
+        ))
+    }
+    /// Lists an organization's synced Fortnox customers.
+    ///
+    /// The New job drawer's customer picker.
+    ///
+    /// Empty (never an error) when the organization has no active Fortnox
+    /// installation. **Needs `jobs.job.manage`** at the organization or at any one of
+    /// its installations projects (whoever may create a job), and the organization
+    /// must hold the Installer capability.
+    ///
+    /// - Remark: HTTP `GET /v1/organizations/{organizationId}/connections/fortnox/customers`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/connections/fortnox/customers/get(list_synced_fortnox_customers)`.
+    public func listSyncedFortnoxCustomers(
+        path: Operations.ListSyncedFortnoxCustomers.Input.Path,
+        query: Operations.ListSyncedFortnoxCustomers.Input.Query = .init(),
+        headers: Operations.ListSyncedFortnoxCustomers.Input.Headers = .init()
+    ) async throws -> Operations.ListSyncedFortnoxCustomers.Output {
+        try await listSyncedFortnoxCustomers(Operations.ListSyncedFortnoxCustomers.Input(
             path: path,
             query: query,
             headers: headers
@@ -8465,6 +11159,47 @@ extension APIProtocol {
             body: body
         ))
     }
+    /// Chooses the project (office) that serves a customer.
+    ///
+    /// From then on, reach into this customer's stations takes the caller's
+    /// permission at that project, asked on every request: moving the customer to
+    /// another project changes the very next answer. The customer never sees it.
+    /// Needs `installer.customer.manage` at the organization.
+    ///
+    /// - Remark: HTTP `PUT /v1/organizations/{organizationId}/customers/{grantId}/serving-project`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/customers/{grantId}/serving-project/put(set_customer_serving_project)`.
+    public func setCustomerServingProject(
+        path: Operations.SetCustomerServingProject.Input.Path,
+        headers: Operations.SetCustomerServingProject.Input.Headers = .init(),
+        body: Operations.SetCustomerServingProject.Input.Body
+    ) async throws -> Operations.SetCustomerServingProject.Output {
+        try await setCustomerServingProject(Operations.SetCustomerServingProject.Input(
+            path: path,
+            headers: headers,
+            body: body
+        ))
+    }
+    /// Lists the sites a served customer's access grant covers.
+    ///
+    /// **Needs `installer.customer.operate`** at the project that serves the
+    /// customer (or at the organization, for a customer with no serving project),
+    /// and the organization must hold the Installer capability. Sites are the
+    /// grant's `site` scopes, named and addressed from asset, sorted by name;
+    /// `station` scopes are not sites and are omitted. A site that no longer
+    /// exists is omitted. Use a site's `id` as `existingLocationId` beside
+    /// `existingGrantId` when creating a job.
+    ///
+    /// - Remark: HTTP `GET /v1/organizations/{organizationId}/customers/{grantId}/sites`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/customers/{grantId}/sites/get(list_customer_sites)`.
+    public func listCustomerSites(
+        path: Operations.ListCustomerSites.Input.Path,
+        headers: Operations.ListCustomerSites.Input.Headers = .init()
+    ) async throws -> Operations.ListCustomerSites.Output {
+        try await listCustomerSites(Operations.ListCustomerSites.Input(
+            path: path,
+            headers: headers
+        ))
+    }
     /// Submits a commissioning-class command for a granted station.
     ///
     /// A closed `kind` vocabulary — never billing, tariff, membership or
@@ -8498,52 +11233,276 @@ extension APIProtocol {
             headers: headers
         ))
     }
-    /// Lists the installer's own technicians with their assigned-customer counts.
+    /// List a charger's matching device manuals
     ///
-    /// Never the full member list — `Owner`/`Admin` members are organization
-    /// management, not technicians, and are excluded.
-    ///
-    /// - Remark: HTTP `GET /v1/organizations/{organizationId}/installer-team`.
-    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/installer-team/get(list_installer_team)`.
-    public func listInstallerTeam(
-        path: Operations.ListInstallerTeam.Input.Path,
-        headers: Operations.ListInstallerTeam.Input.Headers = .init()
-    ) async throws -> Operations.ListInstallerTeam.Output {
-        try await listInstallerTeam(Operations.ListInstallerTeam.Input(
+    /// - Remark: HTTP `GET /v1/organizations/{organizationId}/installer-assistant/chargers/{chargingStationId}/manuals`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/installer-assistant/chargers/{chargingStationId}/manuals/get(get_installer_charger_manuals)`.
+    public func getInstallerChargerManuals(
+        path: Operations.GetInstallerChargerManuals.Input.Path,
+        headers: Operations.GetInstallerChargerManuals.Input.Headers = .init()
+    ) async throws -> Operations.GetInstallerChargerManuals.Output {
+        try await getInstallerChargerManuals(Operations.GetInstallerChargerManuals.Input(
             path: path,
             headers: headers
         ))
     }
-    /// Assigns a technician to one of the installer's customer grants.
+    /// Read a verified page of a charger's manual
     ///
-    /// The grant must belong to this installer organization and be active —
-    /// checked by the authorization backend itself, not merely by this route.
+    /// - Remark: HTTP `GET /v1/organizations/{organizationId}/installer-assistant/chargers/{chargingStationId}/manuals/{documentId}/revisions/{revision}/pages/{page}`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/installer-assistant/chargers/{chargingStationId}/manuals/{documentId}/revisions/{revision}/pages/{page}/get(get_installer_charger_manual_page)`.
+    public func getInstallerChargerManualPage(
+        path: Operations.GetInstallerChargerManualPage.Input.Path,
+        query: Operations.GetInstallerChargerManualPage.Input.Query,
+        headers: Operations.GetInstallerChargerManualPage.Input.Headers = .init()
+    ) async throws -> Operations.GetInstallerChargerManualPage.Output {
+        try await getInstallerChargerManualPage(Operations.GetInstallerChargerManualPage.Input(
+            path: path,
+            query: query,
+            headers: headers
+        ))
+    }
+    /// List my installer chats
     ///
-    /// - Remark: HTTP `POST /v1/organizations/{organizationId}/installer-team/{membershipId}/assignments`.
-    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/installer-team/{membershipId}/assignments/post(assign_technician)`.
-    public func assignTechnician(
-        path: Operations.AssignTechnician.Input.Path,
-        headers: Operations.AssignTechnician.Input.Headers = .init(),
-        body: Operations.AssignTechnician.Input.Body
-    ) async throws -> Operations.AssignTechnician.Output {
-        try await assignTechnician(Operations.AssignTechnician.Input(
+    /// - Remark: HTTP `GET /v1/organizations/{organizationId}/installer-assistant/conversations`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/installer-assistant/conversations/get(list_installer_chats)`.
+    public func listInstallerChats(
+        path: Operations.ListInstallerChats.Input.Path,
+        query: Operations.ListInstallerChats.Input.Query = .init(),
+        headers: Operations.ListInstallerChats.Input.Headers = .init()
+    ) async throws -> Operations.ListInstallerChats.Output {
+        try await listInstallerChats(Operations.ListInstallerChats.Input(
+            path: path,
+            query: query,
+            headers: headers
+        ))
+    }
+    /// Start an installer assistant conversation
+    ///
+    /// For the signed-in person, in one installer organization. Starting one
+    /// preserves the person's previous installer conversations in that
+    /// organization. A person's own session only: an API key or an assistant
+    /// credential is refused. The assistant is free within a per-person daily
+    /// cap, so no card or allowance is involved.
+    ///
+    /// - Remark: HTTP `POST /v1/organizations/{organizationId}/installer-assistant/conversations`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/installer-assistant/conversations/post(start_installer_assistant_conversation)`.
+    public func startInstallerAssistantConversation(
+        path: Operations.StartInstallerAssistantConversation.Input.Path,
+        headers: Operations.StartInstallerAssistantConversation.Input.Headers = .init()
+    ) async throws -> Operations.StartInstallerAssistantConversation.Output {
+        try await startInstallerAssistantConversation(Operations.StartInstallerAssistantConversation.Input(
+            path: path,
+            headers: headers
+        ))
+    }
+    /// Read my installer chat
+    ///
+    /// - Remark: HTTP `GET /v1/organizations/{organizationId}/installer-assistant/conversations/{conversationId}`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/installer-assistant/conversations/{conversationId}/get(get_installer_chat)`.
+    public func getInstallerChat(
+        path: Operations.GetInstallerChat.Input.Path,
+        headers: Operations.GetInstallerChat.Input.Headers = .init()
+    ) async throws -> Operations.GetInstallerChat.Output {
+        try await getInstallerChat(Operations.GetInstallerChat.Input(
+            path: path,
+            headers: headers
+        ))
+    }
+    /// Delete my installer chat
+    ///
+    /// - Remark: HTTP `DELETE /v1/organizations/{organizationId}/installer-assistant/conversations/{conversationId}`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/installer-assistant/conversations/{conversationId}/delete(delete_installer_chat)`.
+    public func deleteInstallerChat(
+        path: Operations.DeleteInstallerChat.Input.Path,
+        headers: Operations.DeleteInstallerChat.Input.Headers = .init()
+    ) async throws -> Operations.DeleteInstallerChat.Output {
+        try await deleteInstallerChat(Operations.DeleteInstallerChat.Input(
+            path: path,
+            headers: headers
+        ))
+    }
+    /// Send an installer assistant message
+    ///
+    /// The body is `text/event-stream`. Each frame's `event:` is its `type`
+    /// (`delta`, `working`, `limit`, `done`) and its `data:` is one JSON
+    /// [`AssistantStreamEvent`]. The surface never sends `choice` or `proposal`:
+    /// the assistant only reads. The stream always ends with `done`; an outage
+    /// arrives as `done` with `unavailable`. Every message re-checks the person's
+    /// membership and the organization's Installer capability.
+    ///
+    /// - Remark: HTTP `POST /v1/organizations/{organizationId}/installer-assistant/conversations/{conversationId}/messages`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/installer-assistant/conversations/{conversationId}/messages/post(send_installer_assistant_message)`.
+    public func sendInstallerAssistantMessage(
+        path: Operations.SendInstallerAssistantMessage.Input.Path,
+        headers: Operations.SendInstallerAssistantMessage.Input.Headers = .init(),
+        body: Operations.SendInstallerAssistantMessage.Input.Body
+    ) async throws -> Operations.SendInstallerAssistantMessage.Output {
+        try await sendInstallerAssistantMessage(Operations.SendInstallerAssistantMessage.Input(
             path: path,
             headers: headers,
             body: body
         ))
     }
-    /// Unassigns a technician from one of the installer's customer grants.
+    /// Send an installer assistant photo
     ///
-    /// Idempotent — unassigning a technician who was never assigned (or
-    /// already unassigned) still answers `204`.
+    /// - Remark: HTTP `POST /v1/organizations/{organizationId}/installer-assistant/conversations/{conversationId}/photo-messages`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/installer-assistant/conversations/{conversationId}/photo-messages/post(send_installer_assistant_photo)`.
+    public func sendInstallerAssistantPhoto(
+        path: Operations.SendInstallerAssistantPhoto.Input.Path,
+        headers: Operations.SendInstallerAssistantPhoto.Input.Headers = .init(),
+        body: Operations.SendInstallerAssistantPhoto.Input.Body
+    ) async throws -> Operations.SendInstallerAssistantPhoto.Output {
+        try await sendInstallerAssistantPhoto(Operations.SendInstallerAssistantPhoto.Input(
+            path: path,
+            headers: headers,
+            body: body
+        ))
+    }
+    /// Read an installer assistant turn
     ///
-    /// - Remark: HTTP `DELETE /v1/organizations/{organizationId}/installer-team/{membershipId}/assignments/{grantId}`.
-    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/installer-team/{membershipId}/assignments/{grantId}/delete(unassign_technician)`.
-    public func unassignTechnician(
-        path: Operations.UnassignTechnician.Input.Path,
-        headers: Operations.UnassignTechnician.Input.Headers = .init()
-    ) async throws -> Operations.UnassignTechnician.Output {
-        try await unassignTechnician(Operations.UnassignTechnician.Input(
+    /// The reply to the conversation's `turn`th message (from 1), as the frames it
+    /// streamed, so a reply whose stream broke is not lost. While `ended` is
+    /// `false` the reply is still being written: ask again. Only the person who
+    /// started the conversation may read it, and only a conversation of this
+    /// surface (any other id, a console conversation's included, is `404`).
+    ///
+    /// - Remark: HTTP `GET /v1/organizations/{organizationId}/installer-assistant/conversations/{conversationId}/turns/{turn}`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/installer-assistant/conversations/{conversationId}/turns/{turn}/get(get_installer_assistant_turn)`.
+    public func getInstallerAssistantTurn(
+        path: Operations.GetInstallerAssistantTurn.Input.Path,
+        headers: Operations.GetInstallerAssistantTurn.Input.Headers = .init()
+    ) async throws -> Operations.GetInstallerAssistantTurn.Output {
+        try await getInstallerAssistantTurn(Operations.GetInstallerAssistantTurn.Input(
+            path: path,
+            headers: headers
+        ))
+    }
+    /// Speak my completed installer assistant reply
+    ///
+    /// - Remark: HTTP `POST /v1/organizations/{organizationId}/installer-assistant/conversations/{conversationId}/turns/{turn}/speech`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/installer-assistant/conversations/{conversationId}/turns/{turn}/speech/post(generate_installer_speech)`.
+    public func generateInstallerSpeech(
+        path: Operations.GenerateInstallerSpeech.Input.Path,
+        headers: Operations.GenerateInstallerSpeech.Input.Headers = .init(),
+        body: Operations.GenerateInstallerSpeech.Input.Body
+    ) async throws -> Operations.GenerateInstallerSpeech.Output {
+        try await generateInstallerSpeech(Operations.GenerateInstallerSpeech.Input(
+            path: path,
+            headers: headers,
+            body: body
+        ))
+    }
+    /// List manuals for an offline job pack
+    ///
+    /// - Remark: HTTP `GET /v1/organizations/{organizationId}/installer-assistant/jobs/{jobId}/manuals`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/installer-assistant/jobs/{jobId}/manuals/get(get_installer_job_manuals)`.
+    public func getInstallerJobManuals(
+        path: Operations.GetInstallerJobManuals.Input.Path,
+        headers: Operations.GetInstallerJobManuals.Input.Headers = .init()
+    ) async throws -> Operations.GetInstallerJobManuals.Output {
+        try await getInstallerJobManuals(Operations.GetInstallerJobManuals.Input(
+            path: path,
+            headers: headers
+        ))
+    }
+    /// Download a verified offline manual page
+    ///
+    /// - Remark: HTTP `GET /v1/organizations/{organizationId}/installer-assistant/jobs/{jobId}/manuals/{documentId}/revisions/{revision}/pages/{page}`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/installer-assistant/jobs/{jobId}/manuals/{documentId}/revisions/{revision}/pages/{page}/get(get_installer_job_manual_page)`.
+    public func getInstallerJobManualPage(
+        path: Operations.GetInstallerJobManualPage.Input.Path,
+        query: Operations.GetInstallerJobManualPage.Input.Query,
+        headers: Operations.GetInstallerJobManualPage.Input.Headers = .init()
+    ) async throws -> Operations.GetInstallerJobManualPage.Output {
+        try await getInstallerJobManualPage(Operations.GetInstallerJobManualPage.Input(
+            path: path,
+            query: query,
+            headers: headers
+        ))
+    }
+    /// Looks up a Swedish company for installation-job preparation.
+    ///
+    /// The installer confirms the company and separately confirms the site address.
+    ///
+    /// - Remark: HTTP `GET /v1/organizations/{organizationId}/installer-company-lookup`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/installer-company-lookup/get(lookup_installer_company)`.
+    public func lookupInstallerCompany(
+        path: Operations.LookupInstallerCompany.Input.Path,
+        query: Operations.LookupInstallerCompany.Input.Query,
+        headers: Operations.LookupInstallerCompany.Input.Headers = .init()
+    ) async throws -> Operations.LookupInstallerCompany.Output {
+        try await lookupInstallerCompany(Operations.LookupInstallerCompany.Input(
+            path: path,
+            query: query,
+            headers: headers
+        ))
+    }
+    /// Reads company-wide installer settings.
+    ///
+    /// Requires membership and Installer capability.
+    ///
+    /// - Remark: HTTP `GET /v1/organizations/{organizationId}/installer-settings`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/installer-settings/get(get_installer_settings)`.
+    public func getInstallerSettings(
+        path: Operations.GetInstallerSettings.Input.Path,
+        headers: Operations.GetInstallerSettings.Input.Headers = .init()
+    ) async throws -> Operations.GetInstallerSettings.Output {
+        try await getInstallerSettings(Operations.GetInstallerSettings.Input(
+            path: path,
+            headers: headers
+        ))
+    }
+    /// Replaces the company's operating countries.
+    ///
+    /// Applies to every team member. An empty list clears the setting.
+    ///
+    /// - Remark: HTTP `PUT /v1/organizations/{organizationId}/installer-settings`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/installer-settings/put(update_installer_settings)`.
+    public func updateInstallerSettings(
+        path: Operations.UpdateInstallerSettings.Input.Path,
+        headers: Operations.UpdateInstallerSettings.Input.Headers = .init(),
+        body: Operations.UpdateInstallerSettings.Input.Body
+    ) async throws -> Operations.UpdateInstallerSettings.Output {
+        try await updateInstallerSettings(Operations.UpdateInstallerSettings.Input(
+            path: path,
+            headers: headers,
+            body: body
+        ))
+    }
+    /// The visits to this organization's chargers.
+    ///
+    /// **Needs `installer.customer.read`** in this organization, as the list of
+    /// installers does. Each visit names the installer, the reason it gave, since when,
+    /// and the steps done, skipped and not tested.
+    ///
+    /// - Remark: HTTP `GET /v1/organizations/{organizationId}/installer-visits`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/installer-visits/get(list_installer_visits)`.
+    public func listInstallerVisits(
+        path: Operations.ListInstallerVisits.Input.Path,
+        headers: Operations.ListInstallerVisits.Input.Headers = .init()
+    ) async throws -> Operations.ListInstallerVisits.Output {
+        try await listInstallerVisits(Operations.ListInstallerVisits.Input(
+            path: path,
+            headers: headers
+        ))
+    }
+    /// Ends a visit now.
+    ///
+    /// **Needs `installer.customer.read`** in this organization, as the list does:
+    /// anyone who can see a visit can end it. Ending is protective and does not revoke
+    /// the installer's access (that stays `installer.customer.manage`). Every charger of the visit that is in
+    /// installer mode leaves it, the installer sees on the charger that the customer
+    /// ended it, and the installer cannot put the charger back in the mode for this
+    /// visit. Idempotent. `404` for a visit that is another organization's, and for
+    /// one that does not exist.
+    ///
+    /// - Remark: HTTP `POST /v1/organizations/{organizationId}/installer-visits/{jobId}/end`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/installer-visits/{jobId}/end/post(end_installer_visit)`.
+    public func endInstallerVisit(
+        path: Operations.EndInstallerVisit.Input.Path,
+        headers: Operations.EndInstallerVisit.Input.Headers = .init()
+    ) async throws -> Operations.EndInstallerVisit.Output {
+        try await endInstallerVisit(Operations.EndInstallerVisit.Input(
             path: path,
             headers: headers
         ))
@@ -8663,10 +11622,14 @@ extension APIProtocol {
             headers: headers
         ))
     }
-    /// Lists this organization's jobs.
+    /// Lists this organization's jobs, across the projects the caller may read.
     ///
-    /// A `User`-role caller sees only the jobs they are assigned to; Owner and
-    /// Admin see every job.
+    /// A job belongs to one `installations` project, and every row names it
+    /// (`projectId`, `projectName`). Someone who holds `jobs.job.read` at the
+    /// organization sees every project's jobs; someone bound only at some projects
+    /// sees those projects' jobs. `projectId` narrows the list to one project.
+    /// A caller who does not manage jobs (`jobs.job.manage`) sees only the jobs
+    /// they are assigned to.
     ///
     /// - Remark: HTTP `GET /v1/organizations/{organizationId}/jobs`.
     /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/jobs/get(list_jobs)`.
@@ -8681,7 +11644,32 @@ extension APIProtocol {
             headers: headers
         ))
     }
-    /// Creates a job. **Admin**.
+    /// Creates a job in an `installations` project.
+    ///
+    /// **Needs `jobs.job.manage` at that project.**
+    ///
+    /// The job belongs to its project for life: a job filed in the wrong office is
+    /// cancelled and made again, never moved.
+    ///
+    /// A job either builds its location (`locationKind` `newLocation`, the default,
+    /// in the project named by `projectId`) or works on one that already exists
+    /// (`existingLocation`), naming one of:
+    ///
+    /// - `existingGrantId`, a customer this firm serves, with or without
+    ///   `existingLocationId` beside it. The job belongs to the project that serves
+    ///   the customer, so `projectId` may be left out and, if given, must be that
+    ///   project. The caller must reach the customer there
+    ///   (`installer.customer.operate`) and manage jobs there. A customer with no
+    ///   serving project can be worked on by people bound at the organization only,
+    ///   and `projectId` then says which office the job belongs to. With
+    ///   `existingLocationId` too, the job works on that one of the customer's
+    ///   sites, which must be a `site` scope of the grant; without it the job works
+    ///   under the grant as a whole.
+    /// - `existingLocationId` alone, a location in one of the firm's own
+    ///   `operations` projects, which the caller can read. No grant is involved.
+    ///
+    /// Either way the job only points at the location. It never moves it, and it
+    /// writes nothing to it.
     ///
     /// - Remark: HTTP `POST /v1/organizations/{organizationId}/jobs`.
     /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/jobs/post(create_job)`.
@@ -8691,6 +11679,26 @@ extension APIProtocol {
         body: Operations.CreateJob.Input.Body
     ) async throws -> Operations.CreateJob.Output {
         try await createJob(Operations.CreateJob.Input(
+            path: path,
+            headers: headers,
+            body: body
+        ))
+    }
+    /// Creates a job without sending a customer invitation.
+    ///
+    /// **Needs `jobs.job.manage` at the selected installations project.** The same
+    /// project, location and customer validation as Create job applies. The job is
+    /// immediately saved; the customer invitation requires a separate explicit
+    /// invitation request. Older services reject this operation before any write.
+    ///
+    /// - Remark: HTTP `POST /v1/organizations/{organizationId}/jobs/drafts`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/jobs/drafts/post(create_job_draft)`.
+    public func createJobDraft(
+        path: Operations.CreateJobDraft.Input.Path,
+        headers: Operations.CreateJobDraft.Input.Headers = .init(),
+        body: Operations.CreateJobDraft.Input.Body
+    ) async throws -> Operations.CreateJobDraft.Output {
+        try await createJobDraft(Operations.CreateJobDraft.Input(
             path: path,
             headers: headers,
             body: body
@@ -8719,6 +11727,10 @@ extension APIProtocol {
     /// the job unchanged; `lines` only replaces when `replaceLines` is `true`
     /// (an empty list is itself a valid replacement).
     ///
+    /// A changed `contact.email` ends the invitation sent to the old address and
+    /// sends a new one to the new; the response's `invitation` says where it
+    /// stands. `contact.email` must look like an address (`422`).
+    ///
     /// - Remark: HTTP `PATCH /v1/organizations/{organizationId}/jobs/{jobId}`.
     /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/jobs/{jobId}/patch(update_job)`.
     public func updateJob(
@@ -8727,6 +11739,27 @@ extension APIProtocol {
         body: Operations.UpdateJob.Input.Body
     ) async throws -> Operations.UpdateJob.Output {
         try await updateJob(Operations.UpdateJob.Input(
+            path: path,
+            headers: headers,
+            body: body
+        ))
+    }
+    /// Adds a circuit at the customer's site. **Admin, or an assigned member.**
+    ///
+    /// Only on an existing-location job that may add (its grant covers the site, or
+    /// the site is the firm's own). The circuit is created in the customer's project
+    /// under `circuit.parentId`, applies at once (it feeds only what this job adds),
+    /// and is listed on the job as an addition that waits for the customer. A charger
+    /// is added by `POST .../chargers`.
+    ///
+    /// - Remark: HTTP `POST /v1/organizations/{organizationId}/jobs/{jobId}/additions`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/jobs/{jobId}/additions/post(register_job_addition)`.
+    public func registerJobAddition(
+        path: Operations.RegisterJobAddition.Input.Path,
+        headers: Operations.RegisterJobAddition.Input.Headers = .init(),
+        body: Operations.RegisterJobAddition.Input.Body
+    ) async throws -> Operations.RegisterJobAddition.Output {
+        try await registerJobAddition(Operations.RegisterJobAddition.Input(
             path: path,
             headers: headers,
             body: body
@@ -8785,9 +11818,8 @@ extension APIProtocol {
     /// places the new charger on `circuitId`, and returns the installation
     /// address and a one-time password — the only place that password is ever
     /// shown (never logged, never returned again). The charger is born
-    /// limited and does **not** count against this organization's
-    /// subscription charger cap: this route does not check it, unlike the
-    /// ordinary charger-creation route.
+    /// limited, so unlike the ordinary charger-creation route this one never
+    /// asks for a card on file.
     ///
     /// - Remark: HTTP `POST /v1/organizations/{organizationId}/jobs/{jobId}/chargers`.
     /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/jobs/{jobId}/chargers/post(register_job_charger)`.
@@ -8797,6 +11829,66 @@ extension APIProtocol {
         body: Operations.RegisterJobCharger.Input.Body
     ) async throws -> Operations.RegisterJobCharger.Output {
         try await registerJobCharger(Operations.RegisterJobCharger.Input(
+            path: path,
+            headers: headers,
+            body: body
+        ))
+    }
+    /// Turns installer mode on or off for one charger of a job.
+    ///
+    /// **Needs `jobs.job.work` at the job's project**: an Admin or Owner, or a
+    /// member assigned to the job. Idempotent: `on: true` on an open period answers
+    /// it, `on: false` on none answers `off`. `404` for a charger that is not on the
+    /// job, `409 notAvailable` when it cannot take the mode (not a pure OCPP charger,
+    /// the job is not in progress, a revisit has no reason, the grant does not cover
+    /// it) and `409 alreadyHandedOver` once the location has been handed over.
+    ///
+    /// - Remark: HTTP `PUT /v1/organizations/{organizationId}/jobs/{jobId}/chargers/{stationId}/installer-mode`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/jobs/{jobId}/chargers/{stationId}/installer-mode/put(set_charger_installer_mode)`.
+    public func setChargerInstallerMode(
+        path: Operations.SetChargerInstallerMode.Input.Path,
+        headers: Operations.SetChargerInstallerMode.Input.Headers = .init(),
+        body: Operations.SetChargerInstallerMode.Input.Body
+    ) async throws -> Operations.SetChargerInstallerMode.Output {
+        try await setChargerInstallerMode(Operations.SetChargerInstallerMode.Input(
+            path: path,
+            headers: headers,
+            body: body
+        ))
+    }
+    /// Adds four hours to a charger's installer-mode time limit.
+    ///
+    /// **Needs `jobs.job.work` at the job's project.** Answers the charger with its
+    /// new `limitAt`. `409 notOn` when the charger is not in installer mode,
+    /// `409 alreadyHandedOver` once the location has been handed over, `404` for a
+    /// charger that is not on the job.
+    ///
+    /// - Remark: HTTP `POST /v1/organizations/{organizationId}/jobs/{jobId}/chargers/{stationId}/installer-mode/extend`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/jobs/{jobId}/chargers/{stationId}/installer-mode/extend/post(extend_installer_mode)`.
+    public func extendInstallerMode(
+        path: Operations.ExtendInstallerMode.Input.Path,
+        headers: Operations.ExtendInstallerMode.Input.Headers = .init()
+    ) async throws -> Operations.ExtendInstallerMode.Output {
+        try await extendInstallerMode(Operations.ExtendInstallerMode.Input(
+            path: path,
+            headers: headers
+        ))
+    }
+    /// Records the installer's word on one check of the walk-through.
+    ///
+    /// **Needs `jobs.job.work` at the job's project.** `state` is `done` or
+    /// `skipped`; `skipReason` is required for `skipped`. A check the system confirms
+    /// itself cannot be marked `done` by hand (`409 systemConfirmed`), only skipped
+    /// with a reason. `409 notOn` when the charger is not in installer mode.
+    ///
+    /// - Remark: HTTP `PUT /v1/organizations/{organizationId}/jobs/{jobId}/chargers/{stationId}/installer-mode/steps/{step}`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/jobs/{jobId}/chargers/{stationId}/installer-mode/steps/{step}/put(set_installer_mode_step)`.
+    public func setInstallerModeStep(
+        path: Operations.SetInstallerModeStep.Input.Path,
+        headers: Operations.SetInstallerModeStep.Input.Headers = .init(),
+        body: Operations.SetInstallerModeStep.Input.Body
+    ) async throws -> Operations.SetInstallerModeStep.Output {
+        try await setInstallerModeStep(Operations.SetInstallerModeStep.Input(
             path: path,
             headers: headers,
             body: body
@@ -8817,6 +11909,82 @@ extension APIProtocol {
             path: path,
             headers: headers,
             body: body
+        ))
+    }
+    /// The circuits of a job's location.
+    ///
+    /// Whoever may read the job (`jobs.job.read`; a `User` only for a job they
+    /// are assigned to). A job the caller may not see is `404 notFound`, as for
+    /// `get_job`. A job with no location yet, or whose location has been handed
+    /// over to another organization, lists none.
+    ///
+    /// - Remark: HTTP `GET /v1/organizations/{organizationId}/jobs/{jobId}/circuits`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/jobs/{jobId}/circuits/get(list_job_circuits)`.
+    public func listJobCircuits(
+        path: Operations.ListJobCircuits.Input.Path,
+        headers: Operations.ListJobCircuits.Input.Headers = .init()
+    ) async throws -> Operations.ListJobCircuits.Output {
+        try await listJobCircuits(Operations.ListJobCircuits.Input(
+            path: path,
+            headers: headers
+        ))
+    }
+    /// Ends a job that works on an existing location.
+    ///
+    /// **Needs `jobs.job.work` at the job's project** (an Admin, or a member
+    /// assigned to the job).
+    ///
+    /// The installer's word is enough: no acceptance is asked of the customer, and
+    /// nothing at the location changes. A job with an addition still waiting for the
+    /// customer cannot be ended this way (`422`), and neither can a job that builds
+    /// its location, which ends by handover.
+    ///
+    /// - Remark: HTTP `POST /v1/organizations/{organizationId}/jobs/{jobId}/complete`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/jobs/{jobId}/complete/post(complete_job)`.
+    public func completeJob(
+        path: Operations.CompleteJob.Input.Path,
+        headers: Operations.CompleteJob.Input.Headers = .init()
+    ) async throws -> Operations.CompleteJob.Output {
+        try await completeJob(Operations.CompleteJob.Input(
+            path: path,
+            headers: headers
+        ))
+    }
+    /// The connections a job's chargers were refused.
+    ///
+    /// Admin and Owner for any job, a `User` for a job they are assigned to
+    /// (`jobs.refusal.read`). A job the caller may not see is `404 notFound`, as
+    /// for `get_job`. Stations whose current project is outside the organization
+    /// (handed over) are omitted.
+    ///
+    /// - Remark: HTTP `GET /v1/organizations/{organizationId}/jobs/{jobId}/connection-refusals`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/jobs/{jobId}/connection-refusals/get(list_job_connection_refusals)`.
+    public func listJobConnectionRefusals(
+        path: Operations.ListJobConnectionRefusals.Input.Path,
+        headers: Operations.ListJobConnectionRefusals.Input.Headers = .init()
+    ) async throws -> Operations.ListJobConnectionRefusals.Output {
+        try await listJobConnectionRefusals(Operations.ListJobConnectionRefusals.Input(
+            path: path,
+            headers: headers
+        ))
+    }
+    /// Tells the installer whether a customer is linked to the job.
+    ///
+    /// **Needs `jobs.job.read` at the job's project.** A job with no linked
+    /// customer is a normal `200` with `linked: false`. Nothing about the
+    /// customer is returned, only whether one is linked, whether access is arranged,
+    /// where the invitation stands and the choices the customer has recorded for
+    /// the new location, which the installer can read and not change.
+    ///
+    /// - Remark: HTTP `GET /v1/organizations/{organizationId}/jobs/{jobId}/customer-link`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/jobs/{jobId}/customer-link/get(get_customer_link)`.
+    public func getCustomerLink(
+        path: Operations.GetCustomerLink.Input.Path,
+        headers: Operations.GetCustomerLink.Input.Headers = .init()
+    ) async throws -> Operations.GetCustomerLink.Output {
+        try await getCustomerLink(Operations.GetCustomerLink.Input(
+            path: path,
+            headers: headers
         ))
     }
     /// Each of the paired site's chargers and how far its commissioning has got.
@@ -8867,8 +12035,8 @@ extension APIProtocol {
     /// returned with them filled. Every Easee
     /// circuit has to be mapped, to a circuit of the job's location, no two to
     /// the same one, with its phase topology confirmed. Beyond the plan needs
-    /// `confirmOverPlan`. Does not count against the organization's
-    /// subscription charger cap.
+    /// `confirmOverPlan`. Never asks for a card on file: the chargers are
+    /// born limited.
     ///
     /// - Remark: HTTP `POST /v1/organizations/{organizationId}/jobs/{jobId}/easee/claims/{claimId}/mapping`.
     /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/jobs/{jobId}/easee/claims/{claimId}/mapping/post(apply_job_easee_mapping)`.
@@ -8904,8 +12072,8 @@ extension APIProtocol {
     ///
     /// **Admin, or an assigned member.** Claims the site with the charger's
     /// serial number and PIN; nothing is imported until the mapping is applied
-    /// (`POST .../claims/{claimId}/mapping`). Does not count against the
-    /// organization's subscription charger cap.
+    /// (`POST .../claims/{claimId}/mapping`). Never asks for a card on file:
+    /// the chargers are born limited.
     ///
     /// - Remark: HTTP `POST /v1/organizations/{organizationId}/jobs/{jobId}/easee/pair`.
     /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/jobs/{jobId}/easee/pair/post(pair_job_easee_site)`.
@@ -8915,6 +12083,28 @@ extension APIProtocol {
         body: Operations.PairJobEaseeSite.Input.Body
     ) async throws -> Operations.PairJobEaseeSite.Output {
         try await pairJobEaseeSite(Operations.PairJobEaseeSite.Input(
+            path: path,
+            headers: headers,
+            body: body
+        ))
+    }
+    /// Labels one outlet of a charger on this job.
+    ///
+    /// **Admin, or an assigned member** (`jobs.job.work`). The label must be
+    /// unused, or already this outlet's. Linking is idempotent for the identical
+    /// link. A label on another outlet is `409 labelLinkedElsewhere`, with
+    /// `movable: true` while it can still be moved; send `relink` to move it, which
+    /// also needs the caller to work on the outlet it is on. Labelling never blocks
+    /// handover. At most 30 attempts per person per 10 minutes (`429`).
+    ///
+    /// - Remark: HTTP `PUT /v1/organizations/{organizationId}/jobs/{jobId}/evses/{evseId}/label`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/jobs/{jobId}/evses/{evseId}/label/put(link_job_outlet_label)`.
+    public func linkJobOutletLabel(
+        path: Operations.LinkJobOutletLabel.Input.Path,
+        headers: Operations.LinkJobOutletLabel.Input.Headers = .init(),
+        body: Operations.LinkJobOutletLabel.Input.Body
+    ) async throws -> Operations.LinkJobOutletLabel.Output {
+        try await linkJobOutletLabel(Operations.LinkJobOutletLabel.Input(
             path: path,
             headers: headers,
             body: body
@@ -8938,6 +12128,32 @@ extension APIProtocol {
             body: body
         ))
     }
+    /// Ends a job by running the location yourself.
+    ///
+    /// **Needs `jobs.job.manage` at the job's project and `identity.project.manage`
+    /// at the target project.** The location moves into the chosen `operations` project of this
+    /// organization in one transaction, its chargers go into service there, and the
+    /// job becomes handed over, with the organization itself as the receiving party.
+    /// No handover link is sent and no customer grant is created, and a link the job
+    /// was already offered with stops working. Refused with `409 handoverNotReady`
+    /// by the same gate as marking the job ready (an unfilled charger, one that never
+    /// connected through its installation address), and with `422` when the job
+    /// cannot end this way (not a new-location job, a customer already accepted, a
+    /// charge point id already in the target).
+    ///
+    /// - Remark: HTTP `POST /v1/organizations/{organizationId}/jobs/{jobId}/handover`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/jobs/{jobId}/handover/post(hand_over_job)`.
+    public func handOverJob(
+        path: Operations.HandOverJob.Input.Path,
+        headers: Operations.HandOverJob.Input.Headers = .init(),
+        body: Operations.HandOverJob.Input.Body
+    ) async throws -> Operations.HandOverJob.Output {
+        try await handOverJob(Operations.HandOverJob.Input(
+            path: path,
+            headers: headers,
+            body: body
+        ))
+    }
     /// Resends the handover link. **Admin.**
     ///
     /// Invalidates whichever link was live before — the old one stops working
@@ -8954,9 +12170,88 @@ extension APIProtocol {
             headers: headers
         ))
     }
+    /// Changes a circuit's rated current. **Admin, or an assigned member.**
+    ///
+    /// A rating that can only lower the power available applies at once and is
+    /// listed to the customer as already applied. A higher rating is held: the
+    /// circuit keeps its old value, and the energy controller keeps using it, until
+    /// the customer accepts. The held change applies at acceptance only if the
+    /// circuit still has the value it had here.
+    ///
+    /// - Remark: HTTP `POST /v1/organizations/{organizationId}/jobs/{jobId}/held-changes`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/jobs/{jobId}/held-changes/post(hold_circuit_change)`.
+    public func holdCircuitChange(
+        path: Operations.HoldCircuitChange.Input.Path,
+        headers: Operations.HoldCircuitChange.Input.Headers = .init(),
+        body: Operations.HoldCircuitChange.Input.Body
+    ) async throws -> Operations.HoldCircuitChange.Output {
+        try await holdCircuitChange(Operations.HoldCircuitChange.Input(
+            path: path,
+            headers: headers,
+            body: body
+        ))
+    }
+    /// Reads installer mode for every charger of a job.
+    ///
+    /// **Needs `jobs.job.read` at the job's project**; a member who sees only the
+    /// jobs they are assigned to is told `404` for any other, as for the job itself.
+    /// Evaluates each step's evidence while it reads, so the answer is what the
+    /// system sees now. A charger that cannot take the mode says so with
+    /// `installerModeAvailable: false`.
+    ///
+    /// - Remark: HTTP `GET /v1/organizations/{organizationId}/jobs/{jobId}/installer-mode`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/jobs/{jobId}/installer-mode/get(get_installer_mode)`.
+    public func getInstallerMode(
+        path: Operations.GetInstallerMode.Input.Path,
+        headers: Operations.GetInstallerMode.Input.Headers = .init()
+    ) async throws -> Operations.GetInstallerMode.Output {
+        try await getInstallerMode(Operations.GetInstallerMode.Input(
+            path: path,
+            headers: headers
+        ))
+    }
+    /// Turns installer mode on or off for every charger of a job that can take it.
+    ///
+    /// **Needs `jobs.job.work` at the job's project.** A charger that cannot take
+    /// the mode is left as it is and says so (`installerModeAvailable: false`). The
+    /// answer is per charger. `409 alreadyHandedOver` once the location has been
+    /// handed over.
+    ///
+    /// - Remark: HTTP `POST /v1/organizations/{organizationId}/jobs/{jobId}/installer-mode`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/jobs/{jobId}/installer-mode/post(set_job_installer_mode)`.
+    public func setJobInstallerMode(
+        path: Operations.SetJobInstallerMode.Input.Path,
+        headers: Operations.SetJobInstallerMode.Input.Headers = .init(),
+        body: Operations.SetJobInstallerMode.Input.Body
+    ) async throws -> Operations.SetJobInstallerMode.Output {
+        try await setJobInstallerMode(Operations.SetJobInstallerMode.Input(
+            path: path,
+            headers: headers,
+            body: body
+        ))
+    }
+    /// Sends the customer's first invitation, or sends it again.
+    ///
+    /// **Needs `jobs.job.manage` at the job's project.** A fresh invitation replaces the usable one, which stops working. A cooldown
+    /// and caps apply: when one does, the answer is `429 rateLimited` with
+    /// `Retry-After`, and the job and its current invitation are unchanged. Returns
+    /// the job, whose `invitation` says where it stands.
+    ///
+    /// - Remark: HTTP `POST /v1/organizations/{organizationId}/jobs/{jobId}/invitation/resend`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/jobs/{jobId}/invitation/resend/post(resend_job_invitation)`.
+    public func resendJobInvitation(
+        path: Operations.ResendJobInvitation.Input.Path,
+        headers: Operations.ResendJobInvitation.Input.Headers = .init()
+    ) async throws -> Operations.ResendJobInvitation.Output {
+        try await resendJobInvitation(Operations.ResendJobInvitation.Input(
+            path: path,
+            headers: headers
+        ))
+    }
     /// Builds this job's location. **Admin, or an assigned member.**
     ///
-    /// A job builds exactly one location — a second call is refused.
+    /// A job builds exactly one location — a second call is refused. It is built in
+    /// the job's own project; the request names none.
     ///
     /// - Remark: HTTP `POST /v1/organizations/{organizationId}/jobs/{jobId}/location`.
     /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/jobs/{jobId}/location/post(create_job_location)`.
@@ -8971,6 +12266,27 @@ extension APIProtocol {
             body: body
         ))
     }
+    /// Asks the customer to accept everything this job added. **`jobs.job.manage`.**
+    ///
+    /// Opens the offer, or refreshes the one already open (a resend, with a new
+    /// thirty days and anything registered since), and sends a fresh single-use link,
+    /// bound to `contactEmail`, to an Owner or Admin of the organization that owns
+    /// the location. The same offer is also on the location in the console. Nothing
+    /// is counted before they accept.
+    ///
+    /// - Remark: HTTP `POST /v1/organizations/{organizationId}/jobs/{jobId}/offer`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/jobs/{jobId}/offer/post(offer_additions)`.
+    public func offerAdditions(
+        path: Operations.OfferAdditions.Input.Path,
+        headers: Operations.OfferAdditions.Input.Headers = .init(),
+        body: Operations.OfferAdditions.Input.Body
+    ) async throws -> Operations.OfferAdditions.Output {
+        try await offerAdditions(Operations.OfferAdditions.Input(
+            path: path,
+            headers: headers,
+            body: body
+        ))
+    }
     /// Marks a job ready for handover. **Admin, or an assigned member.**
     ///
     /// Refused (`409 handoverNotReady`) unless every expected charger is
@@ -8979,7 +12295,10 @@ extension APIProtocol {
     /// commissioning check never blocks this. On success, `jobs` freezes the
     /// handover summary and sends the customer contact its link; this route
     /// re-fetches the job so the response carries that summary like every
-    /// other mutation in this module.
+    /// other mutation in this module. For a job whose customer is linked the
+    /// location moves to them at once and no link is sent: `handedOverToCustomer`
+    /// says which way it went, and `transferHeldReason` why a linked job was
+    /// offered by email instead.
     ///
     /// - Remark: HTTP `POST /v1/organizations/{organizationId}/jobs/{jobId}/ready`.
     /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/jobs/{jobId}/ready/post(mark_ready_for_handover)`.
@@ -9004,6 +12323,279 @@ extension APIProtocol {
         headers: Operations.WithdrawReadiness.Input.Headers = .init()
     ) async throws -> Operations.WithdrawReadiness.Output {
         try await withdrawReadiness(Operations.WithdrawReadiness.Input(
+            path: path,
+            headers: headers
+        ))
+    }
+    /// Removes what this job added and the customer never accepted.
+    ///
+    /// **Needs `jobs.job.manage`** at the job's project.
+    ///
+    /// Chargers are deprovisioned and their connections closed, circuits are deleted
+    /// (the newest first), held ratings are dropped and an open offer is cancelled.
+    /// An accepted addition, and everything the customer already had, is never
+    /// touched. Cancelling a job does this by itself.
+    ///
+    /// - Remark: HTTP `POST /v1/organizations/{organizationId}/jobs/{jobId}/withdraw`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/jobs/{jobId}/withdraw/post(withdraw_additions)`.
+    public func withdrawAdditions(
+        path: Operations.WithdrawAdditions.Input.Path,
+        headers: Operations.WithdrawAdditions.Input.Headers = .init(),
+        body: Operations.WithdrawAdditions.Input.Body
+    ) async throws -> Operations.WithdrawAdditions.Output {
+        try await withdrawAdditions(Operations.WithdrawAdditions.Input(
+            path: path,
+            headers: headers,
+            body: body
+        ))
+    }
+    /// Read the latest Zaptec onboarding attempt for an authorized installation job.
+    ///
+    /// - Remark: HTTP `GET /v1/organizations/{organizationId}/jobs/{jobId}/zaptec/onboarding`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/jobs/{jobId}/zaptec/onboarding/get(get_job_zaptec_onboarding)`.
+    public func getJobZaptecOnboarding(
+        path: Operations.GetJobZaptecOnboarding.Input.Path,
+        headers: Operations.GetJobZaptecOnboarding.Input.Headers = .init()
+    ) async throws -> Operations.GetJobZaptecOnboarding.Output {
+        try await getJobZaptecOnboarding(Operations.GetJobZaptecOnboarding.Input(
+            path: path,
+            headers: headers
+        ))
+    }
+    /// Start a Zaptec onboarding attempt for an authorized installation job.
+    ///
+    /// - Remark: HTTP `POST /v1/organizations/{organizationId}/jobs/{jobId}/zaptec/onboarding`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/jobs/{jobId}/zaptec/onboarding/post(start_job_zaptec_onboarding)`.
+    public func startJobZaptecOnboarding(
+        path: Operations.StartJobZaptecOnboarding.Input.Path,
+        headers: Operations.StartJobZaptecOnboarding.Input.Headers = .init(),
+        body: Operations.StartJobZaptecOnboarding.Input.Body
+    ) async throws -> Operations.StartJobZaptecOnboarding.Output {
+        try await startJobZaptecOnboarding(Operations.StartJobZaptecOnboarding.Input(
+            path: path,
+            headers: headers,
+            body: body
+        ))
+    }
+    /// Read a Zaptec onboarding attempt for an authorized installation job.
+    ///
+    /// - Remark: HTTP `GET /v1/organizations/{organizationId}/jobs/{jobId}/zaptec/onboarding/{attemptId}`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/jobs/{jobId}/zaptec/onboarding/{attemptId}/get(get_job_zaptec_onboarding_attempt)`.
+    public func getJobZaptecOnboardingAttempt(
+        path: Operations.GetJobZaptecOnboardingAttempt.Input.Path,
+        headers: Operations.GetJobZaptecOnboardingAttempt.Input.Headers = .init()
+    ) async throws -> Operations.GetJobZaptecOnboardingAttempt.Output {
+        try await getJobZaptecOnboardingAttempt(Operations.GetJobZaptecOnboardingAttempt.Input(
+            path: path,
+            headers: headers
+        ))
+    }
+    /// Advance or reconcile Zaptec onboarding for an authorized installation job.
+    ///
+    /// - Remark: HTTP `POST /v1/organizations/{organizationId}/jobs/{jobId}/zaptec/onboarding/{attemptId}/advance`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/jobs/{jobId}/zaptec/onboarding/{attemptId}/advance/post(advance_job_zaptec_onboarding)`.
+    public func advanceJobZaptecOnboarding(
+        path: Operations.AdvanceJobZaptecOnboarding.Input.Path,
+        headers: Operations.AdvanceJobZaptecOnboarding.Input.Headers = .init(),
+        body: Operations.AdvanceJobZaptecOnboarding.Input.Body
+    ) async throws -> Operations.AdvanceJobZaptecOnboarding.Output {
+        try await advanceJobZaptecOnboarding(Operations.AdvanceJobZaptecOnboarding.Input(
+            path: path,
+            headers: headers,
+            body: body
+        ))
+    }
+    /// Cancel uncommitted Zaptec onboarding for an authorized installation job.
+    ///
+    /// - Remark: HTTP `POST /v1/organizations/{organizationId}/jobs/{jobId}/zaptec/onboarding/{attemptId}/cancel`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/jobs/{jobId}/zaptec/onboarding/{attemptId}/cancel/post(cancel_job_zaptec_onboarding)`.
+    public func cancelJobZaptecOnboarding(
+        path: Operations.CancelJobZaptecOnboarding.Input.Path,
+        headers: Operations.CancelJobZaptecOnboarding.Input.Headers = .init(),
+        body: Operations.CancelJobZaptecOnboarding.Input.Body
+    ) async throws -> Operations.CancelJobZaptecOnboarding.Output {
+        try await cancelJobZaptecOnboarding(Operations.CancelJobZaptecOnboarding.Input(
+            path: path,
+            headers: headers,
+            body: body
+        ))
+    }
+    /// Begin Zaptec consent for an authorized installation job.
+    ///
+    /// - Remark: HTTP `POST /v1/organizations/{organizationId}/jobs/{jobId}/zaptec/onboarding/{attemptId}/consent`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/jobs/{jobId}/zaptec/onboarding/{attemptId}/consent/post(begin_job_zaptec_consent)`.
+    public func beginJobZaptecConsent(
+        path: Operations.BeginJobZaptecConsent.Input.Path,
+        headers: Operations.BeginJobZaptecConsent.Input.Headers = .init()
+    ) async throws -> Operations.BeginJobZaptecConsent.Output {
+        try await beginJobZaptecConsent(Operations.BeginJobZaptecConsent.Input(
+            path: path,
+            headers: headers
+        ))
+    }
+    /// Complete Zaptec consent for an authorized installation job.
+    ///
+    /// - Remark: HTTP `POST /v1/organizations/{organizationId}/jobs/{jobId}/zaptec/onboarding/{attemptId}/consent/complete`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/jobs/{jobId}/zaptec/onboarding/{attemptId}/consent/complete/post(complete_job_zaptec_consent)`.
+    public func completeJobZaptecConsent(
+        path: Operations.CompleteJobZaptecConsent.Input.Path,
+        headers: Operations.CompleteJobZaptecConsent.Input.Headers = .init(),
+        body: Operations.CompleteJobZaptecConsent.Input.Body
+    ) async throws -> Operations.CompleteJobZaptecConsent.Output {
+        try await completeJobZaptecConsent(Operations.CompleteJobZaptecConsent.Input(
+            path: path,
+            headers: headers,
+            body: body
+        ))
+    }
+    /// Save reviewed Zaptec circuit mappings for an authorized installation job.
+    ///
+    /// - Remark: HTTP `PUT /v1/organizations/{organizationId}/jobs/{jobId}/zaptec/onboarding/{attemptId}/review`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/jobs/{jobId}/zaptec/onboarding/{attemptId}/review/put(confirm_job_zaptec_review)`.
+    public func confirmJobZaptecReview(
+        path: Operations.ConfirmJobZaptecReview.Input.Path,
+        headers: Operations.ConfirmJobZaptecReview.Input.Headers = .init(),
+        body: Operations.ConfirmJobZaptecReview.Input.Body
+    ) async throws -> Operations.ConfirmJobZaptecReview.Output {
+        try await confirmJobZaptecReview(Operations.ConfirmJobZaptecReview.Input(
+            path: path,
+            headers: headers,
+            body: body
+        ))
+    }
+    /// Lists the jobs linked to this organization.
+    ///
+    /// **Needs `identity.member.read` at the organization**, which every member
+    /// holds. Each row is the same allow-listed view the single read returns, newest
+    /// first. A job whose link is not active is not listed.
+    ///
+    /// - Remark: HTTP `GET /v1/organizations/{organizationId}/linked-jobs`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/linked-jobs/get(list_linked_jobs)`.
+    public func listLinkedJobs(
+        path: Operations.ListLinkedJobs.Input.Path,
+        headers: Operations.ListLinkedJobs.Input.Headers = .init()
+    ) async throws -> Operations.ListLinkedJobs.Output {
+        try await listLinkedJobs(Operations.ListLinkedJobs.Input(
+            path: path,
+            headers: headers
+        ))
+    }
+    /// Reads one job linked to this organization.
+    ///
+    /// **Needs `identity.member.read` at the organization.** It is a `404`, with one
+    /// body, for a job that does not exist, one that is linked to another
+    /// organization and one whose link has ended.
+    ///
+    /// - Remark: HTTP `GET /v1/organizations/{organizationId}/linked-jobs/{jobId}`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/linked-jobs/{jobId}/get(get_linked_job)`.
+    public func getLinkedJob(
+        path: Operations.GetLinkedJob.Input.Path,
+        headers: Operations.GetLinkedJob.Input.Headers = .init()
+    ) async throws -> Operations.GetLinkedJob.Output {
+        try await getLinkedJob(Operations.GetLinkedJob.Input(
+            path: path,
+            headers: headers
+        ))
+    }
+    /// Leaves a job the organization is linked to.
+    ///
+    /// **Needs `identity.project.manage` at the organization**, the same permission
+    /// as saying access is arranged. Without `confirm=true` nothing changes and the
+    /// answer says how many choices leaving would remove (`wouldRemove`); with it the
+    /// link ends, the choices recorded for this job are removed and cannot be
+    /// recovered, and the installer's job record stays, reading "customer declined".
+    /// The organization, its account, its other projects and its payout setup are not
+    /// touched, and nothing the installer wrote is removed. `409 handoverBegun` when
+    /// the location is already being handed over. A job that does not exist, one
+    /// linked to another organization and one whose link has ended are one `404`.
+    ///
+    /// - Remark: HTTP `DELETE /v1/organizations/{organizationId}/linked-jobs/{jobId}`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/linked-jobs/{jobId}/delete(detach_linked_job)`.
+    public func detachLinkedJob(
+        path: Operations.DetachLinkedJob.Input.Path,
+        query: Operations.DetachLinkedJob.Input.Query = .init(),
+        headers: Operations.DetachLinkedJob.Input.Headers = .init()
+    ) async throws -> Operations.DetachLinkedJob.Output {
+        try await detachLinkedJob(Operations.DetachLinkedJob.Input(
+            path: path,
+            query: query,
+            headers: headers
+        ))
+    }
+    /// Says whether access to the site is arranged.
+    ///
+    /// **Needs `identity.project.manage` at the organization**, the nearest
+    /// Admin permission for someone who may act for the customer. The installer
+    /// sees the time it was said. Sending `false` takes it back.
+    ///
+    /// - Remark: HTTP `PUT /v1/organizations/{organizationId}/linked-jobs/{jobId}/access-arranged`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/linked-jobs/{jobId}/access-arranged/put(set_access_arranged)`.
+    public func setAccessArranged(
+        path: Operations.SetAccessArranged.Input.Path,
+        headers: Operations.SetAccessArranged.Input.Headers = .init(),
+        body: Operations.SetAccessArranged.Input.Body
+    ) async throws -> Operations.SetAccessArranged.Output {
+        try await setAccessArranged(Operations.SetAccessArranged.Input(
+            path: path,
+            headers: headers,
+            body: body
+        ))
+    }
+    /// Lists the choices this organization has recorded for a linked job.
+    ///
+    /// **Needs `identity.member.read` at the organization**, which every member
+    /// holds. It is a `404`, with one body, for a job that does not exist, one that
+    /// is linked to another organization and one whose link has ended.
+    ///
+    /// - Remark: HTTP `GET /v1/organizations/{organizationId}/linked-jobs/{jobId}/intentions`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/linked-jobs/{jobId}/intentions/get(list_intentions)`.
+    public func listIntentions(
+        path: Operations.ListIntentions.Input.Path,
+        headers: Operations.ListIntentions.Input.Headers = .init()
+    ) async throws -> Operations.ListIntentions.Output {
+        try await listIntentions(Operations.ListIntentions.Input(
+            path: path,
+            headers: headers
+        ))
+    }
+    /// Records a choice for the moment the location moves.
+    ///
+    /// **Needs the permission that already guards the thing chosen, in the
+    /// customer's own project of the link**: `pricing.tariff.manage` for
+    /// `assignTariff`, `authorization.access_policy.manage` for `setSiteAccess`,
+    /// `ocpp.settings.update` for `setDeviceSetting`. Recording the same choice again
+    /// returns the existing one with `200`; a changed device value replaces the old
+    /// one while it is still `recorded`. Nothing reaches a charger before the move.
+    /// A choice `jobs` refuses is a `422 invalidRequest` with a fixed sentence, never
+    /// the value sent.
+    ///
+    /// - Remark: HTTP `POST /v1/organizations/{organizationId}/linked-jobs/{jobId}/intentions`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/linked-jobs/{jobId}/intentions/post(record_intention)`.
+    public func recordIntention(
+        path: Operations.RecordIntention.Input.Path,
+        headers: Operations.RecordIntention.Input.Headers = .init(),
+        body: Operations.RecordIntention.Input.Body
+    ) async throws -> Operations.RecordIntention.Output {
+        try await recordIntention(Operations.RecordIntention.Input(
+            path: path,
+            headers: headers,
+            body: body
+        ))
+    }
+    /// Withdraws a choice while it is still only recorded.
+    ///
+    /// **Needs the permission that guards the thing the choice names, in the
+    /// customer's own project of the link**: the same one that recorded it. A choice
+    /// that has been applied, skipped or failed is history and answers `409
+    /// intentionNotRemovable`.
+    ///
+    /// - Remark: HTTP `DELETE /v1/organizations/{organizationId}/linked-jobs/{jobId}/intentions/{intentionId}`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/linked-jobs/{jobId}/intentions/{intentionId}/delete(remove_intention)`.
+    public func removeIntention(
+        path: Operations.RemoveIntention.Input.Path,
+        headers: Operations.RemoveIntention.Input.Headers = .init()
+    ) async throws -> Operations.RemoveIntention.Output {
+        try await removeIntention(Operations.RemoveIntention.Input(
             path: path,
             headers: headers
         ))
@@ -9255,20 +12847,23 @@ extension APIProtocol {
             headers: headers
         ))
     }
-    /// Starts an embedded onboarding session for the organization's account.
+    /// Starts Stripe-hosted onboarding for the organization's account.
     ///
-    /// Requires Owner or Admin. The client secret is short-lived and is for
-    /// Connect.js only; the response is never cached.
+    /// Requires Owner or Admin. Returns a single-use URL to redirect the browser
+    /// to; Stripe sends it back to `returnPath` on the console when the flow ends
+    /// or the link is used up. The response is never cached.
     ///
-    /// - Remark: HTTP `POST /v1/organizations/{organizationId}/payments/account/session`.
-    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/payments/account/session/post(create_payments_account_session)`.
-    public func createPaymentsAccountSession(
-        path: Operations.CreatePaymentsAccountSession.Input.Path,
-        headers: Operations.CreatePaymentsAccountSession.Input.Headers = .init()
-    ) async throws -> Operations.CreatePaymentsAccountSession.Output {
-        try await createPaymentsAccountSession(Operations.CreatePaymentsAccountSession.Input(
+    /// - Remark: HTTP `POST /v1/organizations/{organizationId}/payments/account/link`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/payments/account/link/post(create_payments_account_link)`.
+    public func createPaymentsAccountLink(
+        path: Operations.CreatePaymentsAccountLink.Input.Path,
+        headers: Operations.CreatePaymentsAccountLink.Input.Headers = .init(),
+        body: Operations.CreatePaymentsAccountLink.Input.Body
+    ) async throws -> Operations.CreatePaymentsAccountLink.Output {
+        try await createPaymentsAccountLink(Operations.CreatePaymentsAccountLink.Input(
             path: path,
-            headers: headers
+            headers: headers,
+            body: body
         ))
     }
     /// Lists the permission policies a binding can name.
@@ -9345,6 +12940,11 @@ extension APIProtocol {
     /// resource is assigned to the caller (an installer's job) is held under neither,
     /// because a simulation names no resource.
     ///
+    /// With `replace`, a draft document stands in for a policy's stored one for
+    /// every binding that names it, so an edit can be previewed before it is saved.
+    /// A draft that would not be accepted as a write is refused with the write's own
+    /// code (`permission_policy.invalid_document` and the others).
+    ///
     /// Requires `identity.policy.explain`. Nothing is attached, detached or recorded.
     ///
     /// - Remark: HTTP `POST /v1/organizations/{organizationId}/permission-policies/simulate`.
@@ -9381,6 +12981,11 @@ extension APIProtocol {
     /// who holds the policy holds the new document on their very next request. A
     /// managed policy is never edited (`permission_policy.managed_immutable`).
     ///
+    /// Send `expectedVersion` (the `version` you read) to make the write
+    /// conditional: when the policy has since changed nothing is written and the
+    /// answer is `409 permission_policy.stale`. Without it the write is
+    /// unconditional, as before.
+    ///
     /// - Remark: HTTP `PUT /v1/organizations/{organizationId}/permission-policies/{policyId}`.
     /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/permission-policies/{policyId}/put(update_permission_policy)`.
     public func updatePermissionPolicy(
@@ -9412,6 +13017,25 @@ extension APIProtocol {
             headers: headers
         ))
     }
+    /// Lists who holds a permission policy.
+    ///
+    /// One row per binding (a member who holds it at two projects appears twice) and
+    /// one per invitation that has not been accepted and names it, newest first.
+    /// Requires `identity.policy.read`. A policy of another organization is `404`.
+    ///
+    /// - Remark: HTTP `GET /v1/organizations/{organizationId}/permission-policies/{policyId}/holders`.
+    /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/permission-policies/{policyId}/holders/get(list_permission_policy_holders)`.
+    public func listPermissionPolicyHolders(
+        path: Operations.ListPermissionPolicyHolders.Input.Path,
+        query: Operations.ListPermissionPolicyHolders.Input.Query = .init(),
+        headers: Operations.ListPermissionPolicyHolders.Input.Headers = .init()
+    ) async throws -> Operations.ListPermissionPolicyHolders.Output {
+        try await listPermissionPolicyHolders(Operations.ListPermissionPolicyHolders.Input(
+            path: path,
+            query: query,
+            headers: headers
+        ))
+    }
     /// Lists an organization's environments, paginated.
     ///
     /// Requires only membership in the organization (any role) — this lists
@@ -9433,9 +13057,29 @@ extension APIProtocol {
             headers: headers
         ))
     }
-    /// Creates an environment in the organization.
+    /// Creates a project in the organization.
     ///
-    /// Requires the caller to be an Owner or Admin.
+    /// Requires `identity.project.manage`. The first project an organization
+    /// creates becomes its default.
+    ///
+    /// **Choosing `kind: installations`** needs the organization to hold the
+    /// Installer capability. If it does not, this request grants it, attributed
+    /// to the caller, in the same step as the project, and the caller must hold
+    /// `identity.capability.manage` as well: without it nothing is granted or
+    /// created. Once the capability is held, `identity.project.manage` is enough.
+    ///
+    /// **`Idempotency-Key` is optional.** The gateway remembers a successful
+    /// answer for 24 hours, for the caller who sent it, for this organization and
+    /// under that key. A retry with the same key and an identical body gets that
+    /// answer again (marked `Idempotent-Replayed: true`) and nothing else happens:
+    /// no second project, and nothing granted a second time. The same key with a
+    /// different body is `409 idempotencyKeyConflict`, and a retry that arrives
+    /// while the first request is still running is `409 idempotencyKeyInFlight`
+    /// with `Retry-After`. A request that failed (the name or slug was taken, say)
+    /// does not use the key up: send it again with the same key and a corrected
+    /// body. If the service that remembers keys is not available, a request that
+    /// carries a key is refused with `503 idempotencyStoreUnavailable` and nothing
+    /// is created; a request without a key is not affected.
     ///
     /// - Remark: HTTP `POST /v1/organizations/{organizationId}/projects`.
     /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/projects/post(create_project)`.
@@ -9527,11 +13171,19 @@ extension APIProtocol {
     /// something a `User`-role member's per-environment grants ever cover,
     /// however many environments they can reach.
     ///
-    /// Always refused for the organization's current default environment
-    /// (`cannotDeleteDefault`) — redesignate the default first with
-    /// `POST /organizations/{organizationId}/projects/{projectId}/default`.
-    /// Since every organization always has exactly one default, this also
-    /// guarantees an organization can never end up with zero environments.
+    /// Any project may be deleted, the organization's last one included: an
+    /// organization with no project is a legitimate state, and projects have no
+    /// default to protect.
+    ///
+    /// Refused (`openJobs`) while the project holds the location of an
+    /// installer job that is neither handed over nor cancelled, and the message
+    /// names those jobs. If the jobs service cannot answer, the project is not
+    /// deleted (`jobsServiceUnavailable`): a deletion cannot be undone.
+    ///
+    /// And refused (`servesCustomerGrants`) while the project is the serving office
+    /// of an active customer grant: move each customer to another project or revoke
+    /// the grant first. If `authorization` cannot answer, nothing is deleted
+    /// (`authorizationUnavailable`).
     ///
     /// - Remark: HTTP `DELETE /v1/organizations/{organizationId}/projects/{projectId}`.
     /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/projects/{projectId}/delete(delete_project)`.
@@ -9559,13 +13211,17 @@ extension APIProtocol {
             headers: headers
         ))
     }
-    /// Redesignates the organization's default environment.
+    /// Deprecated: projects no longer have a default.
     ///
-    /// Idempotent when `projectId` is already the default. Requires the
-    /// caller to be an Owner or Admin.
+    /// Answers `410 Gone` with `projectsHaveNoDefault` to a caller who may manage
+    /// the organization's projects (Owner or Admin). An organization's
+    /// projects are all alike: none is the default, none is protected from
+    /// deletion, and none is where a short charger URL leads (that URL is gone
+    /// too). Listing an organization's projects returns them oldest first.
     ///
     /// - Remark: HTTP `POST /v1/organizations/{organizationId}/projects/{projectId}/default`.
     /// - Remark: Generated from `#/paths//v1/organizations/{organizationId}/projects/{projectId}/default/post(set_default_project)`.
+    @available(*, deprecated)
     public func setDefaultProject(
         path: Operations.SetDefaultProject.Input.Path,
         headers: Operations.SetDefaultProject.Input.Headers = .init()
@@ -9585,56 +13241,6 @@ extension APIProtocol {
     /// - Remark: Generated from `#/paths//v1/permissions/get(list_permissions)`.
     public func listPermissions(headers: Operations.ListPermissions.Input.Headers = .init()) async throws -> Operations.ListPermissions.Output {
         try await listPermissions(Operations.ListPermissions.Input(headers: headers))
-    }
-    /// Lists issued certificates across the whole platform.
-    ///
-    /// Requires the platform-operator role — a customer's role in their own
-    /// organization grants no access here, since certificates are not scoped
-    /// to any one organization's console. Cursor-paginated: pass the previous
-    /// page's `nextCursor` back as `cursor` to fetch the next page; omit
-    /// `cursor` for the first page.
-    ///
-    /// - Remark: HTTP `GET /v1/platform/certificates`.
-    /// - Remark: Generated from `#/paths//v1/platform/certificates/get(list_certificates)`.
-    public func listCertificates(
-        query: Operations.ListCertificates.Input.Query = .init(),
-        headers: Operations.ListCertificates.Input.Headers = .init()
-    ) async throws -> Operations.ListCertificates.Output {
-        try await listCertificates(Operations.ListCertificates.Input(
-            query: query,
-            headers: headers
-        ))
-    }
-    /// Returns the certificate hierarchy's health.
-    ///
-    /// Reports any sub-CA whose validity ends before certificates it has
-    /// signed, and when a CRL was last published. Requires the
-    /// platform-operator role — a customer's role in their own organization
-    /// grants no access here, since the certificate hierarchy is not scoped to
-    /// any one organization's console.
-    ///
-    /// - Remark: HTTP `GET /v1/platform/certificates/hierarchy-health`.
-    /// - Remark: Generated from `#/paths//v1/platform/certificates/hierarchy-health/get(get_hierarchy_health)`.
-    public func getHierarchyHealth(headers: Operations.GetHierarchyHealth.Input.Headers = .init()) async throws -> Operations.GetHierarchyHealth.Output {
-        try await getHierarchyHealth(Operations.GetHierarchyHealth.Input(headers: headers))
-    }
-    /// Unlinks an organization's connected account, whatever its status.
-    ///
-    /// Platform operators only. The reason is required and is recorded with
-    /// the operator and the time. The Stripe account itself is not closed.
-    ///
-    /// - Remark: HTTP `POST /v1/platform/organizations/{organizationId}/payments/account/unlink`.
-    /// - Remark: Generated from `#/paths//v1/platform/organizations/{organizationId}/payments/account/unlink/post(unlink_payments_account)`.
-    public func unlinkPaymentsAccount(
-        path: Operations.UnlinkPaymentsAccount.Input.Path,
-        headers: Operations.UnlinkPaymentsAccount.Input.Headers = .init(),
-        body: Operations.UnlinkPaymentsAccount.Input.Body
-    ) async throws -> Operations.UnlinkPaymentsAccount.Output {
-        try await unlinkPaymentsAccount(Operations.UnlinkPaymentsAccount.Input(
-            path: path,
-            headers: headers,
-            body: body
-        ))
     }
     /// Fetches one principal.
     ///
@@ -9804,7 +13410,7 @@ extension APIProtocol {
             headers: headers
         ))
     }
-    /// Updates a project's rate-limit and/or master-pass settings.
+    /// Updates a project's rate-limit, master-pass and/or credentials settings.
     ///
     /// Every field is independently optional -- see
     /// [`UpdateProjectAuthorizationSettingsRequest`]'s own doc comment for the
@@ -9945,6 +13551,47 @@ extension APIProtocol {
         headers: Operations.GetNeedsAttention.Input.Headers = .init()
     ) async throws -> Operations.GetNeedsAttention.Output {
         try await getNeedsAttention(Operations.GetNeedsAttention.Input(
+            path: path,
+            headers: headers
+        ))
+    }
+    /// Links a label to an outlet, or replaces the outlet's.
+    ///
+    /// Requires `asset.charger.update` on the charger. The label must be unused
+    /// or already this outlet's; linking is idempotent for the identical link. An
+    /// outlet that already has a different label is `409 outletHasLabel` unless
+    /// `replace` is `true`, which retires the old label as `replaced`. A label
+    /// linked to another outlet is `409 labelLinkedElsewhere`, with `movable:
+    /// true` while it can still be moved; `relink` moves it, and also needs
+    /// `asset.charger.update` on the outlet it is on. At most 30 attempts per
+    /// person per 10 minutes (`429`).
+    ///
+    /// - Remark: HTTP `PUT /v1/projects/{projectId}/charging-stations/{chargingStationId}/evses/{evseId}/label`.
+    /// - Remark: Generated from `#/paths//v1/projects/{projectId}/charging-stations/{chargingStationId}/evses/{evseId}/label/put(link_outlet_label)`.
+    public func linkOutletLabel(
+        path: Operations.LinkOutletLabel.Input.Path,
+        headers: Operations.LinkOutletLabel.Input.Headers = .init(),
+        body: Operations.LinkOutletLabel.Input.Body
+    ) async throws -> Operations.LinkOutletLabel.Output {
+        try await linkOutletLabel(Operations.LinkOutletLabel.Input(
+            path: path,
+            headers: headers,
+            body: body
+        ))
+    }
+    /// Takes the label off an outlet.
+    ///
+    /// Requires `asset.charger.update` on the charger. The label is retired as
+    /// damaged and never comes back (a label is consumed by its outlet, ADR-0286);
+    /// there is no parameter. An outlet with no label is `204` too.
+    ///
+    /// - Remark: HTTP `DELETE /v1/projects/{projectId}/charging-stations/{chargingStationId}/evses/{evseId}/label`.
+    /// - Remark: Generated from `#/paths//v1/projects/{projectId}/charging-stations/{chargingStationId}/evses/{evseId}/label/delete(unlink_outlet_label)`.
+    public func unlinkOutletLabel(
+        path: Operations.UnlinkOutletLabel.Input.Path,
+        headers: Operations.UnlinkOutletLabel.Input.Headers = .init()
+    ) async throws -> Operations.UnlinkOutletLabel.Output {
+        try await unlinkOutletLabel(Operations.UnlinkOutletLabel.Input(
             path: path,
             headers: headers
         ))
@@ -10509,6 +14156,63 @@ extension APIProtocol {
             body: body
         ))
     }
+    /// Reads a location's autocharge setting.
+    ///
+    /// `enabled` is what is in force, `default` is what it would be without the
+    /// operator's choice, and `reason` says why the default is what it is (a price
+    /// is in effect, none is, or the location is public).
+    ///
+    /// - Remark: HTTP `GET /v1/projects/{projectId}/locations/{locationId}/autocharge`.
+    /// - Remark: Generated from `#/paths//v1/projects/{projectId}/locations/{locationId}/autocharge/get(get_location_autocharge)`.
+    public func getLocationAutocharge(
+        path: Operations.GetLocationAutocharge.Input.Path,
+        headers: Operations.GetLocationAutocharge.Input.Headers = .init()
+    ) async throws -> Operations.GetLocationAutocharge.Output {
+        try await getLocationAutocharge(Operations.GetLocationAutocharge.Input(
+            path: path,
+            headers: headers
+        ))
+    }
+    /// Turns autocharge on or off at a location, or returns it to its default.
+    ///
+    /// `enabled: null` returns the location to its default. A public location
+    /// answers `409 publicLocation`: it is never autocharged.
+    ///
+    /// - Remark: HTTP `PUT /v1/projects/{projectId}/locations/{locationId}/autocharge`.
+    /// - Remark: Generated from `#/paths//v1/projects/{projectId}/locations/{locationId}/autocharge/put(set_location_autocharge)`.
+    public func setLocationAutocharge(
+        path: Operations.SetLocationAutocharge.Input.Path,
+        headers: Operations.SetLocationAutocharge.Input.Headers = .init(),
+        body: Operations.SetLocationAutocharge.Input.Body
+    ) async throws -> Operations.SetLocationAutocharge.Output {
+        try await setLocationAutocharge(Operations.SetLocationAutocharge.Input(
+            path: path,
+            headers: headers,
+            body: body
+        ))
+    }
+    /// Sets or clears one location's own switch for id-token credentials.
+    ///
+    /// `on` lets cards and tags start a charge at this location although the
+    /// project's `credentialsMode` is `off`; `off` stops them here although it is
+    /// `on`; `null` makes the location follow the project again. Requires
+    /// `authorization.access_policy.manage`, the same permission as the location's
+    /// access policy. The location must belong to `projectId`, otherwise it is a
+    /// `404`.
+    ///
+    /// - Remark: HTTP `PUT /v1/projects/{projectId}/locations/{locationId}/credentials-policy`.
+    /// - Remark: Generated from `#/paths//v1/projects/{projectId}/locations/{locationId}/credentials-policy/put(set_location_credentials_policy)`.
+    public func setLocationCredentialsPolicy(
+        path: Operations.SetLocationCredentialsPolicy.Input.Path,
+        headers: Operations.SetLocationCredentialsPolicy.Input.Headers = .init(),
+        body: Operations.SetLocationCredentialsPolicy.Input.Body
+    ) async throws -> Operations.SetLocationCredentialsPolicy.Output {
+        try await setLocationCredentialsPolicy(Operations.SetLocationCredentialsPolicy.Input(
+            path: path,
+            headers: headers,
+            body: body
+        ))
+    }
     /// What the caller may do at a project.
     ///
     /// The permissions the caller holds at this project, in the mode their
@@ -10605,6 +14309,77 @@ extension APIProtocol {
             path: path,
             headers: headers,
             body: body
+        ))
+    }
+    /// Preview names and email addresses for charging invitations
+    ///
+    /// - Remark: HTTP `POST /v1/projects/{projectId}/resident-imports/preview`.
+    /// - Remark: Generated from `#/paths//v1/projects/{projectId}/resident-imports/preview/post(preview_resident_import)`.
+    public func previewResidentImport(
+        path: Operations.PreviewResidentImport.Input.Path,
+        headers: Operations.PreviewResidentImport.Input.Headers = .init(),
+        body: Operations.PreviewResidentImport.Input.Body
+    ) async throws -> Operations.PreviewResidentImport.Output {
+        try await previewResidentImport(Operations.PreviewResidentImport.Input(
+            path: path,
+            headers: headers,
+            body: body
+        ))
+    }
+    /// List resident charging invitations
+    ///
+    /// - Remark: HTTP `GET /v1/projects/{projectId}/resident-invitations`.
+    /// - Remark: Generated from `#/paths//v1/projects/{projectId}/resident-invitations/get(list_resident_invitations)`.
+    public func listResidentInvitations(
+        path: Operations.ListResidentInvitations.Input.Path,
+        query: Operations.ListResidentInvitations.Input.Query = .init(),
+        headers: Operations.ListResidentInvitations.Input.Headers = .init()
+    ) async throws -> Operations.ListResidentInvitations.Output {
+        try await listResidentInvitations(Operations.ListResidentInvitations.Input(
+            path: path,
+            query: query,
+            headers: headers
+        ))
+    }
+    /// Invite a resident to accept charging access
+    ///
+    /// - Remark: HTTP `POST /v1/projects/{projectId}/resident-invitations`.
+    /// - Remark: Generated from `#/paths//v1/projects/{projectId}/resident-invitations/post(invite_resident)`.
+    public func inviteResident(
+        path: Operations.InviteResident.Input.Path,
+        headers: Operations.InviteResident.Input.Headers = .init(),
+        body: Operations.InviteResident.Input.Body
+    ) async throws -> Operations.InviteResident.Output {
+        try await inviteResident(Operations.InviteResident.Input(
+            path: path,
+            headers: headers,
+            body: body
+        ))
+    }
+    /// Withdraw an invitation or remove resident charging access
+    ///
+    /// - Remark: HTTP `DELETE /v1/projects/{projectId}/resident-invitations/{invitationId}`.
+    /// - Remark: Generated from `#/paths//v1/projects/{projectId}/resident-invitations/{invitationId}/delete(revoke_resident_invitation)`.
+    public func revokeResidentInvitation(
+        path: Operations.RevokeResidentInvitation.Input.Path,
+        headers: Operations.RevokeResidentInvitation.Input.Headers = .init()
+    ) async throws -> Operations.RevokeResidentInvitation.Output {
+        try await revokeResidentInvitation(Operations.RevokeResidentInvitation.Input(
+            path: path,
+            headers: headers
+        ))
+    }
+    /// Resend a resident charging invitation
+    ///
+    /// - Remark: HTTP `POST /v1/projects/{projectId}/resident-invitations/{invitationId}/resend`.
+    /// - Remark: Generated from `#/paths//v1/projects/{projectId}/resident-invitations/{invitationId}/resend/post(resend_resident_invitation)`.
+    public func resendResidentInvitation(
+        path: Operations.ResendResidentInvitation.Input.Path,
+        headers: Operations.ResendResidentInvitation.Input.Headers = .init()
+    ) async throws -> Operations.ResendResidentInvitation.Output {
+        try await resendResidentInvitation(Operations.ResendResidentInvitation.Input(
+            path: path,
+            headers: headers
         ))
     }
     /// A calendar month of charging, per person.
@@ -11594,6 +15369,229 @@ extension APIProtocol {
             path: path,
             query: query,
             headers: headers
+        ))
+    }
+    /// Read the latest Zaptec onboarding attempt for the current home owner.
+    ///
+    /// - Remark: HTTP `GET /v1/projects/{projectId}/zaptec/onboarding`.
+    /// - Remark: Generated from `#/paths//v1/projects/{projectId}/zaptec/onboarding/get(get_owner_zaptec_onboarding)`.
+    public func getOwnerZaptecOnboarding(
+        path: Operations.GetOwnerZaptecOnboarding.Input.Path,
+        headers: Operations.GetOwnerZaptecOnboarding.Input.Headers = .init()
+    ) async throws -> Operations.GetOwnerZaptecOnboarding.Output {
+        try await getOwnerZaptecOnboarding(Operations.GetOwnerZaptecOnboarding.Input(
+            path: path,
+            headers: headers
+        ))
+    }
+    /// Start a Zaptec onboarding attempt for the current home owner.
+    ///
+    /// - Remark: HTTP `POST /v1/projects/{projectId}/zaptec/onboarding`.
+    /// - Remark: Generated from `#/paths//v1/projects/{projectId}/zaptec/onboarding/post(start_owner_zaptec_onboarding)`.
+    public func startOwnerZaptecOnboarding(
+        path: Operations.StartOwnerZaptecOnboarding.Input.Path,
+        headers: Operations.StartOwnerZaptecOnboarding.Input.Headers = .init(),
+        body: Operations.StartOwnerZaptecOnboarding.Input.Body
+    ) async throws -> Operations.StartOwnerZaptecOnboarding.Output {
+        try await startOwnerZaptecOnboarding(Operations.StartOwnerZaptecOnboarding.Input(
+            path: path,
+            headers: headers,
+            body: body
+        ))
+    }
+    /// Read a Zaptec onboarding attempt for the current home owner.
+    ///
+    /// - Remark: HTTP `GET /v1/projects/{projectId}/zaptec/onboarding/{attemptId}`.
+    /// - Remark: Generated from `#/paths//v1/projects/{projectId}/zaptec/onboarding/{attemptId}/get(get_owner_zaptec_onboarding_attempt)`.
+    public func getOwnerZaptecOnboardingAttempt(
+        path: Operations.GetOwnerZaptecOnboardingAttempt.Input.Path,
+        headers: Operations.GetOwnerZaptecOnboardingAttempt.Input.Headers = .init()
+    ) async throws -> Operations.GetOwnerZaptecOnboardingAttempt.Output {
+        try await getOwnerZaptecOnboardingAttempt(Operations.GetOwnerZaptecOnboardingAttempt.Input(
+            path: path,
+            headers: headers
+        ))
+    }
+    /// Advance or reconcile Zaptec onboarding for the current home owner.
+    ///
+    /// - Remark: HTTP `POST /v1/projects/{projectId}/zaptec/onboarding/{attemptId}/advance`.
+    /// - Remark: Generated from `#/paths//v1/projects/{projectId}/zaptec/onboarding/{attemptId}/advance/post(advance_owner_zaptec_onboarding)`.
+    public func advanceOwnerZaptecOnboarding(
+        path: Operations.AdvanceOwnerZaptecOnboarding.Input.Path,
+        headers: Operations.AdvanceOwnerZaptecOnboarding.Input.Headers = .init(),
+        body: Operations.AdvanceOwnerZaptecOnboarding.Input.Body
+    ) async throws -> Operations.AdvanceOwnerZaptecOnboarding.Output {
+        try await advanceOwnerZaptecOnboarding(Operations.AdvanceOwnerZaptecOnboarding.Input(
+            path: path,
+            headers: headers,
+            body: body
+        ))
+    }
+    /// Cancel an uncommitted Zaptec onboarding attempt for the current home owner.
+    ///
+    /// - Remark: HTTP `POST /v1/projects/{projectId}/zaptec/onboarding/{attemptId}/cancel`.
+    /// - Remark: Generated from `#/paths//v1/projects/{projectId}/zaptec/onboarding/{attemptId}/cancel/post(cancel_owner_zaptec_onboarding)`.
+    public func cancelOwnerZaptecOnboarding(
+        path: Operations.CancelOwnerZaptecOnboarding.Input.Path,
+        headers: Operations.CancelOwnerZaptecOnboarding.Input.Headers = .init(),
+        body: Operations.CancelOwnerZaptecOnboarding.Input.Body
+    ) async throws -> Operations.CancelOwnerZaptecOnboarding.Output {
+        try await cancelOwnerZaptecOnboarding(Operations.CancelOwnerZaptecOnboarding.Input(
+            path: path,
+            headers: headers,
+            body: body
+        ))
+    }
+    /// Begin Zaptec consent for the current home owner.
+    ///
+    /// - Remark: HTTP `POST /v1/projects/{projectId}/zaptec/onboarding/{attemptId}/consent`.
+    /// - Remark: Generated from `#/paths//v1/projects/{projectId}/zaptec/onboarding/{attemptId}/consent/post(begin_owner_zaptec_consent)`.
+    public func beginOwnerZaptecConsent(
+        path: Operations.BeginOwnerZaptecConsent.Input.Path,
+        headers: Operations.BeginOwnerZaptecConsent.Input.Headers = .init()
+    ) async throws -> Operations.BeginOwnerZaptecConsent.Output {
+        try await beginOwnerZaptecConsent(Operations.BeginOwnerZaptecConsent.Input(
+            path: path,
+            headers: headers
+        ))
+    }
+    /// Complete Zaptec consent for the current home owner.
+    ///
+    /// - Remark: HTTP `POST /v1/projects/{projectId}/zaptec/onboarding/{attemptId}/consent/complete`.
+    /// - Remark: Generated from `#/paths//v1/projects/{projectId}/zaptec/onboarding/{attemptId}/consent/complete/post(complete_owner_zaptec_consent)`.
+    public func completeOwnerZaptecConsent(
+        path: Operations.CompleteOwnerZaptecConsent.Input.Path,
+        headers: Operations.CompleteOwnerZaptecConsent.Input.Headers = .init(),
+        body: Operations.CompleteOwnerZaptecConsent.Input.Body
+    ) async throws -> Operations.CompleteOwnerZaptecConsent.Output {
+        try await completeOwnerZaptecConsent(Operations.CompleteOwnerZaptecConsent.Input(
+            path: path,
+            headers: headers,
+            body: body
+        ))
+    }
+    /// Save reviewed Zaptec circuit mappings for the current home owner.
+    ///
+    /// - Remark: HTTP `PUT /v1/projects/{projectId}/zaptec/onboarding/{attemptId}/review`.
+    /// - Remark: Generated from `#/paths//v1/projects/{projectId}/zaptec/onboarding/{attemptId}/review/put(confirm_owner_zaptec_review)`.
+    public func confirmOwnerZaptecReview(
+        path: Operations.ConfirmOwnerZaptecReview.Input.Path,
+        headers: Operations.ConfirmOwnerZaptecReview.Input.Headers = .init(),
+        body: Operations.ConfirmOwnerZaptecReview.Input.Body
+    ) async throws -> Operations.ConfirmOwnerZaptecReview.Output {
+        try await confirmOwnerZaptecReview(Operations.ConfirmOwnerZaptecReview.Input(
+            path: path,
+            headers: headers,
+            body: body
+        ))
+    }
+    /// Public charging locations from NOBIL (currently Norway and Sweden).
+    ///
+    /// Static catalogue data, not live availability, a tariff, or a charging grant.
+    /// Every location is directionsOnly and uses a catalogue ID that cannot be sent
+    /// to Flowion's charger commands. Missing operator, connector or power metadata
+    /// remains unknown; ownership is never presented as operation. Source contact
+    /// and editor details are discarded. At most 500 source locations per box are
+    /// retained. X-Catalogue-Coverage=limited asks the caller to use a smaller box.
+    /// Cursor pages use ascending source IDs; source edits between requests may
+    /// add/remove locations. This is not a frozen snapshot or an exhaustive survey.
+    ///
+    /// - Remark: HTTP `GET /v1/public/charging-locations`.
+    /// - Remark: Generated from `#/paths//v1/public/charging-locations/get(list_public_charging_locations)`.
+    public func listPublicChargingLocations(
+        query: Operations.ListPublicChargingLocations.Input.Query,
+        headers: Operations.ListPublicChargingLocations.Input.Headers = .init()
+    ) async throws -> Operations.ListPublicChargingLocations.Output {
+        try await listPublicChargingLocations(Operations.ListPublicChargingLocations.Input(
+            query: query,
+            headers: headers
+        ))
+    }
+    /// Says who invited you, and that a decision is waiting.
+    ///
+    /// **Changes nothing.** No token or sign-in is needed. Safe for a mail scanner to open: it reads
+    /// whether a decision is pending and nothing more, and the answer holds no
+    /// customer, address or job. An unknown link, a used one and one whose decision
+    /// has been taken are the same `404`. Limited per client address.
+    ///
+    /// - Remark: HTTP `GET /v1/public/job-invitation-decisions/{decisionToken}`.
+    /// - Remark: Generated from `#/paths//v1/public/job-invitation-decisions/{decisionToken}/get(get_invitation_decision)`.
+    public func getInvitationDecision(
+        path: Operations.GetInvitationDecision.Input.Path,
+        headers: Operations.GetInvitationDecision.Input.Headers = .init()
+    ) async throws -> Operations.GetInvitationDecision.Output {
+        try await getInvitationDecision(Operations.GetInvitationDecision.Input(
+            path: path,
+            headers: headers
+        ))
+    }
+    /// Takes a decision on a job invitation.
+    ///
+    /// Decline it, decline and block the sender, report it, or remove your data.
+    /// No token or sign-in is needed. The same decision sent again is answered the
+    /// same way (`200`), so a double click or a retry is harmless; a link that is
+    /// unknown, or whose invitation was decided otherwise, is the same `404` as on
+    /// `GET`. Limited per client address.
+    ///
+    /// - Remark: HTTP `POST /v1/public/job-invitation-decisions/{decisionToken}`.
+    /// - Remark: Generated from `#/paths//v1/public/job-invitation-decisions/{decisionToken}/post(decide_invitation)`.
+    public func decideInvitation(
+        path: Operations.DecideInvitation.Input.Path,
+        headers: Operations.DecideInvitation.Input.Headers = .init(),
+        body: Operations.DecideInvitation.Input.Body
+    ) async throws -> Operations.DecideInvitation.Output {
+        try await decideInvitation(Operations.DecideInvitation.Input(
+            path: path,
+            headers: headers,
+            body: body
+        ))
+    }
+    /// Says what a printed charger label is, to anyone.
+    ///
+    /// No token is needed or read; one that is sent is ignored. `labelId` is the ID
+    /// as printed, scanned or typed: any case, with or without the dash. The answer
+    /// is `live` (with the outlet's number), `notSetUp`, `retired` or
+    /// `unrecognised`, and never a name, place, organization, project, price or
+    /// person. Every caller is told the same, so a shared cache may hold it for a
+    /// minute. Limited per client address.
+    ///
+    /// - Remark: HTTP `GET /v1/public/labels/{labelId}`.
+    /// - Remark: Generated from `#/paths//v1/public/labels/{labelId}/get(get_public_label)`.
+    public func getPublicLabel(
+        path: Operations.GetPublicLabel.Input.Path,
+        headers: Operations.GetPublicLabel.Input.Headers = .init()
+    ) async throws -> Operations.GetPublicLabel.Output {
+        try await getPublicLabel(Operations.GetPublicLabel.Input(
+            path: path,
+            headers: headers
+        ))
+    }
+    /// Read a charging invitation for the signed-in recipient
+    ///
+    /// - Remark: HTTP `GET /v1/resident-invitations/{token}`.
+    /// - Remark: Generated from `#/paths//v1/resident-invitations/{token}/get(get_resident_invitation)`.
+    public func getResidentInvitation(
+        path: Operations.GetResidentInvitation.Input.Path,
+        headers: Operations.GetResidentInvitation.Input.Headers = .init()
+    ) async throws -> Operations.GetResidentInvitation.Output {
+        try await getResidentInvitation(Operations.GetResidentInvitation.Input(
+            path: path,
+            headers: headers
+        ))
+    }
+    /// Accept charging terms and activate resident access
+    ///
+    /// - Remark: HTTP `POST /v1/resident-invitations/{token}/accept`.
+    /// - Remark: Generated from `#/paths//v1/resident-invitations/{token}/accept/post(accept_resident_invitation)`.
+    public func acceptResidentInvitation(
+        path: Operations.AcceptResidentInvitation.Input.Path,
+        headers: Operations.AcceptResidentInvitation.Input.Headers = .init(),
+        body: Operations.AcceptResidentInvitation.Input.Body
+    ) async throws -> Operations.AcceptResidentInvitation.Output {
+        try await acceptResidentInvitation(Operations.AcceptResidentInvitation.Input(
+            path: path,
+            headers: headers,
+            body: body
         ))
     }
     /// Fetches a single transaction's detail by id.

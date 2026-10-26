@@ -12,9 +12,30 @@ public import struct Foundation.Date
 extension Components {
     /// Types generated from the `#/components/schemas` section of the OpenAPI document.
     public enum Schemas {
-        /// Exactly one of `newOrganization`/`existingOrganization` — two
-        /// independent optional fields rather than a tagged enum, matching the
-        /// contract's literal wire shape.
+        /// - Remark: Generated from `#/components/schemas/AcceptAdditionOfferResponseView`.
+        public struct AcceptAdditionOfferResponseView: Codable, Hashable, Sendable {
+            /// Steps after the acceptance that have not confirmed yet (the audit, the
+            /// job's end, the receipt). They finish by themselves; the acceptance
+            /// stands whatever they do.
+            ///
+            /// - Remark: Generated from `#/components/schemas/AcceptAdditionOfferResponseView/pendingSteps`.
+            public var pendingSteps: [Swift.String]
+            /// Creates a new `AcceptAdditionOfferResponseView`.
+            ///
+            /// - Parameters:
+            ///   - pendingSteps: Steps after the acceptance that have not confirmed yet (the audit, the
+            public init(pendingSteps: [Swift.String]) {
+                self.pendingSteps = pendingSteps
+            }
+            public enum CodingKeys: String, CodingKey {
+                case pendingSteps
+            }
+        }
+        /// Exactly one of `newOrganization`, `existingOrganization` and `newProject`
+        /// — independent optional fields rather than a tagged enum, matching the
+        /// contract's literal wire shape. `newProject` is a sibling, not a field of
+        /// `existingOrganization`, because making that one's `projectId` optional
+        /// would break every client that builds it.
         ///
         /// - Remark: Generated from `#/components/schemas/AcceptHandoverBody`.
         public struct AcceptHandoverBody: Codable, Hashable, Sendable {
@@ -58,21 +79,45 @@ extension Components {
             }
             /// - Remark: Generated from `#/components/schemas/AcceptHandoverBody/newOrganization`.
             public var newOrganization: Components.Schemas.AcceptHandoverBody.NewOrganizationPayload?
+            /// - Remark: Generated from `#/components/schemas/AcceptHandoverBody/newProject`.
+            public struct NewProjectPayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/AcceptHandoverBody/newProject/value1`.
+                public var value1: Components.Schemas.NewProjectInput
+                /// Creates a new `NewProjectPayload`.
+                ///
+                /// - Parameters:
+                ///   - value1:
+                public init(value1: Components.Schemas.NewProjectInput) {
+                    self.value1 = value1
+                }
+                public init(from decoder: any Swift.Decoder) throws {
+                    self.value1 = try .init(from: decoder)
+                }
+                public func encode(to encoder: any Swift.Encoder) throws {
+                    try self.value1.encode(to: encoder)
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/AcceptHandoverBody/newProject`.
+            public var newProject: Components.Schemas.AcceptHandoverBody.NewProjectPayload?
             /// Creates a new `AcceptHandoverBody`.
             ///
             /// - Parameters:
             ///   - existingOrganization:
             ///   - newOrganization:
+            ///   - newProject:
             public init(
                 existingOrganization: Components.Schemas.AcceptHandoverBody.ExistingOrganizationPayload? = nil,
-                newOrganization: Components.Schemas.AcceptHandoverBody.NewOrganizationPayload? = nil
+                newOrganization: Components.Schemas.AcceptHandoverBody.NewOrganizationPayload? = nil,
+                newProject: Components.Schemas.AcceptHandoverBody.NewProjectPayload? = nil
             ) {
                 self.existingOrganization = existingOrganization
                 self.newOrganization = newOrganization
+                self.newProject = newProject
             }
             public enum CodingKeys: String, CodingKey {
                 case existingOrganization
                 case newOrganization
+                case newProject
             }
         }
         /// - Remark: Generated from `#/components/schemas/AcceptHandoverResponseView`.
@@ -146,6 +191,191 @@ extension Components {
                 case membership
             }
         }
+        /// Where the job's location is received. Name exactly one field.
+        ///
+        /// - Remark: Generated from `#/components/schemas/AcceptJobInvitationRequest`.
+        public struct AcceptJobInvitationRequest: Codable, Hashable, Sendable {
+            /// An organization you already run, whose registration number matches the
+            /// customer's. Its operations project is used or created.
+            ///
+            /// - Remark: Generated from `#/components/schemas/AcceptJobInvitationRequest/existingOrganizationId`.
+            public var existingOrganizationId: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/AcceptJobInvitationRequest/newOrganization`.
+            public struct NewOrganizationPayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/AcceptJobInvitationRequest/newOrganization/value1`.
+                public var value1: Components.Schemas.NewOrganizationInput
+                /// Creates a new `NewOrganizationPayload`.
+                ///
+                /// - Parameters:
+                ///   - value1:
+                public init(value1: Components.Schemas.NewOrganizationInput) {
+                    self.value1 = value1
+                }
+                public init(from decoder: any Swift.Decoder) throws {
+                    self.value1 = try .init(from: decoder)
+                }
+                public func encode(to encoder: any Swift.Encoder) throws {
+                    try self.value1.encode(to: encoder)
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/AcceptJobInvitationRequest/newOrganization`.
+            public var newOrganization: Components.Schemas.AcceptJobInvitationRequest.NewOrganizationPayload?
+            /// For a job on a location the customer already has: accept for the
+            /// organization that owns it.
+            ///
+            /// - Remark: Generated from `#/components/schemas/AcceptJobInvitationRequest/owningOrganization`.
+            public var owningOrganization: Swift.Bool?
+            /// Creates a new `AcceptJobInvitationRequest`.
+            ///
+            /// - Parameters:
+            ///   - existingOrganizationId: An organization you already run, whose registration number matches the
+            ///   - newOrganization:
+            ///   - owningOrganization: For a job on a location the customer already has: accept for the
+            public init(
+                existingOrganizationId: Swift.String? = nil,
+                newOrganization: Components.Schemas.AcceptJobInvitationRequest.NewOrganizationPayload? = nil,
+                owningOrganization: Swift.Bool? = nil
+            ) {
+                self.existingOrganizationId = existingOrganizationId
+                self.newOrganization = newOrganization
+                self.owningOrganization = owningOrganization
+            }
+            public enum CodingKeys: String, CodingKey {
+                case existingOrganizationId
+                case newOrganization
+                case owningOrganization
+            }
+        }
+        /// Accepts an invitation.
+        ///
+        /// - Remark: Generated from `#/components/schemas/AcceptMyResidentInvitationRequest`.
+        public struct AcceptMyResidentInvitationRequest: Codable, Hashable, Sendable {
+            /// Must be `true`: the person has read the charging terms.
+            ///
+            /// - Remark: Generated from `#/components/schemas/AcceptMyResidentInvitationRequest/acknowledgeTerms`.
+            public var acknowledgeTerms: Swift.Bool
+            /// Creates a new `AcceptMyResidentInvitationRequest`.
+            ///
+            /// - Parameters:
+            ///   - acknowledgeTerms: Must be `true`: the person has read the charging terms.
+            public init(acknowledgeTerms: Swift.Bool) {
+                self.acknowledgeTerms = acknowledgeTerms
+            }
+            public enum CodingKeys: String, CodingKey {
+                case acknowledgeTerms
+            }
+            public init(from decoder: any Swift.Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                self.acknowledgeTerms = try container.decode(
+                    Swift.Bool.self,
+                    forKey: .acknowledgeTerms
+                )
+                try decoder.ensureNoAdditionalProperties(knownKeys: [
+                    "acknowledgeTerms"
+                ])
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/AcceptResidentRequest`.
+        public struct AcceptResidentRequest: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/AcceptResidentRequest/acknowledgeTerms`.
+            public var acknowledgeTerms: Swift.Bool
+            /// Creates a new `AcceptResidentRequest`.
+            ///
+            /// - Parameters:
+            ///   - acknowledgeTerms:
+            public init(acknowledgeTerms: Swift.Bool) {
+                self.acknowledgeTerms = acknowledgeTerms
+            }
+            public enum CodingKeys: String, CodingKey {
+                case acknowledgeTerms
+            }
+            public init(from decoder: any Swift.Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                self.acknowledgeTerms = try container.decode(
+                    Swift.Bool.self,
+                    forKey: .acknowledgeTerms
+                )
+                try decoder.ensureNoAdditionalProperties(knownKeys: [
+                    "acknowledgeTerms"
+                ])
+            }
+        }
+        /// The job is linked to the organization.
+        ///
+        /// - Remark: Generated from `#/components/schemas/AcceptedJobInvitation`.
+        public struct AcceptedJobInvitation: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/AcceptedJobInvitation/jobId`.
+            public var jobId: Swift.String
+            /// - Remark: Generated from `#/components/schemas/AcceptedJobInvitation/linkedOrganizationId`.
+            public var linkedOrganizationId: Swift.String
+            /// The operations project the organization prepares in. Absent when the
+            /// job is on a location the customer already has.
+            ///
+            /// - Remark: Generated from `#/components/schemas/AcceptedJobInvitation/linkedProjectId`.
+            public var linkedProjectId: Swift.String?
+            /// Creates a new `AcceptedJobInvitation`.
+            ///
+            /// - Parameters:
+            ///   - jobId:
+            ///   - linkedOrganizationId:
+            ///   - linkedProjectId: The operations project the organization prepares in. Absent when the
+            public init(
+                jobId: Swift.String,
+                linkedOrganizationId: Swift.String,
+                linkedProjectId: Swift.String? = nil
+            ) {
+                self.jobId = jobId
+                self.linkedOrganizationId = linkedOrganizationId
+                self.linkedProjectId = linkedProjectId
+            }
+            public enum CodingKeys: String, CodingKey {
+                case jobId
+                case linkedOrganizationId
+                case linkedProjectId
+            }
+        }
+        /// The place an accepted invitation gave access to.
+        ///
+        /// - Remark: Generated from `#/components/schemas/AcceptedPlace`.
+        public struct AcceptedPlace: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/AcceptedPlace/organizationName`.
+            public var organizationName: Swift.String
+            /// - Remark: Generated from `#/components/schemas/AcceptedPlace/projectId`.
+            public var projectId: Swift.String
+            /// Creates a new `AcceptedPlace`.
+            ///
+            /// - Parameters:
+            ///   - organizationName:
+            ///   - projectId:
+            public init(
+                organizationName: Swift.String,
+                projectId: Swift.String
+            ) {
+                self.organizationName = organizationName
+                self.projectId = projectId
+            }
+            public enum CodingKeys: String, CodingKey {
+                case organizationName
+                case projectId
+            }
+        }
+        /// An accepted invitation.
+        ///
+        /// - Remark: Generated from `#/components/schemas/AcceptedResidentInvitation`.
+        public struct AcceptedResidentInvitation: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/AcceptedResidentInvitation/place`.
+            public var place: Components.Schemas.AcceptedPlace
+            /// Creates a new `AcceptedResidentInvitation`.
+            ///
+            /// - Parameters:
+            ///   - place:
+            public init(place: Components.Schemas.AcceptedPlace) {
+                self.place = place
+            }
+            public enum CodingKeys: String, CodingKey {
+                case place
+            }
+        }
         /// Whether this station has recently been accepting CSMS-issued charging
         /// limits — a closed, three-valued vocabulary rather than a bare boolean.
         ///
@@ -155,22 +385,33 @@ extension Components {
         public struct AccessPolicyOwnView: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/AccessPolicyOwnView/accessType`.
             public var accessType: Swift.String?
+            /// Spec 148: this scope's own switch for id-token credentials (`on` |
+            /// `off`); `null` when it inherits the project's. A project's own switch
+            /// is `credentialsMode` on its authorization settings, so this is always
+            /// `null` at project scope.
+            ///
+            /// - Remark: Generated from `#/components/schemas/AccessPolicyOwnView/credentials`.
+            public var credentials: Swift.String?
             /// - Remark: Generated from `#/components/schemas/AccessPolicyOwnView/offlineCharging`.
             public var offlineCharging: Swift.String?
             /// Creates a new `AccessPolicyOwnView`.
             ///
             /// - Parameters:
             ///   - accessType:
+            ///   - credentials: Spec 148: this scope's own switch for id-token credentials (`on` |
             ///   - offlineCharging:
             public init(
                 accessType: Swift.String? = nil,
+                credentials: Swift.String? = nil,
                 offlineCharging: Swift.String? = nil
             ) {
                 self.accessType = accessType
+                self.credentials = credentials
                 self.offlineCharging = offlineCharging
             }
             public enum CodingKeys: String, CodingKey {
                 case accessType
+                case credentials
                 case offlineCharging
             }
         }
@@ -665,6 +906,183 @@ extension Components {
                 case provider
             }
         }
+        /// - Remark: Generated from `#/components/schemas/AdditionOfferStateApi`.
+        public typealias AdditionOfferStateApi = FlowionAdditionOfferStateApi
+        /// The latest offer of a job's additions, whatever became of it.
+        ///
+        /// - Remark: Generated from `#/components/schemas/AdditionOfferStatusView`.
+        public struct AdditionOfferStatusView: Codable, Hashable, Sendable {
+            /// The address the link was sent to.
+            ///
+            /// - Remark: Generated from `#/components/schemas/AdditionOfferStatusView/contactEmail`.
+            public var contactEmail: Swift.String
+            /// - Remark: Generated from `#/components/schemas/AdditionOfferStatusView/createdAt`.
+            public var createdAt: Foundation.Date
+            /// - Remark: Generated from `#/components/schemas/AdditionOfferStatusView/decidedAt`.
+            public var decidedAt: Foundation.Date?
+            /// - Remark: Generated from `#/components/schemas/AdditionOfferStatusView/declineReason`.
+            public var declineReason: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/AdditionOfferStatusView/expiresAt`.
+            public var expiresAt: Foundation.Date
+            /// - Remark: Generated from `#/components/schemas/AdditionOfferStatusView/id`.
+            public var id: Swift.String
+            /// - Remark: Generated from `#/components/schemas/AdditionOfferStatusView/state`.
+            public var state: Components.Schemas.AdditionOfferStateApi
+            /// Creates a new `AdditionOfferStatusView`.
+            ///
+            /// - Parameters:
+            ///   - contactEmail: The address the link was sent to.
+            ///   - createdAt:
+            ///   - decidedAt:
+            ///   - declineReason:
+            ///   - expiresAt:
+            ///   - id:
+            ///   - state:
+            public init(
+                contactEmail: Swift.String,
+                createdAt: Foundation.Date,
+                decidedAt: Foundation.Date? = nil,
+                declineReason: Swift.String? = nil,
+                expiresAt: Foundation.Date,
+                id: Swift.String,
+                state: Components.Schemas.AdditionOfferStateApi
+            ) {
+                self.contactEmail = contactEmail
+                self.createdAt = createdAt
+                self.decidedAt = decidedAt
+                self.declineReason = declineReason
+                self.expiresAt = expiresAt
+                self.id = id
+                self.state = state
+            }
+            public enum CodingKeys: String, CodingKey {
+                case contactEmail
+                case createdAt
+                case decidedAt
+                case declineReason
+                case expiresAt
+                case id
+                case state
+            }
+        }
+        /// Everything the customer is asked to accept: every added charger and circuit,
+        /// every held raise, and every change already applied.
+        ///
+        /// - Remark: Generated from `#/components/schemas/AdditionOfferView`.
+        public struct AdditionOfferView: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/AdditionOfferView/additions`.
+            public var additions: [Components.Schemas.JobAdditionView]
+            /// - Remark: Generated from `#/components/schemas/AdditionOfferView/address`.
+            public var address: Swift.String
+            /// - Remark: Generated from `#/components/schemas/AdditionOfferView/circuitChanges`.
+            public var circuitChanges: [Components.Schemas.JobCircuitChangeView]
+            /// - Remark: Generated from `#/components/schemas/AdditionOfferView/customer`.
+            public struct CustomerPayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/AdditionOfferView/customer/value1`.
+                public var value1: Components.Schemas.JobCustomerView
+                /// Creates a new `CustomerPayload`.
+                ///
+                /// - Parameters:
+                ///   - value1:
+                public init(value1: Components.Schemas.JobCustomerView) {
+                    self.value1 = value1
+                }
+                public init(from decoder: any Swift.Decoder) throws {
+                    self.value1 = try .init(from: decoder)
+                }
+                public func encode(to encoder: any Swift.Encoder) throws {
+                    try self.value1.encode(to: encoder)
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/AdditionOfferView/customer`.
+            public var customer: Components.Schemas.AdditionOfferView.CustomerPayload?
+            /// - Remark: Generated from `#/components/schemas/AdditionOfferView/expiresAt`.
+            public var expiresAt: Foundation.Date
+            /// The installer organization's name.
+            ///
+            /// - Remark: Generated from `#/components/schemas/AdditionOfferView/installerName`.
+            public var installerName: Swift.String
+            /// - Remark: Generated from `#/components/schemas/AdditionOfferView/jobId`.
+            public var jobId: Swift.String
+            /// The location the additions are at.
+            ///
+            /// - Remark: Generated from `#/components/schemas/AdditionOfferView/locationId`.
+            public var locationId: Swift.String
+            /// - Remark: Generated from `#/components/schemas/AdditionOfferView/offerId`.
+            public var offerId: Swift.String
+            /// - Remark: Generated from `#/components/schemas/AdditionOfferView/state`.
+            public var state: Components.Schemas.AdditionOfferStateApi
+            /// Creates a new `AdditionOfferView`.
+            ///
+            /// - Parameters:
+            ///   - additions:
+            ///   - address:
+            ///   - circuitChanges:
+            ///   - customer:
+            ///   - expiresAt:
+            ///   - installerName: The installer organization's name.
+            ///   - jobId:
+            ///   - locationId: The location the additions are at.
+            ///   - offerId:
+            ///   - state:
+            public init(
+                additions: [Components.Schemas.JobAdditionView],
+                address: Swift.String,
+                circuitChanges: [Components.Schemas.JobCircuitChangeView],
+                customer: Components.Schemas.AdditionOfferView.CustomerPayload? = nil,
+                expiresAt: Foundation.Date,
+                installerName: Swift.String,
+                jobId: Swift.String,
+                locationId: Swift.String,
+                offerId: Swift.String,
+                state: Components.Schemas.AdditionOfferStateApi
+            ) {
+                self.additions = additions
+                self.address = address
+                self.circuitChanges = circuitChanges
+                self.customer = customer
+                self.expiresAt = expiresAt
+                self.installerName = installerName
+                self.jobId = jobId
+                self.locationId = locationId
+                self.offerId = offerId
+                self.state = state
+            }
+            public enum CodingKeys: String, CodingKey {
+                case additions
+                case address
+                case circuitChanges
+                case customer
+                case expiresAt
+                case installerName
+                case jobId
+                case locationId
+                case offerId
+                case state
+            }
+        }
+        /// `200 {}`: the confirmation is recorded. An empty object rather than no
+        /// body, so a client can always parse a success.
+        ///
+        /// - Remark: Generated from `#/components/schemas/AddressConfirmationCompleted`.
+        public typealias AddressConfirmationCompleted = OpenAPIRuntime.OpenAPIObjectContainer
+        /// - Remark: Generated from `#/components/schemas/AddressConfirmationRequested`.
+        public struct AddressConfirmationRequested: Codable, Hashable, Sendable {
+            /// When the emailed link and code stop working.
+            ///
+            /// - Remark: Generated from `#/components/schemas/AddressConfirmationRequested/expiresAt`.
+            public var expiresAt: Foundation.Date
+            /// Creates a new `AddressConfirmationRequested`.
+            ///
+            /// - Parameters:
+            ///   - expiresAt: When the emailed link and code stop working.
+            public init(expiresAt: Foundation.Date) {
+                self.expiresAt = expiresAt
+            }
+            public enum CodingKeys: String, CodingKey {
+                case expiresAt
+            }
+        }
         /// One hour's worth of grants or reclaims for one (direction, reason)
         /// pair — see `energy_controller.proto`'s own doc comment on
         /// `AllocationDecisionBucket` for why `direction` is derived rather than
@@ -926,12 +1344,22 @@ extension Components {
                 case revokedAt
             }
         }
+        /// Which kinds of organization may use an app (spec 166). Reviewed content.
+        ///
+        /// - Remark: Generated from `#/components/schemas/AppAudience`.
+        public typealias AppAudience = FlowionAppAudience
         /// What kind of system the app connects, used to filter the Connections
         /// directory. Chosen at registration and reviewed with the rest of the app
         /// before publication. A closed set: any other value is refused.
         ///
         /// - Remark: Generated from `#/components/schemas/AppCategory`.
         public typealias AppCategory = FlowionAppCategory
+        /// How an app proves who it is at the token endpoint (spec 166). A `public`
+        /// app holds no secret and uses PKCE; a `confidential` app authenticates with
+        /// its client secret.
+        ///
+        /// - Remark: Generated from `#/components/schemas/AppClientType`.
+        public typealias AppClientType = FlowionAppClientType
         /// - Remark: Generated from `#/components/schemas/AppCredentialDisclosure`.
         public struct AppCredentialDisclosure: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/AppCredentialDisclosure/app`.
@@ -977,6 +1405,10 @@ extension Components {
         }
         /// - Remark: Generated from `#/components/schemas/AppReviewState`.
         public typealias AppReviewState = FlowionAppReviewState
+        /// Where a proposed edit to a published app stands (spec 166).
+        ///
+        /// - Remark: Generated from `#/components/schemas/AppRevisionState`.
+        public typealias AppRevisionState = FlowionAppRevisionState
         /// FR-023/FR-024. **`pending` is never reported as `inSync`** — the only
         /// two ways to reach `inSync` are an exact version match or a station that
         /// reported the list empty while none is wanted; every other case,
@@ -1140,6 +1572,127 @@ extension Components {
                 case redirectUri
                 case resource
                 case state
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/ApproveAuthorizeBody`.
+        public struct ApproveAuthorizeBody: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/ApproveAuthorizeBody/clientId`.
+            public var clientId: Swift.String
+            /// - Remark: Generated from `#/components/schemas/ApproveAuthorizeBody/codeChallenge`.
+            public var codeChallenge: Swift.String
+            /// - Remark: Generated from `#/components/schemas/ApproveAuthorizeBody/codeChallengeMethod`.
+            public var codeChallengeMethod: Swift.String
+            /// What the connection is called; the app's name when omitted.
+            ///
+            /// - Remark: Generated from `#/components/schemas/ApproveAuthorizeBody/label`.
+            public var label: Swift.String?
+            /// The home the person chose, one of those the preview listed.
+            ///
+            /// - Remark: Generated from `#/components/schemas/ApproveAuthorizeBody/organizationId`.
+            public var organizationId: Swift.String
+            /// - Remark: Generated from `#/components/schemas/ApproveAuthorizeBody/redirectUri`.
+            public var redirectUri: Swift.String
+            /// - Remark: Generated from `#/components/schemas/ApproveAuthorizeBody/requestId`.
+            public var requestId: Swift.String
+            /// The scopes approved: all the required ones and only requested ones.
+            ///
+            /// - Remark: Generated from `#/components/schemas/ApproveAuthorizeBody/scopes`.
+            public var scopes: [Swift.String]
+            /// - Remark: Generated from `#/components/schemas/ApproveAuthorizeBody/state`.
+            public var state: Swift.String
+            /// Creates a new `ApproveAuthorizeBody`.
+            ///
+            /// - Parameters:
+            ///   - clientId:
+            ///   - codeChallenge:
+            ///   - codeChallengeMethod:
+            ///   - label: What the connection is called; the app's name when omitted.
+            ///   - organizationId: The home the person chose, one of those the preview listed.
+            ///   - redirectUri:
+            ///   - requestId:
+            ///   - scopes: The scopes approved: all the required ones and only requested ones.
+            ///   - state:
+            public init(
+                clientId: Swift.String,
+                codeChallenge: Swift.String,
+                codeChallengeMethod: Swift.String,
+                label: Swift.String? = nil,
+                organizationId: Swift.String,
+                redirectUri: Swift.String,
+                requestId: Swift.String,
+                scopes: [Swift.String],
+                state: Swift.String
+            ) {
+                self.clientId = clientId
+                self.codeChallenge = codeChallenge
+                self.codeChallengeMethod = codeChallengeMethod
+                self.label = label
+                self.organizationId = organizationId
+                self.redirectUri = redirectUri
+                self.requestId = requestId
+                self.scopes = scopes
+                self.state = state
+            }
+            public enum CodingKeys: String, CodingKey {
+                case clientId
+                case codeChallenge
+                case codeChallengeMethod
+                case label
+                case organizationId
+                case redirectUri
+                case requestId
+                case scopes
+                case state
+            }
+            public init(from decoder: any Swift.Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                self.clientId = try container.decode(
+                    Swift.String.self,
+                    forKey: .clientId
+                )
+                self.codeChallenge = try container.decode(
+                    Swift.String.self,
+                    forKey: .codeChallenge
+                )
+                self.codeChallengeMethod = try container.decode(
+                    Swift.String.self,
+                    forKey: .codeChallengeMethod
+                )
+                self.label = try container.decodeIfPresent(
+                    Swift.String.self,
+                    forKey: .label
+                )
+                self.organizationId = try container.decode(
+                    Swift.String.self,
+                    forKey: .organizationId
+                )
+                self.redirectUri = try container.decode(
+                    Swift.String.self,
+                    forKey: .redirectUri
+                )
+                self.requestId = try container.decode(
+                    Swift.String.self,
+                    forKey: .requestId
+                )
+                self.scopes = try container.decode(
+                    [Swift.String].self,
+                    forKey: .scopes
+                )
+                self.state = try container.decode(
+                    Swift.String.self,
+                    forKey: .state
+                )
+                try decoder.ensureNoAdditionalProperties(knownKeys: [
+                    "clientId",
+                    "codeChallenge",
+                    "codeChallengeMethod",
+                    "label",
+                    "organizationId",
+                    "redirectUri",
+                    "requestId",
+                    "scopes",
+                    "state"
+                ])
             }
         }
         /// - Remark: Generated from `#/components/schemas/ApproveBody`.
@@ -1355,21 +1908,6 @@ extension Components {
                 case tariffId
             }
         }
-        /// - Remark: Generated from `#/components/schemas/AssignTechnicianRequest`.
-        public struct AssignTechnicianRequest: Codable, Hashable, Sendable {
-            /// - Remark: Generated from `#/components/schemas/AssignTechnicianRequest/grantId`.
-            public var grantId: Swift.String
-            /// Creates a new `AssignTechnicianRequest`.
-            ///
-            /// - Parameters:
-            ///   - grantId:
-            public init(grantId: Swift.String) {
-                self.grantId = grantId
-            }
-            public enum CodingKeys: String, CodingKey {
-                case grantId
-            }
-        }
         /// - Remark: Generated from `#/components/schemas/AssistantChoiceAnswer`.
         public struct AssistantChoiceAnswer: Codable, Hashable, Sendable {
             /// One of the offered labels. Exactly one of `chosen` and `freeText`.
@@ -1555,6 +2093,237 @@ extension Components {
                 case id
             }
         }
+        /// - Remark: Generated from `#/components/schemas/AssistantConversationHistory`.
+        public struct AssistantConversationHistory: Codable, Hashable, Sendable {
+            /// The organization's daily limit on conversations.
+            ///
+            /// - Remark: Generated from `#/components/schemas/AssistantConversationHistory/dailyLimit`.
+            public var dailyLimit: Swift.Int64
+            /// The member's conversations here, newest activity first.
+            ///
+            /// - Remark: Generated from `#/components/schemas/AssistantConversationHistory/data`.
+            public var data: [Components.Schemas.AssistantConversationSummary]
+            /// - Remark: Generated from `#/components/schemas/AssistantConversationHistory/nextCursor`.
+            public var nextCursor: Swift.String?
+            /// How many more conversations the organization may start today (UTC),
+            /// across its projects and members. `0` once the daily limit is met; the
+            /// next start is `429 assistantLimitReached`.
+            ///
+            /// - Remark: Generated from `#/components/schemas/AssistantConversationHistory/remainingToday`.
+            public var remainingToday: Swift.Int64
+            /// When the day's count starts again: the next UTC midnight.
+            ///
+            /// - Remark: Generated from `#/components/schemas/AssistantConversationHistory/resetsAt`.
+            public var resetsAt: Foundation.Date
+            /// Creates a new `AssistantConversationHistory`.
+            ///
+            /// - Parameters:
+            ///   - dailyLimit: The organization's daily limit on conversations.
+            ///   - data: The member's conversations here, newest activity first.
+            ///   - nextCursor:
+            ///   - remainingToday: How many more conversations the organization may start today (UTC),
+            ///   - resetsAt: When the day's count starts again: the next UTC midnight.
+            public init(
+                dailyLimit: Swift.Int64,
+                data: [Components.Schemas.AssistantConversationSummary],
+                nextCursor: Swift.String? = nil,
+                remainingToday: Swift.Int64,
+                resetsAt: Foundation.Date
+            ) {
+                self.dailyLimit = dailyLimit
+                self.data = data
+                self.nextCursor = nextCursor
+                self.remainingToday = remainingToday
+                self.resetsAt = resetsAt
+            }
+            public enum CodingKeys: String, CodingKey {
+                case dailyLimit
+                case data
+                case nextCursor
+                case remainingToday
+                case resetsAt
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/AssistantConversationSummary`.
+        public struct AssistantConversationSummary: Codable, Hashable, Sendable {
+            /// Whether it has closed: started a new conversation, retention closed it,
+            /// or `closesAt` has passed. A closed conversation opens read-only.
+            ///
+            /// - Remark: Generated from `#/components/schemas/AssistantConversationSummary/closed`.
+            public var closed: Swift.Bool
+            /// 24 hours after the conversation started.
+            ///
+            /// - Remark: Generated from `#/components/schemas/AssistantConversationSummary/closesAt`.
+            public var closesAt: Foundation.Date
+            /// - Remark: Generated from `#/components/schemas/AssistantConversationSummary/id`.
+            public var id: Swift.String
+            /// The last message, from either side. Retention is 30 days after it.
+            ///
+            /// - Remark: Generated from `#/components/schemas/AssistantConversationSummary/lastMessageAt`.
+            public var lastMessageAt: Foundation.Date
+            /// - Remark: Generated from `#/components/schemas/AssistantConversationSummary/startedAt`.
+            public var startedAt: Foundation.Date
+            /// The member's own first message, at most 140 characters. Never words
+            /// the assistant wrote.
+            ///
+            /// - Remark: Generated from `#/components/schemas/AssistantConversationSummary/title`.
+            public var title: Swift.String
+            /// Creates a new `AssistantConversationSummary`.
+            ///
+            /// - Parameters:
+            ///   - closed: Whether it has closed: started a new conversation, retention closed it,
+            ///   - closesAt: 24 hours after the conversation started.
+            ///   - id:
+            ///   - lastMessageAt: The last message, from either side. Retention is 30 days after it.
+            ///   - startedAt:
+            ///   - title: The member's own first message, at most 140 characters. Never words
+            public init(
+                closed: Swift.Bool,
+                closesAt: Foundation.Date,
+                id: Swift.String,
+                lastMessageAt: Foundation.Date,
+                startedAt: Foundation.Date,
+                title: Swift.String
+            ) {
+                self.closed = closed
+                self.closesAt = closesAt
+                self.id = id
+                self.lastMessageAt = lastMessageAt
+                self.startedAt = startedAt
+                self.title = title
+            }
+            public enum CodingKeys: String, CodingKey {
+                case closed
+                case closesAt
+                case id
+                case lastMessageAt
+                case startedAt
+                case title
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/AssistantConversationTranscript`.
+        public struct AssistantConversationTranscript: Codable, Hashable, Sendable {
+            /// Whether it has closed. A closed conversation is read-only: ask again
+            /// from it by starting a new one.
+            ///
+            /// - Remark: Generated from `#/components/schemas/AssistantConversationTranscript/closed`.
+            public var closed: Swift.Bool
+            /// When it was closed before `closesAt`, by the member starting a new
+            /// conversation. Absent for one that ran out its day or is still open.
+            ///
+            /// - Remark: Generated from `#/components/schemas/AssistantConversationTranscript/closedAt`.
+            public var closedAt: Foundation.Date?
+            /// 24 hours after the conversation started.
+            ///
+            /// - Remark: Generated from `#/components/schemas/AssistantConversationTranscript/closesAt`.
+            public var closesAt: Foundation.Date
+            /// - Remark: Generated from `#/components/schemas/AssistantConversationTranscript/id`.
+            public var id: Swift.String
+            /// - Remark: Generated from `#/components/schemas/AssistantConversationTranscript/lastMessageAt`.
+            public var lastMessageAt: Foundation.Date
+            /// - Remark: Generated from `#/components/schemas/AssistantConversationTranscript/startedAt`.
+            public var startedAt: Foundation.Date
+            /// - Remark: Generated from `#/components/schemas/AssistantConversationTranscript/turns`.
+            public var turns: [Components.Schemas.AssistantConversationTurn]
+            /// Creates a new `AssistantConversationTranscript`.
+            ///
+            /// - Parameters:
+            ///   - closed: Whether it has closed. A closed conversation is read-only: ask again
+            ///   - closedAt: When it was closed before `closesAt`, by the member starting a new
+            ///   - closesAt: 24 hours after the conversation started.
+            ///   - id:
+            ///   - lastMessageAt:
+            ///   - startedAt:
+            ///   - turns:
+            public init(
+                closed: Swift.Bool,
+                closedAt: Foundation.Date? = nil,
+                closesAt: Foundation.Date,
+                id: Swift.String,
+                lastMessageAt: Foundation.Date,
+                startedAt: Foundation.Date,
+                turns: [Components.Schemas.AssistantConversationTurn]
+            ) {
+                self.closed = closed
+                self.closedAt = closedAt
+                self.closesAt = closesAt
+                self.id = id
+                self.lastMessageAt = lastMessageAt
+                self.startedAt = startedAt
+                self.turns = turns
+            }
+            public enum CodingKeys: String, CodingKey {
+                case closed
+                case closedAt
+                case closesAt
+                case id
+                case lastMessageAt
+                case startedAt
+                case turns
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/AssistantConversationTurn`.
+        public struct AssistantConversationTurn: Codable, Hashable, Sendable {
+            /// Whether the reply has ended.
+            ///
+            /// - Remark: Generated from `#/components/schemas/AssistantConversationTurn/ended`.
+            public var ended: Swift.Bool
+            /// The reply's frames as the turns route gives them: its text, any
+            /// `choice`, `proposal` and `limit`, and `done` last once `ended`. Never
+            /// `working`.
+            ///
+            /// - Remark: Generated from `#/components/schemas/AssistantConversationTurn/events`.
+            public var events: [Components.Schemas.AssistantStreamEvent]
+            /// What became of each proposal this turn made.
+            ///
+            /// - Remark: Generated from `#/components/schemas/AssistantConversationTurn/proposalOutcomes`.
+            public var proposalOutcomes: [Components.Schemas.AssistantProposalOutcome]
+            /// What the assistant read while answering, in order. Reads that failed
+            /// are not listed.
+            ///
+            /// - Remark: Generated from `#/components/schemas/AssistantConversationTurn/reads`.
+            public var reads: [Components.Schemas.AssistantRead]
+            /// What the member said: their message, or their answer to a question.
+            ///
+            /// - Remark: Generated from `#/components/schemas/AssistantConversationTurn/text`.
+            public var text: Swift.String
+            /// The turn's number: 1 for the conversation's first message.
+            ///
+            /// - Remark: Generated from `#/components/schemas/AssistantConversationTurn/turn`.
+            public var turn: Swift.Int32
+            /// Creates a new `AssistantConversationTurn`.
+            ///
+            /// - Parameters:
+            ///   - ended: Whether the reply has ended.
+            ///   - events: The reply's frames as the turns route gives them: its text, any
+            ///   - proposalOutcomes: What became of each proposal this turn made.
+            ///   - reads: What the assistant read while answering, in order. Reads that failed
+            ///   - text: What the member said: their message, or their answer to a question.
+            ///   - turn: The turn's number: 1 for the conversation's first message.
+            public init(
+                ended: Swift.Bool,
+                events: [Components.Schemas.AssistantStreamEvent],
+                proposalOutcomes: [Components.Schemas.AssistantProposalOutcome],
+                reads: [Components.Schemas.AssistantRead],
+                text: Swift.String,
+                turn: Swift.Int32
+            ) {
+                self.ended = ended
+                self.events = events
+                self.proposalOutcomes = proposalOutcomes
+                self.reads = reads
+                self.text = text
+                self.turn = turn
+            }
+            public enum CodingKeys: String, CodingKey {
+                case ended
+                case events
+                case proposalOutcomes
+                case reads
+                case text
+                case turn
+            }
+        }
         /// What an assistant credential is told about an organization whose
         /// assistant setting is off: that it is off, and which organization it is
         /// (so the assistant can say which was left out). Nothing else.
@@ -1588,6 +2357,292 @@ extension Components {
                 case assistantEnabled
                 case id
                 case name
+            }
+        }
+        /// A verified PDF page or captured webpage source. PDF pixels are inline;
+        /// HTML has an explicit original link. Two references at most per reply.
+        ///
+        /// - Remark: Generated from `#/components/schemas/AssistantDocumentPage`.
+        public struct AssistantDocumentPage: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/AssistantDocumentPage/bundleSha256`.
+            public var bundleSha256: Swift.String
+            /// True presents a compact tappable source. Absent means an inline image.
+            ///
+            /// - Remark: Generated from `#/components/schemas/AssistantDocumentPage/citationOnly`.
+            public var citationOnly: Swift.Bool?
+            /// Base64 PNG, at most 1 MiB decoded; empty for HTML source links.
+            ///
+            /// - Remark: Generated from `#/components/schemas/AssistantDocumentPage/data`.
+            public var data: Swift.String
+            /// - Remark: Generated from `#/components/schemas/AssistantDocumentPage/documentId`.
+            public var documentId: Swift.String
+            /// - Remark: Generated from `#/components/schemas/AssistantDocumentPage/imageSha256`.
+            public var imageSha256: Swift.String
+            /// - Remark: Generated from `#/components/schemas/AssistantDocumentPage/mediaType`.
+            public var mediaType: Swift.String
+            /// - Remark: Generated from `#/components/schemas/AssistantDocumentPage/page`.
+            public var page: Swift.Int32
+            /// - Remark: Generated from `#/components/schemas/AssistantDocumentPage/retrievedOn`.
+            public var retrievedOn: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/AssistantDocumentPage/revision`.
+            public var revision: Swift.String
+            /// - Remark: Generated from `#/components/schemas/AssistantDocumentPage/sectionTitle`.
+            public var sectionTitle: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/AssistantDocumentPage/sourceSha256`.
+            public var sourceSha256: Swift.String?
+            /// Original HTTPS webpage link, verified against the captured source.
+            ///
+            /// - Remark: Generated from `#/components/schemas/AssistantDocumentPage/sourceUrl`.
+            public var sourceUrl: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/AssistantDocumentPage/title`.
+            public var title: Swift.String
+            /// Creates a new `AssistantDocumentPage`.
+            ///
+            /// - Parameters:
+            ///   - bundleSha256:
+            ///   - citationOnly: True presents a compact tappable source. Absent means an inline image.
+            ///   - data: Base64 PNG, at most 1 MiB decoded; empty for HTML source links.
+            ///   - documentId:
+            ///   - imageSha256:
+            ///   - mediaType:
+            ///   - page:
+            ///   - retrievedOn:
+            ///   - revision:
+            ///   - sectionTitle:
+            ///   - sourceSha256:
+            ///   - sourceUrl: Original HTTPS webpage link, verified against the captured source.
+            ///   - title:
+            public init(
+                bundleSha256: Swift.String,
+                citationOnly: Swift.Bool? = nil,
+                data: Swift.String,
+                documentId: Swift.String,
+                imageSha256: Swift.String,
+                mediaType: Swift.String,
+                page: Swift.Int32,
+                retrievedOn: Swift.String? = nil,
+                revision: Swift.String,
+                sectionTitle: Swift.String? = nil,
+                sourceSha256: Swift.String? = nil,
+                sourceUrl: Swift.String? = nil,
+                title: Swift.String
+            ) {
+                self.bundleSha256 = bundleSha256
+                self.citationOnly = citationOnly
+                self.data = data
+                self.documentId = documentId
+                self.imageSha256 = imageSha256
+                self.mediaType = mediaType
+                self.page = page
+                self.retrievedOn = retrievedOn
+                self.revision = revision
+                self.sectionTitle = sectionTitle
+                self.sourceSha256 = sourceSha256
+                self.sourceUrl = sourceUrl
+                self.title = title
+            }
+            public enum CodingKeys: String, CodingKey {
+                case bundleSha256
+                case citationOnly
+                case data
+                case documentId
+                case imageSha256
+                case mediaType
+                case page
+                case retrievedOn
+                case revision
+                case sectionTitle
+                case sourceSha256
+                case sourceUrl
+                case title
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/AssistantJobDraft`.
+        public struct AssistantJobDraft: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/AssistantJobDraft/address`.
+            public var address: Swift.String
+            /// - Remark: Generated from `#/components/schemas/AssistantJobDraft/contactEmail`.
+            public var contactEmail: Swift.String
+            /// - Remark: Generated from `#/components/schemas/AssistantJobDraft/contactName`.
+            public var contactName: Swift.String
+            /// - Remark: Generated from `#/components/schemas/AssistantJobDraft/country`.
+            public var country: Swift.String
+            /// - Remark: Generated from `#/components/schemas/AssistantJobDraft/customerName`.
+            public var customerName: Swift.String
+            /// - Remark: Generated from `#/components/schemas/AssistantJobDraft/id`.
+            public var id: Swift.String
+            /// - Remark: Generated from `#/components/schemas/AssistantJobDraft/installationCountry`.
+            public var installationCountry: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/AssistantJobDraft/lines`.
+            public var lines: [Components.Schemas.AssistantJobDraftLine]
+            /// - Remark: Generated from `#/components/schemas/AssistantJobDraft/organizationNumber`.
+            public var organizationNumber: Swift.String
+            /// - Remark: Generated from `#/components/schemas/AssistantJobDraft/plannedDate`.
+            public var plannedDate: Swift.String?
+            /// Creates a new `AssistantJobDraft`.
+            ///
+            /// - Parameters:
+            ///   - address:
+            ///   - contactEmail:
+            ///   - contactName:
+            ///   - country:
+            ///   - customerName:
+            ///   - id:
+            ///   - installationCountry:
+            ///   - lines:
+            ///   - organizationNumber:
+            ///   - plannedDate:
+            public init(
+                address: Swift.String,
+                contactEmail: Swift.String,
+                contactName: Swift.String,
+                country: Swift.String,
+                customerName: Swift.String,
+                id: Swift.String,
+                installationCountry: Swift.String? = nil,
+                lines: [Components.Schemas.AssistantJobDraftLine],
+                organizationNumber: Swift.String,
+                plannedDate: Swift.String? = nil
+            ) {
+                self.address = address
+                self.contactEmail = contactEmail
+                self.contactName = contactName
+                self.country = country
+                self.customerName = customerName
+                self.id = id
+                self.installationCountry = installationCountry
+                self.lines = lines
+                self.organizationNumber = organizationNumber
+                self.plannedDate = plannedDate
+            }
+            public enum CodingKeys: String, CodingKey {
+                case address
+                case contactEmail
+                case contactName
+                case country
+                case customerName
+                case id
+                case installationCountry
+                case lines
+                case organizationNumber
+                case plannedDate
+            }
+            public init(from decoder: any Swift.Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                self.address = try container.decode(
+                    Swift.String.self,
+                    forKey: .address
+                )
+                self.contactEmail = try container.decode(
+                    Swift.String.self,
+                    forKey: .contactEmail
+                )
+                self.contactName = try container.decode(
+                    Swift.String.self,
+                    forKey: .contactName
+                )
+                self.country = try container.decode(
+                    Swift.String.self,
+                    forKey: .country
+                )
+                self.customerName = try container.decode(
+                    Swift.String.self,
+                    forKey: .customerName
+                )
+                self.id = try container.decode(
+                    Swift.String.self,
+                    forKey: .id
+                )
+                self.installationCountry = try container.decodeIfPresent(
+                    Swift.String.self,
+                    forKey: .installationCountry
+                )
+                self.lines = try container.decode(
+                    [Components.Schemas.AssistantJobDraftLine].self,
+                    forKey: .lines
+                )
+                self.organizationNumber = try container.decode(
+                    Swift.String.self,
+                    forKey: .organizationNumber
+                )
+                self.plannedDate = try container.decodeIfPresent(
+                    Swift.String.self,
+                    forKey: .plannedDate
+                )
+                try decoder.ensureNoAdditionalProperties(knownKeys: [
+                    "address",
+                    "contactEmail",
+                    "contactName",
+                    "country",
+                    "customerName",
+                    "id",
+                    "installationCountry",
+                    "lines",
+                    "organizationNumber",
+                    "plannedDate"
+                ])
+            }
+        }
+        /// A planned work or equipment line in an installer review draft.
+        ///
+        /// - Remark: Generated from `#/components/schemas/AssistantJobDraftLine`.
+        public struct AssistantJobDraftLine: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/AssistantJobDraftLine/description`.
+            public var description: Swift.String
+            /// - Remark: Generated from `#/components/schemas/AssistantJobDraftLine/isChargerLine`.
+            public var isChargerLine: Swift.Bool
+            /// - Remark: Generated from `#/components/schemas/AssistantJobDraftLine/quantity`.
+            public var quantity: Swift.Int32
+            /// - Remark: Generated from `#/components/schemas/AssistantJobDraftLine/unit`.
+            public var unit: Swift.String
+            /// Creates a new `AssistantJobDraftLine`.
+            ///
+            /// - Parameters:
+            ///   - description:
+            ///   - isChargerLine:
+            ///   - quantity:
+            ///   - unit:
+            public init(
+                description: Swift.String,
+                isChargerLine: Swift.Bool,
+                quantity: Swift.Int32,
+                unit: Swift.String
+            ) {
+                self.description = description
+                self.isChargerLine = isChargerLine
+                self.quantity = quantity
+                self.unit = unit
+            }
+            public enum CodingKeys: String, CodingKey {
+                case description
+                case isChargerLine
+                case quantity
+                case unit
+            }
+            public init(from decoder: any Swift.Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                self.description = try container.decode(
+                    Swift.String.self,
+                    forKey: .description
+                )
+                self.isChargerLine = try container.decode(
+                    Swift.Bool.self,
+                    forKey: .isChargerLine
+                )
+                self.quantity = try container.decode(
+                    Swift.Int32.self,
+                    forKey: .quantity
+                )
+                self.unit = try container.decode(
+                    Swift.String.self,
+                    forKey: .unit
+                )
+                try decoder.ensureNoAdditionalProperties(knownKeys: [
+                    "description",
+                    "isChargerLine",
+                    "quantity",
+                    "unit"
+                ])
             }
         }
         /// The caps a member can meet (research R10).
@@ -1632,6 +2687,57 @@ extension Components {
         }
         /// - Remark: Generated from `#/components/schemas/AssistantProposalKind`.
         public typealias AssistantProposalKind = FlowionAssistantProposalKind
+        /// - Remark: Generated from `#/components/schemas/AssistantProposalOutcome`.
+        public struct AssistantProposalOutcome: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/AssistantProposalOutcome/outcome`.
+            public struct OutcomePayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/AssistantProposalOutcome/outcome/value1`.
+                public var value1: Components.Schemas.AssistantProposalState
+                /// Creates a new `OutcomePayload`.
+                ///
+                /// - Parameters:
+                ///   - value1:
+                public init(value1: Components.Schemas.AssistantProposalState) {
+                    self.value1 = value1
+                }
+                public init(from decoder: any Swift.Decoder) throws {
+                    self.value1 = try decoder.decodeFromSingleValueContainer()
+                }
+                public func encode(to encoder: any Swift.Encoder) throws {
+                    try encoder.encodeToSingleValueContainer(self.value1)
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/AssistantProposalOutcome/outcome`.
+            public var outcome: Components.Schemas.AssistantProposalOutcome.OutcomePayload?
+            /// The `proposalId` of the turn's `proposal` event.
+            ///
+            /// - Remark: Generated from `#/components/schemas/AssistantProposalOutcome/proposalId`.
+            public var proposalId: Swift.String
+            /// The tariff version the form wrote, when `saved`.
+            ///
+            /// - Remark: Generated from `#/components/schemas/AssistantProposalOutcome/savedVersion`.
+            public var savedVersion: Swift.Int32?
+            /// Creates a new `AssistantProposalOutcome`.
+            ///
+            /// - Parameters:
+            ///   - outcome:
+            ///   - proposalId: The `proposalId` of the turn's `proposal` event.
+            ///   - savedVersion: The tariff version the form wrote, when `saved`.
+            public init(
+                outcome: Components.Schemas.AssistantProposalOutcome.OutcomePayload? = nil,
+                proposalId: Swift.String,
+                savedVersion: Swift.Int32? = nil
+            ) {
+                self.outcome = outcome
+                self.proposalId = proposalId
+                self.savedVersion = savedVersion
+            }
+            public enum CodingKeys: String, CodingKey {
+                case outcome
+                case proposalId
+                case savedVersion
+            }
+        }
         /// - Remark: Generated from `#/components/schemas/AssistantProposalOutcomeRequest`.
         public struct AssistantProposalOutcomeRequest: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/AssistantProposalOutcomeRequest/outcome`.
@@ -1656,6 +2762,44 @@ extension Components {
             public enum CodingKeys: String, CodingKey {
                 case outcome
                 case savedVersion
+            }
+        }
+        /// What became of a proposal the assistant made.
+        ///
+        /// - Remark: Generated from `#/components/schemas/AssistantProposalState`.
+        public typealias AssistantProposalState = FlowionAssistantProposalState
+        /// One read the assistant made while answering a turn.
+        ///
+        /// - Remark: Generated from `#/components/schemas/AssistantRead`.
+        public struct AssistantRead: Codable, Hashable, Sendable {
+            /// What it was asked about: the search typed, the charger's name or
+            /// identifier, a date range. Words a person or a charger wrote, cut at 80
+            /// characters; absent when the tool takes no subject.
+            ///
+            /// - Remark: Generated from `#/components/schemas/AssistantRead/subject`.
+            public var subject: Swift.String?
+            /// The read tool: `list_scope`, `list_tariffs`, `list_tariff_assignments`,
+            /// `tariff_hours`, `find_charger`, `diagnose_charger`, `explain_session`
+            /// or `earnings`. Open: a tool this API does not name yet is still a
+            /// read.
+            ///
+            /// - Remark: Generated from `#/components/schemas/AssistantRead/tool`.
+            public var tool: Swift.String
+            /// Creates a new `AssistantRead`.
+            ///
+            /// - Parameters:
+            ///   - subject: What it was asked about: the search typed, the charger's name or
+            ///   - tool: The read tool: `list_scope`, `list_tariffs`, `list_tariff_assignments`,
+            public init(
+                subject: Swift.String? = nil,
+                tool: Swift.String
+            ) {
+                self.subject = subject
+                self.tool = tool
+            }
+            public enum CodingKeys: String, CodingKey {
+                case subject
+                case tool
             }
         }
         /// - Remark: Generated from `#/components/schemas/AssistantRedirect`.
@@ -1730,9 +2874,7 @@ extension Components {
                 case retentionDays
             }
         }
-        /// One frame's `data:` payload. Flat, like `LiveEventPayload`: `type` says
-        /// which fields are present, and the frame's SSE `event:` name equals it, so
-        /// a client that reads only `data:` still knows what it holds.
+        /// One frame's `data:` payload; `type` matches the SSE event name.
         ///
         /// - Remark: Generated from `#/components/schemas/AssistantStreamEvent`.
         public struct AssistantStreamEvent: Codable, Hashable, Sendable {
@@ -1749,6 +2891,46 @@ extension Components {
             ///
             /// - Remark: Generated from `#/components/schemas/AssistantStreamEvent/choices`.
             public var choices: [Components.Schemas.AssistantChoiceOption]?
+            /// - Remark: Generated from `#/components/schemas/AssistantStreamEvent/documentPage`.
+            public struct DocumentPagePayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/AssistantStreamEvent/documentPage/value1`.
+                public var value1: Components.Schemas.AssistantDocumentPage
+                /// Creates a new `DocumentPagePayload`.
+                ///
+                /// - Parameters:
+                ///   - value1:
+                public init(value1: Components.Schemas.AssistantDocumentPage) {
+                    self.value1 = value1
+                }
+                public init(from decoder: any Swift.Decoder) throws {
+                    self.value1 = try .init(from: decoder)
+                }
+                public func encode(to encoder: any Swift.Encoder) throws {
+                    try self.value1.encode(to: encoder)
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/AssistantStreamEvent/documentPage`.
+            public var documentPage: Components.Schemas.AssistantStreamEvent.DocumentPagePayload?
+            /// - Remark: Generated from `#/components/schemas/AssistantStreamEvent/jobDraft`.
+            public struct JobDraftPayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/AssistantStreamEvent/jobDraft/value1`.
+                public var value1: Components.Schemas.AssistantJobDraft
+                /// Creates a new `JobDraftPayload`.
+                ///
+                /// - Parameters:
+                ///   - value1:
+                public init(value1: Components.Schemas.AssistantJobDraft) {
+                    self.value1 = value1
+                }
+                public init(from decoder: any Swift.Decoder) throws {
+                    self.value1 = try .init(from: decoder)
+                }
+                public func encode(to encoder: any Swift.Encoder) throws {
+                    try self.value1.encode(to: encoder)
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/AssistantStreamEvent/jobDraft`.
+            public var jobDraft: Components.Schemas.AssistantStreamEvent.JobDraftPayload?
             /// - Remark: Generated from `#/components/schemas/AssistantStreamEvent/kind`.
             public struct KindPayload: Codable, Hashable, Sendable {
                 /// - Remark: Generated from `#/components/schemas/AssistantStreamEvent/kind/value1`.
@@ -1838,6 +3020,8 @@ extension Components {
             ///
             /// - Remark: Generated from `#/components/schemas/AssistantStreamEvent/toolUseId`.
             public var toolUseId: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/AssistantStreamEvent/turn`.
+            public var turn: Swift.Int32?
             /// - Remark: Generated from `#/components/schemas/AssistantStreamEvent/type`.
             public var _type: Components.Schemas.AssistantStreamEventType
             /// `choice`: why the assistant is asking.
@@ -1870,6 +3054,8 @@ extension Components {
             ///   - allowFreeText: `choice`: whether the member may answer in their own words.
             ///   - basedOnVersion: `proposal` of kind `tariffVersion`: the version the prefill was
             ///   - choices: `choice`: the offered answers.
+            ///   - documentPage:
+            ///   - jobDraft:
             ///   - kind:
             ///   - limit:
             ///   - outcome:
@@ -1880,6 +3066,7 @@ extension Components {
             ///   - tariffId: `proposal` of kind `tariffVersion`: the tariff the version is for.
             ///   - text: `delta`: text to append.
             ///   - toolUseId: `choice`: echo it back in the answer.
+            ///   - turn:
             ///   - _type:
             ///   - why: `choice`: why the assistant is asking.
             ///   - working:
@@ -1887,6 +3074,8 @@ extension Components {
                 allowFreeText: Swift.Bool? = nil,
                 basedOnVersion: Swift.Int32? = nil,
                 choices: [Components.Schemas.AssistantChoiceOption]? = nil,
+                documentPage: Components.Schemas.AssistantStreamEvent.DocumentPagePayload? = nil,
+                jobDraft: Components.Schemas.AssistantStreamEvent.JobDraftPayload? = nil,
                 kind: Components.Schemas.AssistantStreamEvent.KindPayload? = nil,
                 limit: Components.Schemas.AssistantStreamEvent.LimitPayload? = nil,
                 outcome: Components.Schemas.AssistantStreamEvent.OutcomePayload? = nil,
@@ -1897,6 +3086,7 @@ extension Components {
                 tariffId: Swift.String? = nil,
                 text: Swift.String? = nil,
                 toolUseId: Swift.String? = nil,
+                turn: Swift.Int32? = nil,
                 _type: Components.Schemas.AssistantStreamEventType,
                 why: Swift.String? = nil,
                 working: Components.Schemas.AssistantStreamEvent.WorkingPayload? = nil
@@ -1904,6 +3094,8 @@ extension Components {
                 self.allowFreeText = allowFreeText
                 self.basedOnVersion = basedOnVersion
                 self.choices = choices
+                self.documentPage = documentPage
+                self.jobDraft = jobDraft
                 self.kind = kind
                 self.limit = limit
                 self.outcome = outcome
@@ -1914,6 +3106,7 @@ extension Components {
                 self.tariffId = tariffId
                 self.text = text
                 self.toolUseId = toolUseId
+                self.turn = turn
                 self._type = _type
                 self.why = why
                 self.working = working
@@ -1922,6 +3115,8 @@ extension Components {
                 case allowFreeText
                 case basedOnVersion
                 case choices
+                case documentPage
+                case jobDraft
                 case kind
                 case limit
                 case outcome
@@ -1932,6 +3127,7 @@ extension Components {
                 case tariffId
                 case text
                 case toolUseId
+                case turn
                 case _type = "type"
                 case why
                 case working
@@ -2131,6 +3327,59 @@ extension Components {
                 try decoder.ensureNoAdditionalProperties(knownKeys: [
                     "policyId",
                     "projectId"
+                ])
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/AttachHomeVehicle`.
+        public struct AttachHomeVehicle: Codable, Hashable, Sendable {
+            /// A label explicitly shared with the household. Private vehicle names are not copied.
+            ///
+            /// - Remark: Generated from `#/components/schemas/AttachHomeVehicle/name`.
+            public var name: Swift.String
+            /// - Remark: Generated from `#/components/schemas/AttachHomeVehicle/preferences`.
+            public var preferences: Components.Schemas.VehicleChargingPreferences
+            /// The caller's personal vehicle access id, as returned by GET /me/vehicles.
+            ///
+            /// - Remark: Generated from `#/components/schemas/AttachHomeVehicle/vehicleId`.
+            public var vehicleId: Swift.String
+            /// Creates a new `AttachHomeVehicle`.
+            ///
+            /// - Parameters:
+            ///   - name: A label explicitly shared with the household. Private vehicle names are not copied.
+            ///   - preferences:
+            ///   - vehicleId: The caller's personal vehicle access id, as returned by GET /me/vehicles.
+            public init(
+                name: Swift.String,
+                preferences: Components.Schemas.VehicleChargingPreferences,
+                vehicleId: Swift.String
+            ) {
+                self.name = name
+                self.preferences = preferences
+                self.vehicleId = vehicleId
+            }
+            public enum CodingKeys: String, CodingKey {
+                case name
+                case preferences
+                case vehicleId
+            }
+            public init(from decoder: any Swift.Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                self.name = try container.decode(
+                    Swift.String.self,
+                    forKey: .name
+                )
+                self.preferences = try container.decode(
+                    Components.Schemas.VehicleChargingPreferences.self,
+                    forKey: .preferences
+                )
+                self.vehicleId = try container.decode(
+                    Swift.String.self,
+                    forKey: .vehicleId
+                )
+                try decoder.ensureNoAdditionalProperties(knownKeys: [
+                    "name",
+                    "preferences",
+                    "vehicleId"
                 ])
             }
         }
@@ -2460,6 +3709,200 @@ extension Components {
                 case wireStatus
             }
         }
+        /// - Remark: Generated from `#/components/schemas/AuthorizeApp`.
+        public struct AuthorizeApp: Codable, Hashable, Sendable {
+            /// `public` or `confidential`.
+            ///
+            /// - Remark: Generated from `#/components/schemas/AuthorizeApp/clientType`.
+            public var clientType: Swift.String
+            /// - Remark: Generated from `#/components/schemas/AuthorizeApp/id`.
+            public var id: Swift.String
+            /// - Remark: Generated from `#/components/schemas/AuthorizeApp/name`.
+            public var name: Swift.String
+            /// Who operates the app: `flowion` or `provider`.
+            ///
+            /// - Remark: Generated from `#/components/schemas/AuthorizeApp/operator`.
+            public var _operator: Swift.String
+            /// - Remark: Generated from `#/components/schemas/AuthorizeApp/privacyUrl`.
+            public var privacyUrl: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/AuthorizeApp/supportUrl`.
+            public var supportUrl: Swift.String
+            /// - Remark: Generated from `#/components/schemas/AuthorizeApp/termsUrl`.
+            public var termsUrl: Swift.String?
+            /// Creates a new `AuthorizeApp`.
+            ///
+            /// - Parameters:
+            ///   - clientType: `public` or `confidential`.
+            ///   - id:
+            ///   - name:
+            ///   - _operator: Who operates the app: `flowion` or `provider`.
+            ///   - privacyUrl:
+            ///   - supportUrl:
+            ///   - termsUrl:
+            public init(
+                clientType: Swift.String,
+                id: Swift.String,
+                name: Swift.String,
+                _operator: Swift.String,
+                privacyUrl: Swift.String? = nil,
+                supportUrl: Swift.String,
+                termsUrl: Swift.String? = nil
+            ) {
+                self.clientType = clientType
+                self.id = id
+                self.name = name
+                self._operator = _operator
+                self.privacyUrl = privacyUrl
+                self.supportUrl = supportUrl
+                self.termsUrl = termsUrl
+            }
+            public enum CodingKeys: String, CodingKey {
+                case clientType
+                case id
+                case name
+                case _operator = "operator"
+                case privacyUrl
+                case supportUrl
+                case termsUrl
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/AuthorizeOrganization`.
+        public struct AuthorizeOrganization: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/AuthorizeOrganization/id`.
+            public var id: Swift.String
+            /// The organization's kind as the service resolved it (`home`).
+            ///
+            /// - Remark: Generated from `#/components/schemas/AuthorizeOrganization/kind`.
+            public var kind: Swift.String
+            /// - Remark: Generated from `#/components/schemas/AuthorizeOrganization/name`.
+            public var name: Swift.String
+            /// Creates a new `AuthorizeOrganization`.
+            ///
+            /// - Parameters:
+            ///   - id:
+            ///   - kind: The organization's kind as the service resolved it (`home`).
+            ///   - name:
+            public init(
+                id: Swift.String,
+                kind: Swift.String,
+                name: Swift.String
+            ) {
+                self.id = id
+                self.kind = kind
+                self.name = name
+            }
+            public enum CodingKeys: String, CodingKey {
+                case id
+                case kind
+                case name
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/AuthorizePreview`.
+        public struct AuthorizePreview: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/AuthorizePreview/app`.
+            public var app: Components.Schemas.AuthorizeApp
+            /// - Remark: Generated from `#/components/schemas/AuthorizePreview/expiresAt`.
+            public var expiresAt: Foundation.Date
+            /// - Remark: Generated from `#/components/schemas/AuthorizePreview/notice`.
+            public var notice: Swift.String
+            /// Only the homes the person owns and the app's audience admits.
+            ///
+            /// - Remark: Generated from `#/components/schemas/AuthorizePreview/organizations`.
+            public var organizations: [Components.Schemas.AuthorizeOrganization]
+            /// Present this back, unchanged, to approve or deny.
+            ///
+            /// - Remark: Generated from `#/components/schemas/AuthorizePreview/requestId`.
+            public var requestId: Swift.String
+            /// - Remark: Generated from `#/components/schemas/AuthorizePreview/scopes`.
+            public var scopes: [Components.Schemas.AuthorizeScope]
+            /// Creates a new `AuthorizePreview`.
+            ///
+            /// - Parameters:
+            ///   - app:
+            ///   - expiresAt:
+            ///   - notice:
+            ///   - organizations: Only the homes the person owns and the app's audience admits.
+            ///   - requestId: Present this back, unchanged, to approve or deny.
+            ///   - scopes:
+            public init(
+                app: Components.Schemas.AuthorizeApp,
+                expiresAt: Foundation.Date,
+                notice: Swift.String,
+                organizations: [Components.Schemas.AuthorizeOrganization],
+                requestId: Swift.String,
+                scopes: [Components.Schemas.AuthorizeScope]
+            ) {
+                self.app = app
+                self.expiresAt = expiresAt
+                self.notice = notice
+                self.organizations = organizations
+                self.requestId = requestId
+                self.scopes = scopes
+            }
+            public enum CodingKeys: String, CodingKey {
+                case app
+                case expiresAt
+                case notice
+                case organizations
+                case requestId
+                case scopes
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/AuthorizeRedirect`.
+        public struct AuthorizeRedirect: Codable, Hashable, Sendable {
+            /// Where to send the browser next: the app's redirect address with a
+            /// one-time `code` (approve) or `error=access_denied` (deny) and the
+            /// app's own `state`. Use it for immediate top-level navigation only;
+            /// never log or store it.
+            ///
+            /// - Remark: Generated from `#/components/schemas/AuthorizeRedirect/redirectTo`.
+            public var redirectTo: Swift.String
+            /// Creates a new `AuthorizeRedirect`.
+            ///
+            /// - Parameters:
+            ///   - redirectTo: Where to send the browser next: the app's redirect address with a
+            public init(redirectTo: Swift.String) {
+                self.redirectTo = redirectTo
+            }
+            public enum CodingKeys: String, CodingKey {
+                case redirectTo
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/AuthorizeScope`.
+        public struct AuthorizeScope: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/AuthorizeScope/required`.
+            public var required: Swift.Bool
+            /// - Remark: Generated from `#/components/schemas/AuthorizeScope/scope`.
+            public var scope: Swift.String
+            /// Plain words for the consent screen.
+            ///
+            /// - Remark: Generated from `#/components/schemas/AuthorizeScope/summary`.
+            public var summary: Swift.String
+            /// Creates a new `AuthorizeScope`.
+            ///
+            /// - Parameters:
+            ///   - required:
+            ///   - scope:
+            ///   - summary: Plain words for the consent screen.
+            public init(
+                required: Swift.Bool,
+                scope: Swift.String,
+                summary: Swift.String
+            ) {
+                self.required = required
+                self.scope = scope
+                self.summary = summary
+            }
+            public enum CodingKeys: String, CodingKey {
+                case required
+                case scope
+                case summary
+            }
+        }
+        /// Why a location's default is what it is.
+        ///
+        /// - Remark: Generated from `#/components/schemas/AutochargeReason`.
+        public typealias AutochargeReason = FlowionAutochargeReason
         /// Whether a connector or EVSE should accept new sessions.
         ///
         /// Mirrors OCPP's own `OperationalStatusEnumType`/`ChangeAvailability.req`
@@ -3087,49 +4530,6 @@ extension Components {
                 case toHour
             }
         }
-        /// A sub-CA whose validity ends before certificates it has signed —
-        /// surfaced ahead of time rather than discovered when one such
-        /// certificate's chain fails to validate.
-        ///
-        /// - Remark: Generated from `#/components/schemas/CaExpiryWarning`.
-        public struct CaExpiryWarning: Codable, Hashable, Sendable {
-            /// - Remark: Generated from `#/components/schemas/CaExpiryWarning/caId`.
-            public var caId: Swift.String
-            /// - Remark: Generated from `#/components/schemas/CaExpiryWarning/caNotAfter`.
-            public var caNotAfter: Foundation.Date?
-            /// - Remark: Generated from `#/components/schemas/CaExpiryWarning/certificatesOutlivingIt`.
-            public var certificatesOutlivingIt: Swift.Int32
-            /// e.g. `"root"`, `"sub_ca_secc"`, `"sub_ca_mo"`, `"sub_ca_cps"` — the
-            /// certificate authority's own role identifier for this CA, passed
-            /// through unchanged since nothing here branches on the value.
-            ///
-            /// - Remark: Generated from `#/components/schemas/CaExpiryWarning/role`.
-            public var role: Swift.String
-            /// Creates a new `CaExpiryWarning`.
-            ///
-            /// - Parameters:
-            ///   - caId:
-            ///   - caNotAfter:
-            ///   - certificatesOutlivingIt:
-            ///   - role: e.g. `"root"`, `"sub_ca_secc"`, `"sub_ca_mo"`, `"sub_ca_cps"` — the
-            public init(
-                caId: Swift.String,
-                caNotAfter: Foundation.Date? = nil,
-                certificatesOutlivingIt: Swift.Int32,
-                role: Swift.String
-            ) {
-                self.caId = caId
-                self.caNotAfter = caNotAfter
-                self.certificatesOutlivingIt = certificatesOutlivingIt
-                self.role = role
-            }
-            public enum CodingKeys: String, CodingKey {
-                case caId
-                case caNotAfter
-                case certificatesOutlivingIt
-                case role
-            }
-        }
         /// - Remark: Generated from `#/components/schemas/CancelJobRequest`.
         public struct CancelJobRequest: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/CancelJobRequest/reason`.
@@ -3335,6 +4735,23 @@ extension Components {
                 case sendMaxLength
             }
         }
+        /// The card that was registered.
+        ///
+        /// - Remark: Generated from `#/components/schemas/CardRegistered`.
+        public struct CardRegistered: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/CardRegistered/card`.
+            public var card: Components.Schemas.PersonCard
+            /// Creates a new `CardRegistered`.
+            ///
+            /// - Parameters:
+            ///   - card:
+            public init(card: Components.Schemas.PersonCard) {
+                self.card = card
+            }
+            public enum CodingKeys: String, CodingKey {
+                case card
+            }
+        }
         /// - Remark: Generated from `#/components/schemas/CardSummary`.
         public struct CardSummary: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/CardSummary/brand`.
@@ -3368,6 +4785,36 @@ extension Components {
                 case expMonth
                 case expYear
                 case last4
+            }
+        }
+        /// A place where the account's cards work now.
+        ///
+        /// - Remark: Generated from `#/components/schemas/CardsOnAt`.
+        public struct CardsOnAt: Codable, Hashable, Sendable {
+            /// The location's name when cards work there only because that location
+            /// turned them on; absent when the whole project has them on.
+            ///
+            /// - Remark: Generated from `#/components/schemas/CardsOnAt/placeName`.
+            public var placeName: Swift.String?
+            /// The project's name.
+            ///
+            /// - Remark: Generated from `#/components/schemas/CardsOnAt/projectName`.
+            public var projectName: Swift.String
+            /// Creates a new `CardsOnAt`.
+            ///
+            /// - Parameters:
+            ///   - placeName: The location's name when cards work there only because that location
+            ///   - projectName: The project's name.
+            public init(
+                placeName: Swift.String? = nil,
+                projectName: Swift.String
+            ) {
+                self.placeName = placeName
+                self.projectName = projectName
+            }
+            public enum CodingKeys: String, CodingKey {
+                case placeName
+                case projectName
             }
         }
         /// Where a carried line came from: the month and line it was carried out of.
@@ -3420,91 +4867,55 @@ extension Components {
                 case vehicles
             }
         }
-        /// The kind of certificate issued: `v2gLeafIso2`/`v2gLeafIso20` for a
-        /// contract certificate under ISO 15118-2/-20, `contract` for a Plug&Charge
-        /// contract certificate, `provisioning` for a station's provisioning
-        /// certificate, and `chargingStation` for a station's own TLS client
-        /// certificate presented on the OCPP connection.
-        ///
-        /// - Remark: Generated from `#/components/schemas/CertificateProfileParam`.
-        public typealias CertificateProfileParam = FlowionCertificateProfileParam
-        /// - Remark: Generated from `#/components/schemas/CertificateStatusParam`.
-        public typealias CertificateStatusParam = FlowionCertificateStatusParam
-        /// - Remark: Generated from `#/components/schemas/CertificateSummary`.
-        public struct CertificateSummary: Codable, Hashable, Sendable {
-            /// - Remark: Generated from `#/components/schemas/CertificateSummary/certificateId`.
-            public var certificateId: Swift.String
-            /// - Remark: Generated from `#/components/schemas/CertificateSummary/handoverExpiresAt`.
-            public var handoverExpiresAt: Foundation.Date?
-            /// - Remark: Generated from `#/components/schemas/CertificateSummary/notAfter`.
-            public var notAfter: Foundation.Date?
-            /// - Remark: Generated from `#/components/schemas/CertificateSummary/notBefore`.
-            public var notBefore: Foundation.Date?
-            /// - Remark: Generated from `#/components/schemas/CertificateSummary/profile`.
-            public var profile: Components.Schemas.CertificateProfileParam
-            /// - Remark: Generated from `#/components/schemas/CertificateSummary/serialNumber`.
-            public var serialNumber: Swift.String
-            /// - Remark: Generated from `#/components/schemas/CertificateSummary/status`.
-            public struct StatusPayload: Codable, Hashable, Sendable {
-                /// - Remark: Generated from `#/components/schemas/CertificateSummary/status/value1`.
-                public var value1: Components.Schemas.CertificateStatusParam
-                /// Creates a new `StatusPayload`.
-                ///
-                /// - Parameters:
-                ///   - value1:
-                public init(value1: Components.Schemas.CertificateStatusParam) {
-                    self.value1 = value1
-                }
-                public init(from decoder: any Swift.Decoder) throws {
-                    self.value1 = try decoder.decodeFromSingleValueContainer()
-                }
-                public func encode(to encoder: any Swift.Encoder) throws {
-                    try encoder.encodeToSingleValueContainer(self.value1)
-                }
-            }
-            /// - Remark: Generated from `#/components/schemas/CertificateSummary/status`.
-            public var status: Components.Schemas.CertificateSummary.StatusPayload?
-            /// - Remark: Generated from `#/components/schemas/CertificateSummary/supersededCertificateId`.
-            public var supersededCertificateId: Swift.String?
-            /// Creates a new `CertificateSummary`.
+        /// - Remark: Generated from `#/components/schemas/CatalogueConnector`.
+        public struct CatalogueConnector: Codable, Hashable, Sendable {
+            /// Source-reported nominal maximum in kW, never an inferred available power.
+            ///
+            /// - Remark: Generated from `#/components/schemas/CatalogueConnector/maxPowerKw`.
+            public var maxPowerKw: Swift.Double?
+            /// Normalized socket family: type1, type2, ccs, chademo, tesla, mcs,
+            /// schuko, combined, or unknown. Not a promise of vehicle compatibility.
+            ///
+            /// - Remark: Generated from `#/components/schemas/CatalogueConnector/standard`.
+            public var standard: Swift.String
+            /// Creates a new `CatalogueConnector`.
             ///
             /// - Parameters:
-            ///   - certificateId:
-            ///   - handoverExpiresAt:
-            ///   - notAfter:
-            ///   - notBefore:
-            ///   - profile:
-            ///   - serialNumber:
-            ///   - status:
-            ///   - supersededCertificateId:
+            ///   - maxPowerKw: Source-reported nominal maximum in kW, never an inferred available power.
+            ///   - standard: Normalized socket family: type1, type2, ccs, chademo, tesla, mcs,
             public init(
-                certificateId: Swift.String,
-                handoverExpiresAt: Foundation.Date? = nil,
-                notAfter: Foundation.Date? = nil,
-                notBefore: Foundation.Date? = nil,
-                profile: Components.Schemas.CertificateProfileParam,
-                serialNumber: Swift.String,
-                status: Components.Schemas.CertificateSummary.StatusPayload? = nil,
-                supersededCertificateId: Swift.String? = nil
+                maxPowerKw: Swift.Double? = nil,
+                standard: Swift.String
             ) {
-                self.certificateId = certificateId
-                self.handoverExpiresAt = handoverExpiresAt
-                self.notAfter = notAfter
-                self.notBefore = notBefore
-                self.profile = profile
-                self.serialNumber = serialNumber
-                self.status = status
-                self.supersededCertificateId = supersededCertificateId
+                self.maxPowerKw = maxPowerKw
+                self.standard = standard
             }
             public enum CodingKeys: String, CodingKey {
-                case certificateId
-                case handoverExpiresAt
-                case notAfter
-                case notBefore
-                case profile
-                case serialNumber
-                case status
-                case supersededCertificateId
+                case maxPowerKw
+                case standard
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/CatalogueCoordinates`.
+        public struct CatalogueCoordinates: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/CatalogueCoordinates/latitude`.
+            public var latitude: Swift.Double
+            /// - Remark: Generated from `#/components/schemas/CatalogueCoordinates/longitude`.
+            public var longitude: Swift.Double
+            /// Creates a new `CatalogueCoordinates`.
+            ///
+            /// - Parameters:
+            ///   - latitude:
+            ///   - longitude:
+            public init(
+                latitude: Swift.Double,
+                longitude: Swift.Double
+            ) {
+                self.latitude = latitude
+                self.longitude = longitude
+            }
+            public enum CodingKeys: String, CodingKey {
+                case latitude
+                case longitude
             }
         }
         /// Marks a connector or EVSE operative or inoperative.
@@ -4875,6 +6286,13 @@ extension Components {
                 case unlockOnUnplug
             }
         }
+        /// A rated-current change on a circuit the customer already had. `held`: a raise
+        /// the energy controller cannot see until acceptance. `applied`: a decrease that
+        /// applied at once, or a raise that applied at acceptance. `dropped`: a held raise
+        /// that will never apply.
+        ///
+        /// - Remark: Generated from `#/components/schemas/CircuitChangeStateApi`.
+        public typealias CircuitChangeStateApi = FlowionCircuitChangeStateApi
         /// How far back, and how finely.
         ///
         /// - Remark: Generated from `#/components/schemas/CircuitCurrentRange`.
@@ -5856,6 +7274,64 @@ extension Components {
                 case result
             }
         }
+        /// Exactly one proof: the emailed link's token, **or** the emailed code with
+        /// the invitation it is for. Both, or neither, is `400`.
+        ///
+        /// - Remark: Generated from `#/components/schemas/CompleteAddressConfirmationRequest`.
+        public struct CompleteAddressConfirmationRequest: Codable, Hashable, Sendable {
+            /// The code in the email: 8 characters. With `invitationToken`.
+            ///
+            /// - Remark: Generated from `#/components/schemas/CompleteAddressConfirmationRequest/code`.
+            public var code: Swift.String?
+            /// The invitation the code is for: 64 lowercase hex characters. With `code`.
+            ///
+            /// - Remark: Generated from `#/components/schemas/CompleteAddressConfirmationRequest/invitationToken`.
+            public var invitationToken: Swift.String?
+            /// The token in the emailed link: 64 lowercase hex characters. Alone.
+            ///
+            /// - Remark: Generated from `#/components/schemas/CompleteAddressConfirmationRequest/linkToken`.
+            public var linkToken: Swift.String?
+            /// Creates a new `CompleteAddressConfirmationRequest`.
+            ///
+            /// - Parameters:
+            ///   - code: The code in the email: 8 characters. With `invitationToken`.
+            ///   - invitationToken: The invitation the code is for: 64 lowercase hex characters. With `code`.
+            ///   - linkToken: The token in the emailed link: 64 lowercase hex characters. Alone.
+            public init(
+                code: Swift.String? = nil,
+                invitationToken: Swift.String? = nil,
+                linkToken: Swift.String? = nil
+            ) {
+                self.code = code
+                self.invitationToken = invitationToken
+                self.linkToken = linkToken
+            }
+            public enum CodingKeys: String, CodingKey {
+                case code
+                case invitationToken
+                case linkToken
+            }
+            public init(from decoder: any Swift.Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                self.code = try container.decodeIfPresent(
+                    Swift.String.self,
+                    forKey: .code
+                )
+                self.invitationToken = try container.decodeIfPresent(
+                    Swift.String.self,
+                    forKey: .invitationToken
+                )
+                self.linkToken = try container.decodeIfPresent(
+                    Swift.String.self,
+                    forKey: .linkToken
+                )
+                try decoder.ensureNoAdditionalProperties(knownKeys: [
+                    "code",
+                    "invitationToken",
+                    "linkToken"
+                ])
+            }
+        }
         /// - Remark: Generated from `#/components/schemas/CompleteInstallFlowRequest`.
         public struct CompleteInstallFlowRequest: Codable, Hashable, Sendable {
             /// Empty when the vendor returned an error instead.
@@ -6133,10 +7609,21 @@ extension Components {
         }
         /// - Remark: Generated from `#/components/schemas/ConnectionApp`.
         public struct ConnectionApp: Codable, Hashable, Sendable {
+            /// Which kinds of organization may use the app.
+            ///
+            /// - Remark: Generated from `#/components/schemas/ConnectionApp/audience`.
+            public var audience: [Components.Schemas.AppAudience]
             /// - Remark: Generated from `#/components/schemas/ConnectionApp/category`.
             public var category: Components.Schemas.AppCategory
             /// - Remark: Generated from `#/components/schemas/ConnectionApp/challengePreparationUri`.
             public var challengePreparationUri: Swift.String
+            /// - Remark: Generated from `#/components/schemas/ConnectionApp/clientType`.
+            public var clientType: Components.Schemas.AppClientType
+            /// Where the owner starts a client-initiated connection; only for a
+            /// `public` app. An exact HTTPS address, or null.
+            ///
+            /// - Remark: Generated from `#/components/schemas/ConnectionApp/connectUrl`.
+            public var connectUrl: Swift.String?
             /// - Remark: Generated from `#/components/schemas/ConnectionApp/createdAt`.
             public var createdAt: Foundation.Date
             /// - Remark: Generated from `#/components/schemas/ConnectionApp/description`.
@@ -6176,8 +7663,11 @@ extension Components {
             /// Creates a new `ConnectionApp`.
             ///
             /// - Parameters:
+            ///   - audience: Which kinds of organization may use the app.
             ///   - category:
             ///   - challengePreparationUri:
+            ///   - clientType:
+            ///   - connectUrl: Where the owner starts a client-initiated connection; only for a
             ///   - createdAt:
             ///   - description:
             ///   - displayName:
@@ -6195,8 +7685,11 @@ extension Components {
             ///   - termsUrl:
             ///   - updatedAt:
             public init(
+                audience: [Components.Schemas.AppAudience],
                 category: Components.Schemas.AppCategory,
                 challengePreparationUri: Swift.String,
+                clientType: Components.Schemas.AppClientType,
+                connectUrl: Swift.String? = nil,
                 createdAt: Foundation.Date,
                 description: Swift.String,
                 displayName: Swift.String,
@@ -6214,8 +7707,11 @@ extension Components {
                 termsUrl: Swift.String? = nil,
                 updatedAt: Foundation.Date
             ) {
+                self.audience = audience
                 self.category = category
                 self.challengePreparationUri = challengePreparationUri
+                self.clientType = clientType
+                self.connectUrl = connectUrl
                 self.createdAt = createdAt
                 self.description = description
                 self.displayName = displayName
@@ -6234,8 +7730,11 @@ extension Components {
                 self.updatedAt = updatedAt
             }
             public enum CodingKeys: String, CodingKey {
+                case audience
                 case category
                 case challengePreparationUri
+                case clientType
+                case connectUrl
                 case createdAt
                 case description
                 case displayName
@@ -6338,14 +7837,40 @@ extension Components {
         }
         /// - Remark: Generated from `#/components/schemas/ConnectionAppScope`.
         public typealias ConnectionAppScope = FlowionConnectionAppScope
+        /// - Remark: Generated from `#/components/schemas/ConnectionAttentionReason`.
+        public typealias ConnectionAttentionReason = FlowionConnectionAttentionReason
         /// - Remark: Generated from `#/components/schemas/ConnectionInstance`.
         public struct ConnectionInstance: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/ConnectionInstance/appId`.
             public var appId: Swift.String
             /// - Remark: Generated from `#/components/schemas/ConnectionInstance/appName`.
             public var appName: Swift.String
+            /// The app no longer admits this kind of organization.
+            ///
+            /// - Remark: Generated from `#/components/schemas/ConnectionInstance/audienceMismatch`.
+            public var audienceMismatch: Swift.Bool
             /// - Remark: Generated from `#/components/schemas/ConnectionInstance/createdAt`.
             public var createdAt: Foundation.Date
+            /// - Remark: Generated from `#/components/schemas/ConnectionInstance/derivedState`.
+            public struct DerivedStatePayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/ConnectionInstance/derivedState/value1`.
+                public var value1: Components.Schemas.DerivedConnectionState
+                /// Creates a new `DerivedStatePayload`.
+                ///
+                /// - Parameters:
+                ///   - value1:
+                public init(value1: Components.Schemas.DerivedConnectionState) {
+                    self.value1 = value1
+                }
+                public init(from decoder: any Swift.Decoder) throws {
+                    self.value1 = try decoder.decodeFromSingleValueContainer()
+                }
+                public func encode(to encoder: any Swift.Encoder) throws {
+                    try encoder.encodeToSingleValueContainer(self.value1)
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/ConnectionInstance/derivedState`.
+            public var derivedState: Components.Schemas.ConnectionInstance.DerivedStatePayload?
             /// - Remark: Generated from `#/components/schemas/ConnectionInstance/grantedProjectIds`.
             public var grantedProjectIds: [Swift.String]
             /// - Remark: Generated from `#/components/schemas/ConnectionInstance/grants`.
@@ -6354,8 +7879,33 @@ extension Components {
             public var id: Swift.String
             /// - Remark: Generated from `#/components/schemas/ConnectionInstance/label`.
             public var label: Swift.String
+            /// When the connection last read something with its token. Absent if it
+            /// never has.
+            ///
+            /// - Remark: Generated from `#/components/schemas/ConnectionInstance/lastUsedAt`.
+            public var lastUsedAt: Foundation.Date?
             /// - Remark: Generated from `#/components/schemas/ConnectionInstance/organizationId`.
             public var organizationId: Swift.String
+            /// - Remark: Generated from `#/components/schemas/ConnectionInstance/reason`.
+            public struct ReasonPayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/ConnectionInstance/reason/value1`.
+                public var value1: Components.Schemas.ConnectionAttentionReason
+                /// Creates a new `ReasonPayload`.
+                ///
+                /// - Parameters:
+                ///   - value1:
+                public init(value1: Components.Schemas.ConnectionAttentionReason) {
+                    self.value1 = value1
+                }
+                public init(from decoder: any Swift.Decoder) throws {
+                    self.value1 = try decoder.decodeFromSingleValueContainer()
+                }
+                public func encode(to encoder: any Swift.Encoder) throws {
+                    try encoder.encodeToSingleValueContainer(self.value1)
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/ConnectionInstance/reason`.
+            public var reason: Components.Schemas.ConnectionInstance.ReasonPayload?
             /// - Remark: Generated from `#/components/schemas/ConnectionInstance/revision`.
             public var revision: Swift.Int64
             /// - Remark: Generated from `#/components/schemas/ConnectionInstance/settings`.
@@ -6369,12 +7919,16 @@ extension Components {
             /// - Parameters:
             ///   - appId:
             ///   - appName:
+            ///   - audienceMismatch: The app no longer admits this kind of organization.
             ///   - createdAt:
+            ///   - derivedState:
             ///   - grantedProjectIds:
             ///   - grants:
             ///   - id:
             ///   - label:
+            ///   - lastUsedAt: When the connection last read something with its token. Absent if it
             ///   - organizationId:
+            ///   - reason:
             ///   - revision:
             ///   - settings:
             ///   - state:
@@ -6382,12 +7936,16 @@ extension Components {
             public init(
                 appId: Swift.String,
                 appName: Swift.String,
+                audienceMismatch: Swift.Bool,
                 createdAt: Foundation.Date,
+                derivedState: Components.Schemas.ConnectionInstance.DerivedStatePayload? = nil,
                 grantedProjectIds: [Swift.String],
                 grants: [Components.Schemas.ConnectionScopeGrant],
                 id: Swift.String,
                 label: Swift.String,
+                lastUsedAt: Foundation.Date? = nil,
                 organizationId: Swift.String,
+                reason: Components.Schemas.ConnectionInstance.ReasonPayload? = nil,
                 revision: Swift.Int64,
                 settings: [Components.Schemas.ConnectionSetting],
                 state: Components.Schemas.ConnectionState,
@@ -6395,12 +7953,16 @@ extension Components {
             ) {
                 self.appId = appId
                 self.appName = appName
+                self.audienceMismatch = audienceMismatch
                 self.createdAt = createdAt
+                self.derivedState = derivedState
                 self.grantedProjectIds = grantedProjectIds
                 self.grants = grants
                 self.id = id
                 self.label = label
+                self.lastUsedAt = lastUsedAt
                 self.organizationId = organizationId
+                self.reason = reason
                 self.revision = revision
                 self.settings = settings
                 self.state = state
@@ -6409,12 +7971,16 @@ extension Components {
             public enum CodingKeys: String, CodingKey {
                 case appId
                 case appName
+                case audienceMismatch
                 case createdAt
+                case derivedState
                 case grantedProjectIds
                 case grants
                 case id
                 case label
+                case lastUsedAt
                 case organizationId
+                case reason
                 case revision
                 case settings
                 case state
@@ -6446,6 +8012,86 @@ extension Components {
         }
         /// - Remark: Generated from `#/components/schemas/ConnectionOperatorType`.
         public typealias ConnectionOperatorType = FlowionConnectionOperatorType
+        /// - Remark: Generated from `#/components/schemas/ConnectionRefusalView`.
+        public struct ConnectionRefusalView: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/ConnectionRefusalView/chargingStationId`.
+            public var chargingStationId: Swift.String
+            /// Attempts coalesced into this entry.
+            ///
+            /// - Remark: Generated from `#/components/schemas/ConnectionRefusalView/count`.
+            public var count: Swift.Int32
+            /// The charge point id Flowion registered the station under.
+            ///
+            /// - Remark: Generated from `#/components/schemas/ConnectionRefusalView/expectedId`.
+            public var expectedId: Swift.String
+            /// - Remark: Generated from `#/components/schemas/ConnectionRefusalView/firstAt`.
+            public var firstAt: Foundation.Date
+            /// - Remark: Generated from `#/components/schemas/ConnectionRefusalView/lastAt`.
+            public var lastAt: Foundation.Date
+            /// What the charger presented in its installation address. Text from
+            /// someone else's device: data, never anything to interpret.
+            ///
+            /// - Remark: Generated from `#/components/schemas/ConnectionRefusalView/presentedId`.
+            public var presentedId: Swift.String
+            /// Why it was refused. Open: clients tolerate values they do not know.
+            /// Today `chargePointIdMismatch`.
+            ///
+            /// - Remark: Generated from `#/components/schemas/ConnectionRefusalView/reason`.
+            public var reason: Swift.String
+            /// Creates a new `ConnectionRefusalView`.
+            ///
+            /// - Parameters:
+            ///   - chargingStationId:
+            ///   - count: Attempts coalesced into this entry.
+            ///   - expectedId: The charge point id Flowion registered the station under.
+            ///   - firstAt:
+            ///   - lastAt:
+            ///   - presentedId: What the charger presented in its installation address. Text from
+            ///   - reason: Why it was refused. Open: clients tolerate values they do not know.
+            public init(
+                chargingStationId: Swift.String,
+                count: Swift.Int32,
+                expectedId: Swift.String,
+                firstAt: Foundation.Date,
+                lastAt: Foundation.Date,
+                presentedId: Swift.String,
+                reason: Swift.String
+            ) {
+                self.chargingStationId = chargingStationId
+                self.count = count
+                self.expectedId = expectedId
+                self.firstAt = firstAt
+                self.lastAt = lastAt
+                self.presentedId = presentedId
+                self.reason = reason
+            }
+            public enum CodingKeys: String, CodingKey {
+                case chargingStationId
+                case count
+                case expectedId
+                case firstAt
+                case lastAt
+                case presentedId
+                case reason
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/ConnectionRefusalsView`.
+        public struct ConnectionRefusalsView: Codable, Hashable, Sendable {
+            /// At most 20 per station, none older than 24 hours, newest first.
+            ///
+            /// - Remark: Generated from `#/components/schemas/ConnectionRefusalsView/refusals`.
+            public var refusals: [Components.Schemas.ConnectionRefusalView]
+            /// Creates a new `ConnectionRefusalsView`.
+            ///
+            /// - Parameters:
+            ///   - refusals: At most 20 per station, none older than 24 hours, newest first.
+            public init(refusals: [Components.Schemas.ConnectionRefusalView]) {
+                self.refusals = refusals
+            }
+            public enum CodingKeys: String, CodingKey {
+                case refusals
+            }
+        }
         /// - Remark: Generated from `#/components/schemas/ConnectionScopeGrant`.
         public struct ConnectionScopeGrant: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/ConnectionScopeGrant/projectIds`.
@@ -7453,6 +9099,10 @@ extension Components {
         }
         /// - Remark: Generated from `#/components/schemas/CreateConnectionAppRequest`.
         public struct CreateConnectionAppRequest: Codable, Hashable, Sendable {
+            /// Omitted is `["organization"]`. A `public` app admits `home` only.
+            ///
+            /// - Remark: Generated from `#/components/schemas/CreateConnectionAppRequest/audience`.
+            public var audience: [Components.Schemas.AppAudience]?
             /// - Remark: Generated from `#/components/schemas/CreateConnectionAppRequest/category`.
             public struct CategoryPayload: Codable, Hashable, Sendable {
                 /// - Remark: Generated from `#/components/schemas/CreateConnectionAppRequest/category/value1`.
@@ -7475,6 +9125,31 @@ extension Components {
             public var category: Components.Schemas.CreateConnectionAppRequest.CategoryPayload?
             /// - Remark: Generated from `#/components/schemas/CreateConnectionAppRequest/challengePreparationUri`.
             public var challengePreparationUri: Swift.String
+            /// - Remark: Generated from `#/components/schemas/CreateConnectionAppRequest/clientType`.
+            public struct ClientTypePayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/CreateConnectionAppRequest/clientType/value1`.
+                public var value1: Components.Schemas.AppClientType
+                /// Creates a new `ClientTypePayload`.
+                ///
+                /// - Parameters:
+                ///   - value1:
+                public init(value1: Components.Schemas.AppClientType) {
+                    self.value1 = value1
+                }
+                public init(from decoder: any Swift.Decoder) throws {
+                    self.value1 = try decoder.decodeFromSingleValueContainer()
+                }
+                public func encode(to encoder: any Swift.Encoder) throws {
+                    try encoder.encodeToSingleValueContainer(self.value1)
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/CreateConnectionAppRequest/clientType`.
+            public var clientType: Components.Schemas.CreateConnectionAppRequest.ClientTypePayload?
+            /// Where the owner starts a client-initiated connection. Optional, an
+            /// exact public HTTPS address, and only meaningful for a `public` app.
+            ///
+            /// - Remark: Generated from `#/components/schemas/CreateConnectionAppRequest/connectUrl`.
+            public var connectUrl: Swift.String?
             /// - Remark: Generated from `#/components/schemas/CreateConnectionAppRequest/description`.
             public var description: Swift.String
             /// - Remark: Generated from `#/components/schemas/CreateConnectionAppRequest/displayName`.
@@ -7499,8 +9174,11 @@ extension Components {
             /// Creates a new `CreateConnectionAppRequest`.
             ///
             /// - Parameters:
+            ///   - audience: Omitted is `["organization"]`. A `public` app admits `home` only.
             ///   - category:
             ///   - challengePreparationUri:
+            ///   - clientType:
+            ///   - connectUrl: Where the owner starts a client-initiated connection. Optional, an
             ///   - description:
             ///   - displayName:
             ///   - fields:
@@ -7511,8 +9189,11 @@ extension Components {
             ///   - supportUrl:
             ///   - termsUrl:
             public init(
+                audience: [Components.Schemas.AppAudience]? = nil,
                 category: Components.Schemas.CreateConnectionAppRequest.CategoryPayload? = nil,
                 challengePreparationUri: Swift.String,
+                clientType: Components.Schemas.CreateConnectionAppRequest.ClientTypePayload? = nil,
+                connectUrl: Swift.String? = nil,
                 description: Swift.String,
                 displayName: Swift.String,
                 fields: [Components.Schemas.ConnectionAppField],
@@ -7523,8 +9204,11 @@ extension Components {
                 supportUrl: Swift.String,
                 termsUrl: Swift.String? = nil
             ) {
+                self.audience = audience
                 self.category = category
                 self.challengePreparationUri = challengePreparationUri
+                self.clientType = clientType
+                self.connectUrl = connectUrl
                 self.description = description
                 self.displayName = displayName
                 self.fields = fields
@@ -7536,8 +9220,11 @@ extension Components {
                 self.termsUrl = termsUrl
             }
             public enum CodingKeys: String, CodingKey {
+                case audience
                 case category
                 case challengePreparationUri
+                case clientType
+                case connectUrl
                 case description
                 case displayName
                 case fields
@@ -7550,6 +9237,10 @@ extension Components {
             }
             public init(from decoder: any Swift.Decoder) throws {
                 let container = try decoder.container(keyedBy: CodingKeys.self)
+                self.audience = try container.decodeIfPresent(
+                    [Components.Schemas.AppAudience].self,
+                    forKey: .audience
+                )
                 self.category = try container.decodeIfPresent(
                     Components.Schemas.CreateConnectionAppRequest.CategoryPayload.self,
                     forKey: .category
@@ -7557,6 +9248,14 @@ extension Components {
                 self.challengePreparationUri = try container.decode(
                     Swift.String.self,
                     forKey: .challengePreparationUri
+                )
+                self.clientType = try container.decodeIfPresent(
+                    Components.Schemas.CreateConnectionAppRequest.ClientTypePayload.self,
+                    forKey: .clientType
+                )
+                self.connectUrl = try container.decodeIfPresent(
+                    Swift.String.self,
+                    forKey: .connectUrl
                 )
                 self.description = try container.decode(
                     Swift.String.self,
@@ -7595,8 +9294,11 @@ extension Components {
                     forKey: .termsUrl
                 )
                 try decoder.ensureNoAdditionalProperties(knownKeys: [
+                    "audience",
                     "category",
                     "challengePreparationUri",
+                    "clientType",
+                    "connectUrl",
                     "description",
                     "displayName",
                     "fields",
@@ -7708,6 +9410,93 @@ extension Components {
                 try decoder.ensureNoAdditionalProperties(knownKeys: [
                     "startTime",
                     "stopTime"
+                ])
+            }
+        }
+        /// A home to make.
+        ///
+        /// - Remark: Generated from `#/components/schemas/CreateHomeRequest`.
+        public struct CreateHomeRequest: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/CreateHomeRequest/address`.
+            public var address: Components.Schemas.HomeAddress
+            /// What the person calls the home.
+            ///
+            /// - Remark: Generated from `#/components/schemas/CreateHomeRequest/name`.
+            public var name: Swift.String
+            /// The electricity price area as a zone label (`SE1` to `SE4`, `NO2`,
+            /// `DK1` and the other areas the pricing code knows). Optional: the price
+            /// area is chosen at the electricity step, and a home with none still
+            /// charges. When given, the home's location is priced in it.
+            ///
+            /// - Remark: Generated from `#/components/schemas/CreateHomeRequest/priceArea`.
+            public var priceArea: Swift.String?
+            /// Made once by the app per attempt and reused on a retry: the same
+            /// `requestId` answers with the home it first made.
+            ///
+            /// - Remark: Generated from `#/components/schemas/CreateHomeRequest/requestId`.
+            public var requestId: Swift.String
+            /// An IANA time zone for the home. When omitted, the price area's, else
+            /// the country's (Sweden, Norway, Denmark and Finland); a country with
+            /// several time zones leaves it unset.
+            ///
+            /// - Remark: Generated from `#/components/schemas/CreateHomeRequest/timeZone`.
+            public var timeZone: Swift.String?
+            /// Creates a new `CreateHomeRequest`.
+            ///
+            /// - Parameters:
+            ///   - address:
+            ///   - name: What the person calls the home.
+            ///   - priceArea: The electricity price area as a zone label (`SE1` to `SE4`, `NO2`,
+            ///   - requestId: Made once by the app per attempt and reused on a retry: the same
+            ///   - timeZone: An IANA time zone for the home. When omitted, the price area's, else
+            public init(
+                address: Components.Schemas.HomeAddress,
+                name: Swift.String,
+                priceArea: Swift.String? = nil,
+                requestId: Swift.String,
+                timeZone: Swift.String? = nil
+            ) {
+                self.address = address
+                self.name = name
+                self.priceArea = priceArea
+                self.requestId = requestId
+                self.timeZone = timeZone
+            }
+            public enum CodingKeys: String, CodingKey {
+                case address
+                case name
+                case priceArea
+                case requestId
+                case timeZone
+            }
+            public init(from decoder: any Swift.Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                self.address = try container.decode(
+                    Components.Schemas.HomeAddress.self,
+                    forKey: .address
+                )
+                self.name = try container.decode(
+                    Swift.String.self,
+                    forKey: .name
+                )
+                self.priceArea = try container.decodeIfPresent(
+                    Swift.String.self,
+                    forKey: .priceArea
+                )
+                self.requestId = try container.decode(
+                    Swift.String.self,
+                    forKey: .requestId
+                )
+                self.timeZone = try container.decodeIfPresent(
+                    Swift.String.self,
+                    forKey: .timeZone
+                )
+                try decoder.ensureNoAdditionalProperties(knownKeys: [
+                    "address",
+                    "name",
+                    "priceArea",
+                    "requestId",
+                    "timeZone"
                 ])
             }
         }
@@ -7869,29 +9658,21 @@ extension Components {
             ///
             /// - Remark: Generated from `#/components/schemas/CreateJobLocationRequest/name`.
             public var name: Swift.String?
-            /// The installer project the location is built in.
-            ///
-            /// - Remark: Generated from `#/components/schemas/CreateJobLocationRequest/projectId`.
-            public var projectId: Swift.String
             /// Creates a new `CreateJobLocationRequest`.
             ///
             /// - Parameters:
             ///   - circuits:
             ///   - name: Absent defaults to the job's address.
-            ///   - projectId: The installer project the location is built in.
             public init(
                 circuits: [Components.Schemas.JobCircuitInputBody]? = nil,
-                name: Swift.String? = nil,
-                projectId: Swift.String
+                name: Swift.String? = nil
             ) {
                 self.circuits = circuits
                 self.name = name
-                self.projectId = projectId
             }
             public enum CodingKeys: String, CodingKey {
                 case circuits
                 case name
-                case projectId
             }
         }
         /// - Remark: Generated from `#/components/schemas/CreateJobRequest`.
@@ -7902,37 +9683,140 @@ extension Components {
             public var contact: Components.Schemas.JobContactView
             /// - Remark: Generated from `#/components/schemas/CreateJobRequest/customer`.
             public var customer: Components.Schemas.JobCustomerView
+            /// ISO 3166-1 alpha-2 country of `customer.organizationNumber`, in capitals
+            /// (for example `SE`). Required, and validated by `jobs`: a country with a
+            /// validator (Sweden) checks the number, any other keeps it as typed and
+            /// marks it unverified. A VAT number is not a registration number.
+            ///
+            /// - Remark: Generated from `#/components/schemas/CreateJobRequest/customerCountry`.
+            public var customerCountry: Swift.String?
+            /// For a job on an existing location: the customer this firm serves. May
+            /// be sent with `existingLocationId` to name which of the customer's sites.
+            ///
+            /// - Remark: Generated from `#/components/schemas/CreateJobRequest/existingGrantId`.
+            public var existingGrantId: Swift.String?
+            /// For a job on an existing location: with `existingGrantId`, one of that
+            /// customer's sites (a `site` scope of the grant); alone, a location in one
+            /// of the firm's own `operations` projects.
+            ///
+            /// - Remark: Generated from `#/components/schemas/CreateJobRequest/existingLocationId`.
+            public var existingLocationId: Swift.String?
+            /// Installation-site country, separate from customerCountry. Used by Create job draft.
+            ///
+            /// - Remark: Generated from `#/components/schemas/CreateJobRequest/installationCountry`.
+            public var installationCountry: Swift.String?
             /// - Remark: Generated from `#/components/schemas/CreateJobRequest/lines`.
             public var lines: [Components.Schemas.JobLineInput]?
+            /// - Remark: Generated from `#/components/schemas/CreateJobRequest/locationKind`.
+            public var locationKind: Components.Schemas.JobLocationKindApi?
+            /// - Remark: Generated from `#/components/schemas/CreateJobRequest/onSiteContact`.
+            public struct OnSiteContactPayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/CreateJobRequest/onSiteContact/value1`.
+                public var value1: Components.Schemas.JobOnSiteContactView
+                /// Creates a new `OnSiteContactPayload`.
+                ///
+                /// - Parameters:
+                ///   - value1:
+                public init(value1: Components.Schemas.JobOnSiteContactView) {
+                    self.value1 = value1
+                }
+                public init(from decoder: any Swift.Decoder) throws {
+                    self.value1 = try .init(from: decoder)
+                }
+                public func encode(to encoder: any Swift.Encoder) throws {
+                    try self.value1.encode(to: encoder)
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/CreateJobRequest/onSiteContact`.
+            public var onSiteContact: Components.Schemas.CreateJobRequest.OnSiteContactPayload?
             /// - Remark: Generated from `#/components/schemas/CreateJobRequest/plannedDate`.
             public var plannedDate: Swift.String?
+            /// The `installations` project the job belongs to, for life. The caller
+            /// must hold `jobs.job.manage` there. Required for a job that builds its
+            /// location and for one on the firm's own location; for a job on a served
+            /// customer's site it is the serving project and may be left out.
+            ///
+            /// - Remark: Generated from `#/components/schemas/CreateJobRequest/projectId`.
+            public var projectId: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/CreateJobRequest/visitReason`.
+            public struct VisitReasonPayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/CreateJobRequest/visitReason/value1`.
+                public var value1: Components.Schemas.VisitReason
+                /// Creates a new `VisitReasonPayload`.
+                ///
+                /// - Parameters:
+                ///   - value1:
+                public init(value1: Components.Schemas.VisitReason) {
+                    self.value1 = value1
+                }
+                public init(from decoder: any Swift.Decoder) throws {
+                    self.value1 = try decoder.decodeFromSingleValueContainer()
+                }
+                public func encode(to encoder: any Swift.Encoder) throws {
+                    try encoder.encodeToSingleValueContainer(self.value1)
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/CreateJobRequest/visitReason`.
+            public var visitReason: Components.Schemas.CreateJobRequest.VisitReasonPayload?
             /// Creates a new `CreateJobRequest`.
             ///
             /// - Parameters:
             ///   - address:
             ///   - contact:
             ///   - customer:
+            ///   - customerCountry: ISO 3166-1 alpha-2 country of `customer.organizationNumber`, in capitals
+            ///   - existingGrantId: For a job on an existing location: the customer this firm serves. May
+            ///   - existingLocationId: For a job on an existing location: with `existingGrantId`, one of that
+            ///   - installationCountry: Installation-site country, separate from customerCountry. Used by Create job draft.
             ///   - lines:
+            ///   - locationKind:
+            ///   - onSiteContact:
             ///   - plannedDate:
+            ///   - projectId: The `installations` project the job belongs to, for life. The caller
+            ///   - visitReason:
             public init(
                 address: Swift.String,
                 contact: Components.Schemas.JobContactView,
                 customer: Components.Schemas.JobCustomerView,
+                customerCountry: Swift.String? = nil,
+                existingGrantId: Swift.String? = nil,
+                existingLocationId: Swift.String? = nil,
+                installationCountry: Swift.String? = nil,
                 lines: [Components.Schemas.JobLineInput]? = nil,
-                plannedDate: Swift.String? = nil
+                locationKind: Components.Schemas.JobLocationKindApi? = nil,
+                onSiteContact: Components.Schemas.CreateJobRequest.OnSiteContactPayload? = nil,
+                plannedDate: Swift.String? = nil,
+                projectId: Swift.String? = nil,
+                visitReason: Components.Schemas.CreateJobRequest.VisitReasonPayload? = nil
             ) {
                 self.address = address
                 self.contact = contact
                 self.customer = customer
+                self.customerCountry = customerCountry
+                self.existingGrantId = existingGrantId
+                self.existingLocationId = existingLocationId
+                self.installationCountry = installationCountry
                 self.lines = lines
+                self.locationKind = locationKind
+                self.onSiteContact = onSiteContact
                 self.plannedDate = plannedDate
+                self.projectId = projectId
+                self.visitReason = visitReason
             }
             public enum CodingKeys: String, CodingKey {
                 case address
                 case contact
                 case customer
+                case customerCountry
+                case existingGrantId
+                case existingLocationId
+                case installationCountry
                 case lines
+                case locationKind
+                case onSiteContact
                 case plannedDate
+                case projectId
+                case visitReason
             }
         }
         /// - Remark: Generated from `#/components/schemas/CreateLocationRequest`.
@@ -7979,25 +9863,35 @@ extension Components {
             public var coordinates: Components.Schemas.CreateLocationRequest.CoordinatesPayload?
             /// - Remark: Generated from `#/components/schemas/CreateLocationRequest/name`.
             public var name: Swift.String
+            /// Resolve the address with Google and permanently save its coordinates.
+            /// Coordinates must be omitted. Existing saved coordinates are preserved.
+            /// Lookup failure refuses the entire write. Defaults to false.
+            ///
+            /// - Remark: Generated from `#/components/schemas/CreateLocationRequest/resolveCoordinates`.
+            public var resolveCoordinates: Swift.Bool?
             /// Creates a new `CreateLocationRequest`.
             ///
             /// - Parameters:
             ///   - address:
             ///   - coordinates:
             ///   - name:
+            ///   - resolveCoordinates: Resolve the address with Google and permanently save its coordinates.
             public init(
                 address: Components.Schemas.CreateLocationRequest.AddressPayload? = nil,
                 coordinates: Components.Schemas.CreateLocationRequest.CoordinatesPayload? = nil,
-                name: Swift.String
+                name: Swift.String,
+                resolveCoordinates: Swift.Bool? = nil
             ) {
                 self.address = address
                 self.coordinates = coordinates
                 self.name = name
+                self.resolveCoordinates = resolveCoordinates
             }
             public enum CodingKeys: String, CodingKey {
                 case address
                 case coordinates
                 case name
+                case resolveCoordinates
             }
         }
         /// - Remark: Generated from `#/components/schemas/CreateMonitorRequest`.
@@ -8093,34 +9987,6 @@ extension Components {
                 ])
             }
         }
-        /// - Remark: Generated from `#/components/schemas/CreateOnboardingLinkRequest`.
-        public struct CreateOnboardingLinkRequest: Codable, Hashable, Sendable {
-            /// Where Stripe sends the admin if the link expired. Absolute
-            /// `https://` only.
-            ///
-            /// - Remark: Generated from `#/components/schemas/CreateOnboardingLinkRequest/refreshUrl`.
-            public var refreshUrl: Swift.String
-            /// Where Stripe sends the admin when done. Absolute `https://` only.
-            ///
-            /// - Remark: Generated from `#/components/schemas/CreateOnboardingLinkRequest/returnUrl`.
-            public var returnUrl: Swift.String
-            /// Creates a new `CreateOnboardingLinkRequest`.
-            ///
-            /// - Parameters:
-            ///   - refreshUrl: Where Stripe sends the admin if the link expired. Absolute
-            ///   - returnUrl: Where Stripe sends the admin when done. Absolute `https://` only.
-            public init(
-                refreshUrl: Swift.String,
-                returnUrl: Swift.String
-            ) {
-                self.refreshUrl = refreshUrl
-                self.returnUrl = returnUrl
-            }
-            public enum CodingKeys: String, CodingKey {
-                case refreshUrl
-                case returnUrl
-            }
-        }
         /// - Remark: Generated from `#/components/schemas/CreateOrganizationRequest`.
         public struct CreateOrganizationRequest: Codable, Hashable, Sendable {
             /// ADR-0174: the country the organization is billed from, ISO 3166-1
@@ -8144,16 +10010,26 @@ extension Components {
             public var currency: Swift.String?
             /// - Remark: Generated from `#/components/schemas/CreateOrganizationRequest/name`.
             public var name: Swift.String
-            /// spec 113 (research.md R9): the organization's Swedish organization
-            /// number, same shape and validation as `UpdateOrganizationRequest`'s
-            /// field of the same name — omit it to create with none. A value that
-            /// fails `identity::OrganizationNumber::parse` (`556703-7485` and a few
-            /// other accepted forms — see that module's own doc comment) is a 422
-            /// with a plain-language reason, the same kinds
-            /// `organizations::update`'s PATCH route already answers.
+            /// The organization's registration number, as its country names it
+            /// (Swedish organisationsnummer, Danish CVR, ...). Omit it, or send a
+            /// blank string, to create with none. Where the country has a validator
+            /// the number must pass it (`556703-7485` and a few other forms are
+            /// accepted for Sweden); a number for a country without one is stored
+            /// trimmed and upper-cased, and is not verified. A VAT number is accepted
+            /// where it contains the registration number (`SE` + ten digits + `01`,
+            /// `DK` + eight digits, `FI` + eight digits) and reduced to it; any other
+            /// VAT number is a 422 that points to the billing page, because a VAT
+            /// number is held there and never identifies an organization.
             ///
             /// - Remark: Generated from `#/components/schemas/CreateOrganizationRequest/organizationNumber`.
             public var organizationNumber: Swift.String?
+            /// The country that issued `organizationNumber`, ISO 3166-1 alpha-2
+            /// (`SE`). Omitted with a number it means `SE`. This is the registration
+            /// country and has nothing to do with `country` below, which is where the
+            /// organization is billed from. Ignored when there is no number.
+            ///
+            /// - Remark: Generated from `#/components/schemas/CreateOrganizationRequest/organizationNumberCountry`.
+            public var organizationNumberCountry: Swift.String?
             /// Caller-supplied rather than derived from `name` — lowercase
             /// alphanumeric segments joined by single hyphens, at most 63
             /// characters, unique across the platform.
@@ -8176,7 +10052,8 @@ extension Components {
             ///   - country: ADR-0174: the country the organization is billed from, ISO 3166-1
             ///   - currency: `sek` or `eur`, case-insensitive. The customer's own choice and
             ///   - name:
-            ///   - organizationNumber: spec 113 (research.md R9): the organization's Swedish organization
+            ///   - organizationNumber: The organization's registration number, as its country names it
+            ///   - organizationNumberCountry: The country that issued `organizationNumber`, ISO 3166-1 alpha-2
             ///   - slug: Caller-supplied rather than derived from `name` — lowercase
             ///   - source: Spec 123 (FR-009/FR-010): where the visitor first came from, in the
             public init(
@@ -8184,6 +10061,7 @@ extension Components {
                 currency: Swift.String? = nil,
                 name: Swift.String,
                 organizationNumber: Swift.String? = nil,
+                organizationNumberCountry: Swift.String? = nil,
                 slug: Swift.String,
                 source: Swift.String? = nil
             ) {
@@ -8191,6 +10069,7 @@ extension Components {
                 self.currency = currency
                 self.name = name
                 self.organizationNumber = organizationNumber
+                self.organizationNumberCountry = organizationNumberCountry
                 self.slug = slug
                 self.source = source
             }
@@ -8199,8 +10078,29 @@ extension Components {
                 case currency
                 case name
                 case organizationNumber
+                case organizationNumberCountry
                 case slug
                 case source
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/CreatePaymentsAccountLinkRequest`.
+        public struct CreatePaymentsAccountLinkRequest: Codable, Hashable, Sendable {
+            /// A console path to send the browser back to when the Stripe-hosted
+            /// flow ends, or when its link is used up or expired (open the flow again
+            /// from there). Starts with a single `/`; no scheme, host, `..` or
+            /// fragment. Never a full URL.
+            ///
+            /// - Remark: Generated from `#/components/schemas/CreatePaymentsAccountLinkRequest/returnPath`.
+            public var returnPath: Swift.String
+            /// Creates a new `CreatePaymentsAccountLinkRequest`.
+            ///
+            /// - Parameters:
+            ///   - returnPath: A console path to send the browser back to when the Stripe-hosted
+            public init(returnPath: Swift.String) {
+                self.returnPath = returnPath
+            }
+            public enum CodingKeys: String, CodingKey {
+                case returnPath
             }
         }
         /// - Remark: Generated from `#/components/schemas/CreatePaymentsAccountRequest`.
@@ -8286,24 +10186,72 @@ extension Components {
         }
         /// - Remark: Generated from `#/components/schemas/CreateProjectRequest`.
         public struct CreateProjectRequest: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/CreateProjectRequest/kind`.
+            public struct KindPayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/CreateProjectRequest/kind/value1`.
+                public var value1: Components.Schemas.ProjectKind
+                /// Creates a new `KindPayload`.
+                ///
+                /// - Parameters:
+                ///   - value1:
+                public init(value1: Components.Schemas.ProjectKind) {
+                    self.value1 = value1
+                }
+                public init(from decoder: any Swift.Decoder) throws {
+                    self.value1 = try decoder.decodeFromSingleValueContainer()
+                }
+                public func encode(to encoder: any Swift.Encoder) throws {
+                    try encoder.encodeToSingleValueContainer(self.value1)
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/CreateProjectRequest/kind`.
+            public var kind: Components.Schemas.CreateProjectRequest.KindPayload?
             /// - Remark: Generated from `#/components/schemas/CreateProjectRequest/name`.
             public var name: Swift.String
+            /// - Remark: Generated from `#/components/schemas/CreateProjectRequest/preset`.
+            public struct PresetPayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/CreateProjectRequest/preset/value1`.
+                public var value1: Components.Schemas.ProjectPreset
+                /// Creates a new `PresetPayload`.
+                ///
+                /// - Parameters:
+                ///   - value1:
+                public init(value1: Components.Schemas.ProjectPreset) {
+                    self.value1 = value1
+                }
+                public init(from decoder: any Swift.Decoder) throws {
+                    self.value1 = try decoder.decodeFromSingleValueContainer()
+                }
+                public func encode(to encoder: any Swift.Encoder) throws {
+                    try encoder.encodeToSingleValueContainer(self.value1)
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/CreateProjectRequest/preset`.
+            public var preset: Components.Schemas.CreateProjectRequest.PresetPayload?
             /// - Remark: Generated from `#/components/schemas/CreateProjectRequest/slug`.
             public var slug: Swift.String
             /// Creates a new `CreateProjectRequest`.
             ///
             /// - Parameters:
+            ///   - kind:
             ///   - name:
+            ///   - preset:
             ///   - slug:
             public init(
+                kind: Components.Schemas.CreateProjectRequest.KindPayload? = nil,
                 name: Swift.String,
+                preset: Components.Schemas.CreateProjectRequest.PresetPayload? = nil,
                 slug: Swift.String
             ) {
+                self.kind = kind
                 self.name = name
+                self.preset = preset
                 self.slug = slug
             }
             public enum CodingKeys: String, CodingKey {
+                case kind
                 case name
+                case preset
                 case slug
             }
         }
@@ -8605,6 +10553,88 @@ extension Components {
                 case targetUrl
             }
         }
+        /// What registering an app answers: the client id, and for a confidential app
+        /// the secret, once. A public app has no secret and the field is absent.
+        ///
+        /// - Remark: Generated from `#/components/schemas/CreatedAppCredentialDisclosure`.
+        public struct CreatedAppCredentialDisclosure: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/CreatedAppCredentialDisclosure/app`.
+            public var app: Components.Schemas.ConnectionApp
+            /// - Remark: Generated from `#/components/schemas/CreatedAppCredentialDisclosure/clientId`.
+            public var clientId: Swift.String
+            /// - Remark: Generated from `#/components/schemas/CreatedAppCredentialDisclosure/clientSecret`.
+            public var clientSecret: Swift.String?
+            /// Creates a new `CreatedAppCredentialDisclosure`.
+            ///
+            /// - Parameters:
+            ///   - app:
+            ///   - clientId:
+            ///   - clientSecret:
+            public init(
+                app: Components.Schemas.ConnectionApp,
+                clientId: Swift.String,
+                clientSecret: Swift.String? = nil
+            ) {
+                self.app = app
+                self.clientId = clientId
+                self.clientSecret = clientSecret
+            }
+            public enum CodingKeys: String, CodingKey {
+                case app
+                case clientId
+                case clientSecret
+            }
+        }
+        /// The body of `PUT /projects/{projectId}/locations/{locationId}/credentials-policy`:
+        /// one location's own switch for id-token credentials. A body that names no
+        /// `credentials` is refused rather than read as "inherit again".
+        ///
+        /// - Remark: Generated from `#/components/schemas/CredentialsPolicyRequest`.
+        public struct CredentialsPolicyRequest: Codable, Hashable, Sendable {
+            /// `on`, `off`, or `null` to inherit the project's switch again.
+            ///
+            /// - Remark: Generated from `#/components/schemas/CredentialsPolicyRequest/credentials`.
+            public var credentials: Swift.String?
+            /// Creates a new `CredentialsPolicyRequest`.
+            ///
+            /// - Parameters:
+            ///   - credentials: `on`, `off`, or `null` to inherit the project's switch again.
+            public init(credentials: Swift.String? = nil) {
+                self.credentials = credentials
+            }
+            public enum CodingKeys: String, CodingKey {
+                case credentials
+            }
+            public init(from decoder: any Swift.Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                self.credentials = try container.decodeIfPresent(
+                    Swift.String.self,
+                    forKey: .credentials
+                )
+                try decoder.ensureNoAdditionalProperties(knownKeys: [
+                    "credentials"
+                ])
+            }
+        }
+        /// A location's own credentials switch after a write.
+        ///
+        /// - Remark: Generated from `#/components/schemas/CredentialsPolicyView`.
+        public struct CredentialsPolicyView: Codable, Hashable, Sendable {
+            /// `on`, `off`, or `null` when the location inherits the project's switch.
+            ///
+            /// - Remark: Generated from `#/components/schemas/CredentialsPolicyView/credentials`.
+            public var credentials: Swift.String?
+            /// Creates a new `CredentialsPolicyView`.
+            ///
+            /// - Parameters:
+            ///   - credentials: `on`, `off`, or `null` when the location inherits the project's switch.
+            public init(credentials: Swift.String? = nil) {
+                self.credentials = credentials
+            }
+            public enum CodingKeys: String, CodingKey {
+                case credentials
+            }
+        }
         /// One currency's figures. Currencies are never summed or converted.
         ///
         /// - Remark: Generated from `#/components/schemas/CurrencyEarnings`.
@@ -8836,13 +10866,20 @@ extension Components {
             ///
             /// - Remark: Generated from `#/components/schemas/CustomerAccessGrantView/customerOrganizationName`.
             public var customerOrganizationName: Swift.String?
-            /// The customer organization's Swedish organization number, in display
-            /// form (`556703-7485`) -- same "active grants only" rule as
-            /// `customerOrganizationName`, and additionally absent whenever the
-            /// customer organization has none set.
+            /// The customer organization's registration number -- same "active
+            /// grants only" rule as `customerOrganizationName`, and additionally
+            /// absent whenever the customer organization has none set. A Swedish
+            /// number is in display form (`556703-7485`); another country's is as
+            /// stored. `customerOrganizationNumberCountry` says which.
             ///
             /// - Remark: Generated from `#/components/schemas/CustomerAccessGrantView/customerOrganizationNumber`.
             public var customerOrganizationNumber: Swift.String?
+            /// The country `customerOrganizationNumber` is registered under, ISO
+            /// 3166-1 alpha-2 in capitals (`SE`, `DK`): the value to send as a job's
+            /// `customerCountry`. Present exactly when the number is.
+            ///
+            /// - Remark: Generated from `#/components/schemas/CustomerAccessGrantView/customerOrganizationNumberCountry`.
+            public var customerOrganizationNumberCountry: Swift.String?
             /// - Remark: Generated from `#/components/schemas/CustomerAccessGrantView/id`.
             public var id: Swift.String
             /// - Remark: Generated from `#/components/schemas/CustomerAccessGrantView/installerOrganizationId`.
@@ -8853,6 +10890,14 @@ extension Components {
             public var revokedBy: Swift.String?
             /// - Remark: Generated from `#/components/schemas/CustomerAccessGrantView/scopes`.
             public var scopes: [Components.Schemas.GrantScopeApi]
+            /// The project (office) of the installer that serves this customer. Only the
+            /// installer's own routes carry it: the customer never sees which office
+            /// serves it, so the customer-side responses leave it out entirely (absent,
+            /// not null). Absent on the installer side too until the firm chooses an
+            /// office.
+            ///
+            /// - Remark: Generated from `#/components/schemas/CustomerAccessGrantView/servingProjectId`.
+            public var servingProjectId: Swift.String?
             /// - Remark: Generated from `#/components/schemas/CustomerAccessGrantView/status`.
             public var status: Components.Schemas.GrantStatusApi
             /// Creates a new `CustomerAccessGrantView`.
@@ -8863,12 +10908,14 @@ extension Components {
             ///   - createdBy:
             ///   - customerOrganizationId:
             ///   - customerOrganizationName: The customer organization's name, resolved live through `identity`.
-            ///   - customerOrganizationNumber: The customer organization's Swedish organization number, in display
+            ///   - customerOrganizationNumber: The customer organization's registration number -- same "active
+            ///   - customerOrganizationNumberCountry: The country `customerOrganizationNumber` is registered under, ISO
             ///   - id:
             ///   - installerOrganizationId:
             ///   - revokedAt:
             ///   - revokedBy:
             ///   - scopes:
+            ///   - servingProjectId: The project (office) of the installer that serves this customer. Only the
             ///   - status:
             public init(
                 acceptedAt: Foundation.Date? = nil,
@@ -8877,11 +10924,13 @@ extension Components {
                 customerOrganizationId: Swift.String,
                 customerOrganizationName: Swift.String? = nil,
                 customerOrganizationNumber: Swift.String? = nil,
+                customerOrganizationNumberCountry: Swift.String? = nil,
                 id: Swift.String,
                 installerOrganizationId: Swift.String,
                 revokedAt: Foundation.Date? = nil,
                 revokedBy: Swift.String? = nil,
                 scopes: [Components.Schemas.GrantScopeApi],
+                servingProjectId: Swift.String? = nil,
                 status: Components.Schemas.GrantStatusApi
             ) {
                 self.acceptedAt = acceptedAt
@@ -8890,11 +10939,13 @@ extension Components {
                 self.customerOrganizationId = customerOrganizationId
                 self.customerOrganizationName = customerOrganizationName
                 self.customerOrganizationNumber = customerOrganizationNumber
+                self.customerOrganizationNumberCountry = customerOrganizationNumberCountry
                 self.id = id
                 self.installerOrganizationId = installerOrganizationId
                 self.revokedAt = revokedAt
                 self.revokedBy = revokedBy
                 self.scopes = scopes
+                self.servingProjectId = servingProjectId
                 self.status = status
             }
             public enum CodingKeys: String, CodingKey {
@@ -8904,12 +10955,48 @@ extension Components {
                 case customerOrganizationId
                 case customerOrganizationName
                 case customerOrganizationNumber
+                case customerOrganizationNumberCountry
                 case id
                 case installerOrganizationId
                 case revokedAt
                 case revokedBy
                 case scopes
+                case servingProjectId
                 case status
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/CustomerSiteView`.
+        public struct CustomerSiteView: Codable, Hashable, Sendable {
+            /// The site's postal address on one line (street, postal code and city),
+            /// empty when asset holds none.
+            ///
+            /// - Remark: Generated from `#/components/schemas/CustomerSiteView/address`.
+            public var address: Swift.String
+            /// The site's location id: what a job names as `existingLocationId`.
+            ///
+            /// - Remark: Generated from `#/components/schemas/CustomerSiteView/id`.
+            public var id: Swift.String
+            /// - Remark: Generated from `#/components/schemas/CustomerSiteView/name`.
+            public var name: Swift.String
+            /// Creates a new `CustomerSiteView`.
+            ///
+            /// - Parameters:
+            ///   - address: The site's postal address on one line (street, postal code and city),
+            ///   - id: The site's location id: what a job names as `existingLocationId`.
+            ///   - name:
+            public init(
+                address: Swift.String,
+                id: Swift.String,
+                name: Swift.String
+            ) {
+                self.address = address
+                self.id = id
+                self.name = name
+            }
+            public enum CodingKeys: String, CodingKey {
+                case address
+                case id
+                case name
             }
         }
         /// How the charging station answered a `DataTransfer` message.
@@ -9169,6 +11256,23 @@ extension Components {
                 case evseId
             }
         }
+        /// - Remark: Generated from `#/components/schemas/DeclineAdditionOfferRequest`.
+        public struct DeclineAdditionOfferRequest: Codable, Hashable, Sendable {
+            /// Why. Shown to the installer. Empty is recorded as "no reason given".
+            ///
+            /// - Remark: Generated from `#/components/schemas/DeclineAdditionOfferRequest/reason`.
+            public var reason: Swift.String?
+            /// Creates a new `DeclineAdditionOfferRequest`.
+            ///
+            /// - Parameters:
+            ///   - reason: Why. Shown to the installer. Empty is recorded as "no reason given".
+            public init(reason: Swift.String? = nil) {
+                self.reason = reason
+            }
+            public enum CodingKeys: String, CodingKey {
+                case reason
+            }
+        }
         /// - Remark: Generated from `#/components/schemas/DeclineAssistantRequest`.
         public struct DeclineAssistantRequest: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/DeclineAssistantRequest/clientId`.
@@ -9200,6 +11304,25 @@ extension Components {
                 case clientId
                 case redirectUri
                 case state
+            }
+        }
+        /// What the caller may add when declining.
+        ///
+        /// - Remark: Generated from `#/components/schemas/DeclineJobInvitationRequest`.
+        public struct DeclineJobInvitationRequest: Codable, Hashable, Sendable {
+            /// Also stop this installer from inviting your address again.
+            ///
+            /// - Remark: Generated from `#/components/schemas/DeclineJobInvitationRequest/block`.
+            public var block: Swift.Bool?
+            /// Creates a new `DeclineJobInvitationRequest`.
+            ///
+            /// - Parameters:
+            ///   - block: Also stop this installer from inviting your address again.
+            public init(block: Swift.Bool? = nil) {
+                self.block = block
+            }
+            public enum CodingKeys: String, CodingKey {
+                case block
             }
         }
         /// The default policy applied to new charging sessions.
@@ -9290,6 +11413,30 @@ extension Components {
                 case targetUrl
                 case timeoutMs
                 case updatedAt
+            }
+        }
+        /// What `DELETE /v1/me` may carry. The whole body is optional: an account with no
+        /// Apple method sends none.
+        ///
+        /// - Remark: Generated from `#/components/schemas/DeleteAccountRequest`.
+        public struct DeleteAccountRequest: Codable, Hashable, Sendable {
+            /// The one-use authorization code Sign in with Apple's sheet returned for this
+            /// deletion, for an account that signs in with Apple. It lets the server revoke
+            /// Apple's grant for the app (App Review 5.1.1(v)); it is single use and lives
+            /// a few minutes, so ask the sheet again on every attempt. It is used only if
+            /// the account holds an Apple sign-in, and is never stored or logged.
+            ///
+            /// - Remark: Generated from `#/components/schemas/DeleteAccountRequest/appleAuthorizationCode`.
+            public var appleAuthorizationCode: Swift.String?
+            /// Creates a new `DeleteAccountRequest`.
+            ///
+            /// - Parameters:
+            ///   - appleAuthorizationCode: The one-use authorization code Sign in with Apple's sheet returned for this
+            public init(appleAuthorizationCode: Swift.String? = nil) {
+                self.appleAuthorizationCode = appleAuthorizationCode
+            }
+            public enum CodingKeys: String, CodingKey {
+                case appleAuthorizationCode
             }
         }
         /// - Remark: Generated from `#/components/schemas/DeleteChargingLimitResponse`.
@@ -9398,6 +11545,99 @@ extension Components {
                 case state
             }
         }
+        /// - Remark: Generated from `#/components/schemas/DenyAuthorizeBody`.
+        public struct DenyAuthorizeBody: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/DenyAuthorizeBody/clientId`.
+            public var clientId: Swift.String
+            /// - Remark: Generated from `#/components/schemas/DenyAuthorizeBody/codeChallenge`.
+            public var codeChallenge: Swift.String
+            /// - Remark: Generated from `#/components/schemas/DenyAuthorizeBody/codeChallengeMethod`.
+            public var codeChallengeMethod: Swift.String
+            /// - Remark: Generated from `#/components/schemas/DenyAuthorizeBody/redirectUri`.
+            public var redirectUri: Swift.String
+            /// - Remark: Generated from `#/components/schemas/DenyAuthorizeBody/requestId`.
+            public var requestId: Swift.String
+            /// - Remark: Generated from `#/components/schemas/DenyAuthorizeBody/scopes`.
+            public var scopes: [Swift.String]?
+            /// - Remark: Generated from `#/components/schemas/DenyAuthorizeBody/state`.
+            public var state: Swift.String
+            /// Creates a new `DenyAuthorizeBody`.
+            ///
+            /// - Parameters:
+            ///   - clientId:
+            ///   - codeChallenge:
+            ///   - codeChallengeMethod:
+            ///   - redirectUri:
+            ///   - requestId:
+            ///   - scopes:
+            ///   - state:
+            public init(
+                clientId: Swift.String,
+                codeChallenge: Swift.String,
+                codeChallengeMethod: Swift.String,
+                redirectUri: Swift.String,
+                requestId: Swift.String,
+                scopes: [Swift.String]? = nil,
+                state: Swift.String
+            ) {
+                self.clientId = clientId
+                self.codeChallenge = codeChallenge
+                self.codeChallengeMethod = codeChallengeMethod
+                self.redirectUri = redirectUri
+                self.requestId = requestId
+                self.scopes = scopes
+                self.state = state
+            }
+            public enum CodingKeys: String, CodingKey {
+                case clientId
+                case codeChallenge
+                case codeChallengeMethod
+                case redirectUri
+                case requestId
+                case scopes
+                case state
+            }
+            public init(from decoder: any Swift.Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                self.clientId = try container.decode(
+                    Swift.String.self,
+                    forKey: .clientId
+                )
+                self.codeChallenge = try container.decode(
+                    Swift.String.self,
+                    forKey: .codeChallenge
+                )
+                self.codeChallengeMethod = try container.decode(
+                    Swift.String.self,
+                    forKey: .codeChallengeMethod
+                )
+                self.redirectUri = try container.decode(
+                    Swift.String.self,
+                    forKey: .redirectUri
+                )
+                self.requestId = try container.decode(
+                    Swift.String.self,
+                    forKey: .requestId
+                )
+                self.scopes = try container.decodeIfPresent(
+                    [Swift.String].self,
+                    forKey: .scopes
+                )
+                self.state = try container.decode(
+                    Swift.String.self,
+                    forKey: .state
+                )
+                try decoder.ensureNoAdditionalProperties(knownKeys: [
+                    "clientId",
+                    "codeChallenge",
+                    "codeChallengeMethod",
+                    "redirectUri",
+                    "requestId",
+                    "scopes",
+                    "state"
+                ])
+            }
+        }
         /// - Remark: Generated from `#/components/schemas/DenyBody`.
         public struct DenyBody: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/DenyBody/state`.
@@ -9421,6 +11661,77 @@ extension Components {
                 try decoder.ensureNoAdditionalProperties(knownKeys: [
                     "state"
                 ])
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/DerivedConnectionState`.
+        public typealias DerivedConnectionState = FlowionDerivedConnectionState
+        /// The answer to leaving a job.
+        ///
+        /// - Remark: Generated from `#/components/schemas/DetachLinkedJobResponse`.
+        public struct DetachLinkedJobResponse: Codable, Hashable, Sendable {
+            /// Whether the organization left the job.
+            ///
+            /// - Remark: Generated from `#/components/schemas/DetachLinkedJobResponse/detached`.
+            public var detached: Swift.Bool
+            /// - Remark: Generated from `#/components/schemas/DetachLinkedJobResponse/removed`.
+            public struct RemovedPayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/DetachLinkedJobResponse/removed/value1`.
+                public var value1: Components.Schemas.LinkedJobRemoval
+                /// Creates a new `RemovedPayload`.
+                ///
+                /// - Parameters:
+                ///   - value1:
+                public init(value1: Components.Schemas.LinkedJobRemoval) {
+                    self.value1 = value1
+                }
+                public init(from decoder: any Swift.Decoder) throws {
+                    self.value1 = try .init(from: decoder)
+                }
+                public func encode(to encoder: any Swift.Encoder) throws {
+                    try self.value1.encode(to: encoder)
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/DetachLinkedJobResponse/removed`.
+            public var removed: Components.Schemas.DetachLinkedJobResponse.RemovedPayload?
+            /// - Remark: Generated from `#/components/schemas/DetachLinkedJobResponse/wouldRemove`.
+            public struct WouldRemovePayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/DetachLinkedJobResponse/wouldRemove/value1`.
+                public var value1: Components.Schemas.LinkedJobRemoval
+                /// Creates a new `WouldRemovePayload`.
+                ///
+                /// - Parameters:
+                ///   - value1:
+                public init(value1: Components.Schemas.LinkedJobRemoval) {
+                    self.value1 = value1
+                }
+                public init(from decoder: any Swift.Decoder) throws {
+                    self.value1 = try .init(from: decoder)
+                }
+                public func encode(to encoder: any Swift.Encoder) throws {
+                    try self.value1.encode(to: encoder)
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/DetachLinkedJobResponse/wouldRemove`.
+            public var wouldRemove: Components.Schemas.DetachLinkedJobResponse.WouldRemovePayload?
+            /// Creates a new `DetachLinkedJobResponse`.
+            ///
+            /// - Parameters:
+            ///   - detached: Whether the organization left the job.
+            ///   - removed:
+            ///   - wouldRemove:
+            public init(
+                detached: Swift.Bool,
+                removed: Components.Schemas.DetachLinkedJobResponse.RemovedPayload? = nil,
+                wouldRemove: Components.Schemas.DetachLinkedJobResponse.WouldRemovePayload? = nil
+            ) {
+                self.detached = detached
+                self.removed = removed
+                self.wouldRemove = wouldRemove
+            }
+            public enum CodingKeys: String, CodingKey {
+                case detached
+                case removed
+                case wouldRemove
             }
         }
         /// A single Device Model attribute, as last reported by the station.
@@ -10012,6 +12323,67 @@ extension Components {
             }
             public enum CodingKeys: String, CodingKey {
                 case vendorRevokePending
+            }
+        }
+        /// Conversion provenance for presentation, never a tariff or billing amount.
+        ///
+        /// - Remark: Generated from `#/components/schemas/DisplayConversion`.
+        public struct DisplayConversion: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/DisplayConversion/currency`.
+            public var currency: Swift.String
+            /// - Remark: Generated from `#/components/schemas/DisplayConversion/exchangeRate`.
+            public var exchangeRate: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/DisplayConversion/exchangeRateSource`.
+            public var exchangeRateSource: Swift.String
+            /// - Remark: Generated from `#/components/schemas/DisplayConversion/fetchedAt`.
+            public var fetchedAt: Foundation.Date?
+            /// - Remark: Generated from `#/components/schemas/DisplayConversion/pricePerKwh`.
+            public var pricePerKwh: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/DisplayConversion/priceSource`.
+            public var priceSource: Swift.String
+            /// - Remark: Generated from `#/components/schemas/DisplayConversion/rateDate`.
+            public var rateDate: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/DisplayConversion/status`.
+            public var status: Swift.String
+            /// Creates a new `DisplayConversion`.
+            ///
+            /// - Parameters:
+            ///   - currency:
+            ///   - exchangeRate:
+            ///   - exchangeRateSource:
+            ///   - fetchedAt:
+            ///   - pricePerKwh:
+            ///   - priceSource:
+            ///   - rateDate:
+            ///   - status:
+            public init(
+                currency: Swift.String,
+                exchangeRate: Swift.String? = nil,
+                exchangeRateSource: Swift.String,
+                fetchedAt: Foundation.Date? = nil,
+                pricePerKwh: Swift.String? = nil,
+                priceSource: Swift.String,
+                rateDate: Swift.String? = nil,
+                status: Swift.String
+            ) {
+                self.currency = currency
+                self.exchangeRate = exchangeRate
+                self.exchangeRateSource = exchangeRateSource
+                self.fetchedAt = fetchedAt
+                self.pricePerKwh = pricePerKwh
+                self.priceSource = priceSource
+                self.rateDate = rateDate
+                self.status = status
+            }
+            public enum CodingKeys: String, CodingKey {
+                case currency
+                case exchangeRate
+                case exchangeRateSource
+                case fetchedAt
+                case pricePerKwh
+                case priceSource
+                case rateDate
+                case status
             }
         }
         /// A message's content — what `PUT` submits and what `target`/`actual`
@@ -11301,6 +13673,58 @@ extension Components {
         }
         /// - Remark: Generated from `#/components/schemas/EvidenceValue`.
         public typealias EvidenceValue = FlowionEvidenceValue
+        /// One EVSE's prices, or those of every EVSE at the charger when they agree.
+        ///
+        /// - Remark: Generated from `#/components/schemas/EvsePrice`.
+        public struct EvsePrice: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/EvsePrice/evseId`.
+            public var evseId: Swift.String
+            /// - Remark: Generated from `#/components/schemas/EvsePrice/now`.
+            public struct NowPayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/EvsePrice/now/value1`.
+                public var value1: Components.Schemas.PriceNow
+                /// Creates a new `NowPayload`.
+                ///
+                /// - Parameters:
+                ///   - value1:
+                public init(value1: Components.Schemas.PriceNow) {
+                    self.value1 = value1
+                }
+                public init(from decoder: any Swift.Decoder) throws {
+                    self.value1 = try .init(from: decoder)
+                }
+                public func encode(to encoder: any Swift.Encoder) throws {
+                    try self.value1.encode(to: encoder)
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/EvsePrice/now`.
+            public var now: Components.Schemas.EvsePrice.NowPayload?
+            /// The place's local today and tomorrow. Absent where the story is
+            /// `none` or `covered`.
+            ///
+            /// - Remark: Generated from `#/components/schemas/EvsePrice/quarters`.
+            public var quarters: [Components.Schemas.PriceQuarter]?
+            /// Creates a new `EvsePrice`.
+            ///
+            /// - Parameters:
+            ///   - evseId:
+            ///   - now:
+            ///   - quarters: The place's local today and tomorrow. Absent where the story is
+            public init(
+                evseId: Swift.String,
+                now: Components.Schemas.EvsePrice.NowPayload? = nil,
+                quarters: [Components.Schemas.PriceQuarter]? = nil
+            ) {
+                self.evseId = evseId
+                self.now = now
+                self.quarters = quarters
+            }
+            public enum CodingKeys: String, CodingKey {
+                case evseId
+                case now
+                case quarters
+            }
+        }
         /// - Remark: Generated from `#/components/schemas/EvseSummary`.
         public struct EvseSummary: Codable, Hashable, Sendable {
             /// The circuit feeding this EVSE, if the location's circuit wiring has been
@@ -11317,6 +13741,13 @@ extension Components {
             public var evseId: Swift.Int32
             /// - Remark: Generated from `#/components/schemas/EvseSummary/id`.
             public var id: Swift.String
+            /// Spec 147: the label on this outlet, seven characters upper case with
+            /// no separator (printed `XXXX-XXX`). `null` when the outlet has none,
+            /// and also on the routes that do not ask asset for labels or when asset
+            /// could not be asked: absent is never "unlabelled" proof.
+            ///
+            /// - Remark: Generated from `#/components/schemas/EvseSummary/labelId`.
+            public var labelId: Swift.String?
             /// Which grid line each of this EVSE's own phases is wired to, as an
             /// operator entered it — the three-letter OCPP form (`RST`, `STR`,
             /// `Sxx`, …), where position is the EVSE's own phase and the letter is
@@ -11349,6 +13780,7 @@ extension Components {
             ///   - createdAt: Absent when this EVSE was returned by a listing call whose backend
             ///   - evseId:
             ///   - id:
+            ///   - labelId: Spec 147: the label on this outlet, seven characters upper case with
             ///   - phaseRotation: Which grid line each of this EVSE's own phases is wired to, as an
             ///   - reportedPhaseRotation: The same fact as the station itself reports it over OCPP, kept
             ///   - updatedAt: See `createdAt`'s own note on when this is absent.
@@ -11357,6 +13789,7 @@ extension Components {
                 createdAt: Foundation.Date? = nil,
                 evseId: Swift.Int32,
                 id: Swift.String,
+                labelId: Swift.String? = nil,
                 phaseRotation: Swift.String? = nil,
                 reportedPhaseRotation: Swift.String? = nil,
                 updatedAt: Foundation.Date? = nil
@@ -11365,6 +13798,7 @@ extension Components {
                 self.createdAt = createdAt
                 self.evseId = evseId
                 self.id = id
+                self.labelId = labelId
                 self.phaseRotation = phaseRotation
                 self.reportedPhaseRotation = reportedPhaseRotation
                 self.updatedAt = updatedAt
@@ -11374,6 +13808,7 @@ extension Components {
                 case createdAt
                 case evseId
                 case id
+                case labelId
                 case phaseRotation
                 case reportedPhaseRotation
                 case updatedAt
@@ -11383,13 +13818,16 @@ extension Components {
         public struct ExistingOrganizationInput: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/ExistingOrganizationInput/organizationId`.
             public var organizationId: Swift.String
+            /// The project that receives the location. It must be an operations
+            /// project of this organization.
+            ///
             /// - Remark: Generated from `#/components/schemas/ExistingOrganizationInput/projectId`.
             public var projectId: Swift.String
             /// Creates a new `ExistingOrganizationInput`.
             ///
             /// - Parameters:
             ///   - organizationId:
-            ///   - projectId:
+            ///   - projectId: The project that receives the location. It must be an operations
             public init(
                 organizationId: Swift.String,
                 projectId: Swift.String
@@ -11402,6 +13840,35 @@ extension Components {
                 case projectId
             }
         }
+        /// - Remark: Generated from `#/components/schemas/ExpectedChargerOutletView`.
+        public struct ExpectedChargerOutletView: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/ExpectedChargerOutletView/evseId`.
+            public var evseId: Swift.String
+            /// - Remark: Generated from `#/components/schemas/ExpectedChargerOutletView/evseNumber`.
+            public var evseNumber: Swift.Int32
+            /// - Remark: Generated from `#/components/schemas/ExpectedChargerOutletView/labelId`.
+            public var labelId: Swift.String?
+            /// Creates a new `ExpectedChargerOutletView`.
+            ///
+            /// - Parameters:
+            ///   - evseId:
+            ///   - evseNumber:
+            ///   - labelId:
+            public init(
+                evseId: Swift.String,
+                evseNumber: Swift.Int32,
+                labelId: Swift.String? = nil
+            ) {
+                self.evseId = evseId
+                self.evseNumber = evseNumber
+                self.labelId = labelId
+            }
+            public enum CodingKeys: String, CodingKey {
+                case evseId
+                case evseNumber
+                case labelId
+            }
+        }
         /// - Remark: Generated from `#/components/schemas/ExpectedChargerView`.
         public struct ExpectedChargerView: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/ExpectedChargerView/chargingStationId`.
@@ -11412,6 +13879,11 @@ extension Components {
             public var id: Swift.String
             /// - Remark: Generated from `#/components/schemas/ExpectedChargerView/jobLineId`.
             public var jobLineId: Swift.String
+            /// Spec 147: the outlets of the filled station and the label each
+            /// carries. Empty while unfilled.
+            ///
+            /// - Remark: Generated from `#/components/schemas/ExpectedChargerView/outlets`.
+            public var outlets: [Components.Schemas.ExpectedChargerOutletView]
             /// - Remark: Generated from `#/components/schemas/ExpectedChargerView/waivedAt`.
             public var waivedAt: Foundation.Date?
             /// - Remark: Generated from `#/components/schemas/ExpectedChargerView/waivedBy`.
@@ -11425,6 +13897,7 @@ extension Components {
             ///   - filledAt:
             ///   - id:
             ///   - jobLineId:
+            ///   - outlets: Spec 147: the outlets of the filled station and the label each
             ///   - waivedAt:
             ///   - waivedBy:
             ///   - waivedReason:
@@ -11433,6 +13906,7 @@ extension Components {
                 filledAt: Foundation.Date? = nil,
                 id: Swift.String,
                 jobLineId: Swift.String,
+                outlets: [Components.Schemas.ExpectedChargerOutletView],
                 waivedAt: Foundation.Date? = nil,
                 waivedBy: Swift.String? = nil,
                 waivedReason: Swift.String? = nil
@@ -11441,6 +13915,7 @@ extension Components {
                 self.filledAt = filledAt
                 self.id = id
                 self.jobLineId = jobLineId
+                self.outlets = outlets
                 self.waivedAt = waivedAt
                 self.waivedBy = waivedBy
                 self.waivedReason = waivedReason
@@ -11450,6 +13925,7 @@ extension Components {
                 case filledAt
                 case id
                 case jobLineId
+                case outlets
                 case waivedAt
                 case waivedBy
                 case waivedReason
@@ -11833,9 +14309,9 @@ extension Components {
         public struct Finding: Codable, Hashable, Sendable {
             /// A code from a closed set the platform owns and extends:
             /// `DISABLED`, `NEVER_CONNECTED`, `OFFLINE`, `ACTIVE_FAULT`,
-            /// `NOT_HANDED_OVER`, `NOT_COVERED_BY_SUBSCRIPTION`, `NOT_IN_SERVICE`,
-            /// `REBOOT_LOOP`, `FLAPPING`, `SETTINGS_SYNC_FAILED`, `SETTINGS_SYNCING`,
-            /// `HEALTHY`. A code not listed here may appear in a later release.
+            /// `NOT_HANDED_OVER`, `AWAITING_ACCEPTANCE`, `BILLING_SUSPENDED`,
+            /// `NOT_IN_SERVICE`, `REBOOT_LOOP`, `FLAPPING`, `SETTINGS_SYNC_FAILED`,
+            /// `SETTINGS_SYNCING`, `HEALTHY`. A code not listed here may appear in a later release.
             ///
             /// - Remark: Generated from `#/components/schemas/Finding/code`.
             public var code: Swift.String
@@ -12088,6 +14564,44 @@ extension Components {
         ///
         /// - Remark: Generated from `#/components/schemas/FractionSettingUpdate`.
         public typealias FractionSettingUpdate = FlowionFractionSettingUpdate
+        /// - Remark: Generated from `#/components/schemas/GenerateInstallerSpeechRequest`.
+        public struct GenerateInstallerSpeechRequest: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/GenerateInstallerSpeechRequest/languageCode`.
+            public var languageCode: Components.Schemas.InstallerSpeechLanguage
+            /// - Remark: Generated from `#/components/schemas/GenerateInstallerSpeechRequest/voice`.
+            public var voice: Components.Schemas.InstallerSpeechVoice?
+            /// Creates a new `GenerateInstallerSpeechRequest`.
+            ///
+            /// - Parameters:
+            ///   - languageCode:
+            ///   - voice:
+            public init(
+                languageCode: Components.Schemas.InstallerSpeechLanguage,
+                voice: Components.Schemas.InstallerSpeechVoice? = nil
+            ) {
+                self.languageCode = languageCode
+                self.voice = voice
+            }
+            public enum CodingKeys: String, CodingKey {
+                case languageCode
+                case voice
+            }
+            public init(from decoder: any Swift.Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                self.languageCode = try container.decode(
+                    Components.Schemas.InstallerSpeechLanguage.self,
+                    forKey: .languageCode
+                )
+                self.voice = try container.decodeIfPresent(
+                    Components.Schemas.InstallerSpeechVoice.self,
+                    forKey: .voice
+                )
+                try decoder.ensureNoAdditionalProperties(knownKeys: [
+                    "languageCode",
+                    "voice"
+                ])
+            }
+        }
         /// - Remark: Generated from `#/components/schemas/GetAllocationDecisionsResponse`.
         public struct GetAllocationDecisionsResponse: Codable, Hashable, Sendable {
             /// Oldest first — the order a chart wants, not the feed order
@@ -12902,6 +15416,11 @@ extension Components {
             }
             /// - Remark: Generated from `#/components/schemas/HandoverOfferView/customer`.
             public var customer: Components.Schemas.HandoverOfferView.CustomerPayload?
+            /// ISO 3166-1 alpha-2 country of `customer.organizationNumber`: acceptance
+            /// matches an organization on country and number together.
+            ///
+            /// - Remark: Generated from `#/components/schemas/HandoverOfferView/customerCountry`.
+            public var customerCountry: Swift.String
             /// - Remark: Generated from `#/components/schemas/HandoverOfferView/jobId`.
             public var jobId: Swift.String
             /// - Remark: Generated from `#/components/schemas/HandoverOfferView/lines`.
@@ -12916,18 +15435,21 @@ extension Components {
             /// - Parameters:
             ///   - address:
             ///   - customer:
+            ///   - customerCountry: ISO 3166-1 alpha-2 country of `customer.organizationNumber`: acceptance
             ///   - jobId:
             ///   - lines:
             ///   - summaryJson: The frozen readiness summary — what was true when the job was
             public init(
                 address: Swift.String,
                 customer: Components.Schemas.HandoverOfferView.CustomerPayload? = nil,
+                customerCountry: Swift.String,
                 jobId: Swift.String,
                 lines: [Components.Schemas.JobLineView],
                 summaryJson: Swift.String
             ) {
                 self.address = address
                 self.customer = customer
+                self.customerCountry = customerCountry
                 self.jobId = jobId
                 self.lines = lines
                 self.summaryJson = summaryJson
@@ -12935,10 +15457,21 @@ extension Components {
             public enum CodingKeys: String, CodingKey {
                 case address
                 case customer
+                case customerCountry
                 case jobId
                 case lines
                 case summaryJson
             }
+        }
+        /// How the project that receives the location presents itself in the console.
+        /// It changes the landing page and the order of the navigation, nothing else:
+        /// no permission, setting or route depends on it.
+        ///
+        /// - Remark: Generated from `#/components/schemas/HandoverPresetInput`.
+        @frozen public enum HandoverPresetInput: String, Codable, Hashable, Sendable, CaseIterable {
+            case housing = "housing"
+            case _operator = "operator"
+            case developer = "developer"
         }
         /// - Remark: Generated from `#/components/schemas/HandoverProgressView`.
         public struct HandoverProgressView: Codable, Hashable, Sendable {
@@ -13021,39 +15554,74 @@ extension Components {
                 case summaryJson
             }
         }
-        /// - Remark: Generated from `#/components/schemas/HierarchyHealthResponse`.
-        public struct HierarchyHealthResponse: Codable, Hashable, Sendable {
-            /// Absent only if this hierarchy has genuinely never published a CRL —
-            /// never rendered as an epoch timestamp or any other placeholder in
-            /// that case.
-            ///
-            /// - Remark: Generated from `#/components/schemas/HierarchyHealthResponse/lastCrlPublishedAt`.
-            public var lastCrlPublishedAt: Foundation.Date?
-            /// - Remark: Generated from `#/components/schemas/HierarchyHealthResponse/warnings`.
-            public var warnings: [Components.Schemas.CaExpiryWarning]
-            /// Creates a new `HierarchyHealthResponse`.
-            ///
-            /// - Parameters:
-            ///   - lastCrlPublishedAt: Absent only if this hierarchy has genuinely never published a CRL —
-            ///   - warnings:
-            public init(
-                lastCrlPublishedAt: Foundation.Date? = nil,
-                warnings: [Components.Schemas.CaExpiryWarning]
-            ) {
-                self.lastCrlPublishedAt = lastCrlPublishedAt
-                self.warnings = warnings
-            }
-            public enum CodingKeys: String, CodingKey {
-                case lastCrlPublishedAt
-                case warnings
-            }
-        }
         /// `TariffAssignment.level`'s four values (`data-model.md`'s `CHECK`
         /// constraint) — shared by the assign request/response and the clear
         /// response.
         ///
         /// - Remark: Generated from `#/components/schemas/HierarchyLevel`.
         public typealias HierarchyLevel = FlowionHierarchyLevel
+        /// - Remark: Generated from `#/components/schemas/HoldCircuitChangeRequest`.
+        public struct HoldCircuitChangeRequest: Codable, Hashable, Sendable {
+            /// A circuit of the job's existing location.
+            ///
+            /// - Remark: Generated from `#/components/schemas/HoldCircuitChangeRequest/circuitId`.
+            public var circuitId: Swift.String
+            /// The new rated current, in whole amps.
+            ///
+            /// - Remark: Generated from `#/components/schemas/HoldCircuitChangeRequest/ratedCurrentAmps`.
+            public var ratedCurrentAmps: Swift.Int32
+            /// Creates a new `HoldCircuitChangeRequest`.
+            ///
+            /// - Parameters:
+            ///   - circuitId: A circuit of the job's existing location.
+            ///   - ratedCurrentAmps: The new rated current, in whole amps.
+            public init(
+                circuitId: Swift.String,
+                ratedCurrentAmps: Swift.Int32
+            ) {
+                self.circuitId = circuitId
+                self.ratedCurrentAmps = ratedCurrentAmps
+            }
+            public enum CodingKeys: String, CodingKey {
+                case circuitId
+                case ratedCurrentAmps
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/HoldCircuitChangeResponseView`.
+        public struct HoldCircuitChangeResponseView: Codable, Hashable, Sendable {
+            /// `true` for a lower rating, which the circuit has now. `false` for a higher
+            /// one, which is held and reaches the energy controller only when the
+            /// customer accepts.
+            ///
+            /// - Remark: Generated from `#/components/schemas/HoldCircuitChangeResponseView/appliedNow`.
+            public var appliedNow: Swift.Bool
+            /// The rating the circuit had when this was recorded.
+            ///
+            /// - Remark: Generated from `#/components/schemas/HoldCircuitChangeResponseView/fromAmps`.
+            public var fromAmps: Swift.Int32
+            /// - Remark: Generated from `#/components/schemas/HoldCircuitChangeResponseView/job`.
+            public var job: Components.Schemas.JobView
+            /// Creates a new `HoldCircuitChangeResponseView`.
+            ///
+            /// - Parameters:
+            ///   - appliedNow: `true` for a lower rating, which the circuit has now. `false` for a higher
+            ///   - fromAmps: The rating the circuit had when this was recorded.
+            ///   - job:
+            public init(
+                appliedNow: Swift.Bool,
+                fromAmps: Swift.Int32,
+                job: Components.Schemas.JobView
+            ) {
+                self.appliedNow = appliedNow
+                self.fromAmps = fromAmps
+                self.job = job
+            }
+            public enum CodingKeys: String, CodingKey {
+                case appliedNow
+                case fromAmps
+                case job
+            }
+        }
         /// Spec 118: who a card is enrolled for. `principalId` attaches to an
         /// existing principal; `newPrincipal` mints one in the same request.
         /// Mirrors `EnrolIdTokenRequest.holder`'s own `oneof` (see
@@ -13098,6 +15666,81 @@ extension Components {
         ///
         /// - Remark: Generated from `#/components/schemas/HomeAccess`.
         public typealias HomeAccess = FlowionHomeAccess
+        /// Where the home is. Only the country is asked for: a home is never public
+        /// and nothing uses a street, so the gateway neither requires nor keeps the
+        /// other fields (owner decision, 2026-10-16). They stay in the schema, and
+        /// are ignored, so a client that still sends them keeps working.
+        ///
+        /// - Remark: Generated from `#/components/schemas/HomeAddress`.
+        public struct HomeAddress: Codable, Hashable, Sendable {
+            /// Accepted and not kept.
+            ///
+            /// - Remark: Generated from `#/components/schemas/HomeAddress/city`.
+            public var city: Swift.String?
+            /// ISO 3166-1 alpha-2, e.g. `SE`: a country the electricity market data
+            /// covers. The home's time zone comes from it (Sweden, Norway, Denmark
+            /// and Finland; another country leaves the time zone unset).
+            ///
+            /// - Remark: Generated from `#/components/schemas/HomeAddress/country`.
+            public var country: Swift.String
+            /// Accepted and not kept.
+            ///
+            /// - Remark: Generated from `#/components/schemas/HomeAddress/line1`.
+            public var line1: Swift.String?
+            /// Accepted and not kept.
+            ///
+            /// - Remark: Generated from `#/components/schemas/HomeAddress/postalCode`.
+            public var postalCode: Swift.String?
+            /// Creates a new `HomeAddress`.
+            ///
+            /// - Parameters:
+            ///   - city: Accepted and not kept.
+            ///   - country: ISO 3166-1 alpha-2, e.g. `SE`: a country the electricity market data
+            ///   - line1: Accepted and not kept.
+            ///   - postalCode: Accepted and not kept.
+            public init(
+                city: Swift.String? = nil,
+                country: Swift.String,
+                line1: Swift.String? = nil,
+                postalCode: Swift.String? = nil
+            ) {
+                self.city = city
+                self.country = country
+                self.line1 = line1
+                self.postalCode = postalCode
+            }
+            public enum CodingKeys: String, CodingKey {
+                case city
+                case country
+                case line1
+                case postalCode
+            }
+            public init(from decoder: any Swift.Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                self.city = try container.decodeIfPresent(
+                    Swift.String.self,
+                    forKey: .city
+                )
+                self.country = try container.decode(
+                    Swift.String.self,
+                    forKey: .country
+                )
+                self.line1 = try container.decodeIfPresent(
+                    Swift.String.self,
+                    forKey: .line1
+                )
+                self.postalCode = try container.decodeIfPresent(
+                    Swift.String.self,
+                    forKey: .postalCode
+                )
+                try decoder.ensureNoAdditionalProperties(knownKeys: [
+                    "city",
+                    "country",
+                    "line1",
+                    "postalCode"
+                ])
+            }
+        }
         /// One charger in a place.
         ///
         /// - Remark: Generated from `#/components/schemas/HomeCharger`.
@@ -13122,6 +15765,32 @@ extension Components {
             }
             /// - Remark: Generated from `#/components/schemas/HomeCharger/access`.
             public var access: Components.Schemas.HomeCharger.AccessPayload?
+            /// The cover color a vendor integration reported, verbatim
+            /// (`"Anthracite"`). Only an integration reports one (Easee's, today),
+            /// so it is absent for most chargers.
+            ///
+            /// - Remark: Generated from `#/components/schemas/HomeCharger/color`.
+            public var color: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/HomeCharger/coordinates`.
+            public struct CoordinatesPayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/HomeCharger/coordinates/value1`.
+                public var value1: Components.Schemas.HomeCoordinates
+                /// Creates a new `CoordinatesPayload`.
+                ///
+                /// - Parameters:
+                ///   - value1:
+                public init(value1: Components.Schemas.HomeCoordinates) {
+                    self.value1 = value1
+                }
+                public init(from decoder: any Swift.Decoder) throws {
+                    self.value1 = try .init(from: decoder)
+                }
+                public func encode(to encoder: any Swift.Encoder) throws {
+                    try self.value1.encode(to: encoder)
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/HomeCharger/coordinates`.
+            public var coordinates: Components.Schemas.HomeCharger.CoordinatesPayload?
             /// The currency of `holdAmountMinor`, ISO 4217.
             ///
             /// - Remark: Generated from `#/components/schemas/HomeCharger/currency`.
@@ -13135,6 +15804,11 @@ extension Components {
             public var holdAmountMinor: Swift.Int32?
             /// - Remark: Generated from `#/components/schemas/HomeCharger/id`.
             public var id: Swift.String
+            /// The charger's model as reported, verbatim (`"Home"`, `"Eve Single
+            /// Pro-line"`). Absent when unknown. Normalising it is the client's job.
+            ///
+            /// - Remark: Generated from `#/components/schemas/HomeCharger/model`.
+            public var model: Swift.String?
             /// Its name, or its charge point id when nobody has named it.
             ///
             /// - Remark: Generated from `#/components/schemas/HomeCharger/name`.
@@ -13161,41 +15835,75 @@ extension Components {
             public var session: Components.Schemas.HomeCharger.SessionPayload?
             /// - Remark: Generated from `#/components/schemas/HomeCharger/state`.
             public var state: Components.Schemas.HomeChargerState
+            /// Whether a vehicle is plugged in, for a charger with nothing running
+            /// (`state` is `available`): the charger's own connector status says
+            /// "occupied" once a cable is in the car. Absent when it did not say, and
+            /// for every other state (a session implies a car). Home offers Start only
+            /// to a charger that says `true` or says nothing, so a session is not
+            /// begun before the car is in.
+            ///
+            /// - Remark: Generated from `#/components/schemas/HomeCharger/vehicleConnected`.
+            public var vehicleConnected: Swift.Bool?
+            /// The charger's maker as reported, verbatim (`"Easee"`, `"easee AS"`),
+            /// so Home can show a photo of this very charger. Absent when unknown.
+            ///
+            /// - Remark: Generated from `#/components/schemas/HomeCharger/vendor`.
+            public var vendor: Swift.String?
             /// Creates a new `HomeCharger`.
             ///
             /// - Parameters:
             ///   - access:
+            ///   - color: The cover color a vendor integration reported, verbatim
+            ///   - coordinates:
             ///   - currency: The currency of `holdAmountMinor`, ISO 4217.
             ///   - holdAmountMinor: For a `paid` charger whose organization takes card payment: what is
             ///   - id:
+            ///   - model: The charger's model as reported, verbatim (`"Home"`, `"Eve Single
             ///   - name: Its name, or its charge point id when nobody has named it.
             ///   - session:
             ///   - state:
+            ///   - vehicleConnected: Whether a vehicle is plugged in, for a charger with nothing running
+            ///   - vendor: The charger's maker as reported, verbatim (`"Easee"`, `"easee AS"`),
             public init(
                 access: Components.Schemas.HomeCharger.AccessPayload? = nil,
+                color: Swift.String? = nil,
+                coordinates: Components.Schemas.HomeCharger.CoordinatesPayload? = nil,
                 currency: Swift.String? = nil,
                 holdAmountMinor: Swift.Int32? = nil,
                 id: Swift.String,
+                model: Swift.String? = nil,
                 name: Swift.String,
                 session: Components.Schemas.HomeCharger.SessionPayload? = nil,
-                state: Components.Schemas.HomeChargerState
+                state: Components.Schemas.HomeChargerState,
+                vehicleConnected: Swift.Bool? = nil,
+                vendor: Swift.String? = nil
             ) {
                 self.access = access
+                self.color = color
+                self.coordinates = coordinates
                 self.currency = currency
                 self.holdAmountMinor = holdAmountMinor
                 self.id = id
+                self.model = model
                 self.name = name
                 self.session = session
                 self.state = state
+                self.vehicleConnected = vehicleConnected
+                self.vendor = vendor
             }
             public enum CodingKeys: String, CodingKey {
                 case access
+                case color
+                case coordinates
                 case currency
                 case holdAmountMinor
                 case id
+                case model
                 case name
                 case session
                 case state
+                case vehicleConnected
+                case vendor
             }
         }
         /// What a person needs to know about a charger at a glance.
@@ -13220,6 +15928,501 @@ extension Components {
             }
             public enum CodingKeys: String, CodingKey {
                 case commandId
+            }
+        }
+        /// A position on Earth, WGS 84 decimal degrees.
+        ///
+        /// - Remark: Generated from `#/components/schemas/HomeCoordinates`.
+        public struct HomeCoordinates: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/HomeCoordinates/latitude`.
+            public var latitude: Swift.Double
+            /// - Remark: Generated from `#/components/schemas/HomeCoordinates/longitude`.
+            public var longitude: Swift.Double
+            /// Creates a new `HomeCoordinates`.
+            ///
+            /// - Parameters:
+            ///   - latitude:
+            ///   - longitude:
+            public init(
+                latitude: Swift.Double,
+                longitude: Swift.Double
+            ) {
+                self.latitude = latitude
+                self.longitude = longitude
+            }
+            public enum CodingKeys: String, CodingKey {
+                case latitude
+                case longitude
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/HomeDeviceRegistration`.
+        public struct HomeDeviceRegistration: Codable, Hashable, Sendable {
+            /// The visible alerts this device wants: any of `finished`, `readyByAtRisk`,
+            /// `cheapHours` and `chargerOffline` (ADR-0273). Absent or empty means none, which is what
+            /// the app sends until the person allows notifications. It replaces the
+            /// stored set.
+            ///
+            /// - Remark: Generated from `#/components/schemas/HomeDeviceRegistration/alerts`.
+            public var alerts: [Swift.String]?
+            /// Spec 164: the App Clip sends `io.flowion.app.clip` (lowercase) so its
+            /// alerts go out under the Clip's APNs topic. Absent means the app. Any
+            /// other value is a `400`.
+            ///
+            /// - Remark: Generated from `#/components/schemas/HomeDeviceRegistration/apnsTopic`.
+            public var apnsTopic: Swift.String?
+            /// `sandbox` for a development-signed build, `production` otherwise.
+            ///
+            /// - Remark: Generated from `#/components/schemas/HomeDeviceRegistration/environment`.
+            public var environment: Swift.String
+            /// Firebase Cloud Messaging registration token; never returned or logged.
+            ///
+            /// - Remark: Generated from `#/components/schemas/HomeDeviceRegistration/fcmToken`.
+            public var fcmToken: Swift.String
+            /// `phone` or `pad`.
+            ///
+            /// - Remark: Generated from `#/components/schemas/HomeDeviceRegistration/idiom`.
+            public var idiom: Swift.String
+            /// `en` or `sv`.
+            ///
+            /// - Remark: Generated from `#/components/schemas/HomeDeviceRegistration/language`.
+            public var language: Swift.String
+            /// ActivityKit push-to-start token, hex, 32 to 200 characters, even length.
+            /// Absent until iOS gives one; a remote start waits for it.
+            ///
+            /// - Remark: Generated from `#/components/schemas/HomeDeviceRegistration/pushToStartToken`.
+            public var pushToStartToken: Swift.String?
+            /// Creates a new `HomeDeviceRegistration`.
+            ///
+            /// - Parameters:
+            ///   - alerts: The visible alerts this device wants: any of `finished`, `readyByAtRisk`,
+            ///   - apnsTopic: Spec 164: the App Clip sends `io.flowion.app.clip` (lowercase) so its
+            ///   - environment: `sandbox` for a development-signed build, `production` otherwise.
+            ///   - fcmToken: Firebase Cloud Messaging registration token; never returned or logged.
+            ///   - idiom: `phone` or `pad`.
+            ///   - language: `en` or `sv`.
+            ///   - pushToStartToken: ActivityKit push-to-start token, hex, 32 to 200 characters, even length.
+            public init(
+                alerts: [Swift.String]? = nil,
+                apnsTopic: Swift.String? = nil,
+                environment: Swift.String,
+                fcmToken: Swift.String,
+                idiom: Swift.String,
+                language: Swift.String,
+                pushToStartToken: Swift.String? = nil
+            ) {
+                self.alerts = alerts
+                self.apnsTopic = apnsTopic
+                self.environment = environment
+                self.fcmToken = fcmToken
+                self.idiom = idiom
+                self.language = language
+                self.pushToStartToken = pushToStartToken
+            }
+            public enum CodingKeys: String, CodingKey {
+                case alerts
+                case apnsTopic
+                case environment
+                case fcmToken
+                case idiom
+                case language
+                case pushToStartToken
+            }
+            public init(from decoder: any Swift.Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                self.alerts = try container.decodeIfPresent(
+                    [Swift.String].self,
+                    forKey: .alerts
+                )
+                self.apnsTopic = try container.decodeIfPresent(
+                    Swift.String.self,
+                    forKey: .apnsTopic
+                )
+                self.environment = try container.decode(
+                    Swift.String.self,
+                    forKey: .environment
+                )
+                self.fcmToken = try container.decode(
+                    Swift.String.self,
+                    forKey: .fcmToken
+                )
+                self.idiom = try container.decode(
+                    Swift.String.self,
+                    forKey: .idiom
+                )
+                self.language = try container.decode(
+                    Swift.String.self,
+                    forKey: .language
+                )
+                self.pushToStartToken = try container.decodeIfPresent(
+                    Swift.String.self,
+                    forKey: .pushToStartToken
+                )
+                try decoder.ensureNoAdditionalProperties(knownKeys: [
+                    "alerts",
+                    "apnsTopic",
+                    "environment",
+                    "fcmToken",
+                    "idiom",
+                    "language",
+                    "pushToStartToken"
+                ])
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/HomeDisplayPrice`.
+        public struct HomeDisplayPrice: Codable, Hashable, Sendable {
+            /// One conversion per quarter, in the same order, including missing values.
+            ///
+            /// - Remark: Generated from `#/components/schemas/HomeDisplayPrice/conversions`.
+            public var conversions: [Components.Schemas.DisplayConversion]
+            /// - Remark: Generated from `#/components/schemas/HomeDisplayPrice/currency`.
+            public var currency: Swift.String
+            /// - Remark: Generated from `#/components/schemas/HomeDisplayPrice/now`.
+            public struct NowPayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/HomeDisplayPrice/now/value1`.
+                public var value1: Components.Schemas.PriceNow
+                /// Creates a new `NowPayload`.
+                ///
+                /// - Parameters:
+                ///   - value1:
+                public init(value1: Components.Schemas.PriceNow) {
+                    self.value1 = value1
+                }
+                public init(from decoder: any Swift.Decoder) throws {
+                    self.value1 = try .init(from: decoder)
+                }
+                public func encode(to encoder: any Swift.Encoder) throws {
+                    try self.value1.encode(to: encoder)
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/HomeDisplayPrice/now`.
+            public var now: Components.Schemas.HomeDisplayPrice.NowPayload?
+            /// - Remark: Generated from `#/components/schemas/HomeDisplayPrice/quarters`.
+            public var quarters: [Components.Schemas.PriceQuarter]
+            /// Creates a new `HomeDisplayPrice`.
+            ///
+            /// - Parameters:
+            ///   - conversions: One conversion per quarter, in the same order, including missing values.
+            ///   - currency:
+            ///   - now:
+            ///   - quarters:
+            public init(
+                conversions: [Components.Schemas.DisplayConversion],
+                currency: Swift.String,
+                now: Components.Schemas.HomeDisplayPrice.NowPayload? = nil,
+                quarters: [Components.Schemas.PriceQuarter]
+            ) {
+                self.conversions = conversions
+                self.currency = currency
+                self.now = now
+                self.quarters = quarters
+            }
+            public enum CodingKeys: String, CodingKey {
+                case conversions
+                case currency
+                case now
+                case quarters
+            }
+        }
+        /// What the home's electricity is set to.
+        ///
+        /// - Remark: Generated from `#/components/schemas/HomeElectricity`.
+        public struct HomeElectricity: Codable, Hashable, Sendable {
+            /// The home's country (`SE`), or null when it cannot be told. It is not
+            /// stored: it is read from the price area, else from the home's clock.
+            ///
+            /// - Remark: Generated from `#/components/schemas/HomeElectricity/country`.
+            public var country: Swift.String?
+            /// Kronor per kWh as a decimal string, exactly as it was set, for
+            /// `fixed`; null otherwise. The grid fee and tax is not part of it.
+            ///
+            /// - Remark: Generated from `#/components/schemas/HomeElectricity/fixedPerKwh`.
+            public var fixedPerKwh: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/HomeElectricity/kind`.
+            public var kind: Components.Schemas.HomeElectricityKind
+            /// The home's price area as a zone label (`SE3`), or null while it has
+            /// none.
+            ///
+            /// - Remark: Generated from `#/components/schemas/HomeElectricity/priceArea`.
+            public var priceArea: Swift.String?
+            /// Creates a new `HomeElectricity`.
+            ///
+            /// - Parameters:
+            ///   - country: The home's country (`SE`), or null when it cannot be told. It is not
+            ///   - fixedPerKwh: Kronor per kWh as a decimal string, exactly as it was set, for
+            ///   - kind:
+            ///   - priceArea: The home's price area as a zone label (`SE3`), or null while it has
+            public init(
+                country: Swift.String? = nil,
+                fixedPerKwh: Swift.String? = nil,
+                kind: Components.Schemas.HomeElectricityKind,
+                priceArea: Swift.String? = nil
+            ) {
+                self.country = country
+                self.fixedPerKwh = fixedPerKwh
+                self.kind = kind
+                self.priceArea = priceArea
+            }
+            public enum CodingKeys: String, CodingKey {
+                case country
+                case fixedPerKwh
+                case kind
+                case priceArea
+            }
+        }
+        /// How a home pays for electricity, as it is read back.
+        ///
+        /// - Remark: Generated from `#/components/schemas/HomeElectricityKind`.
+        public typealias HomeElectricityKind = FlowionHomeElectricityKind
+        /// How the home pays for electricity.
+        ///
+        /// - Remark: Generated from `#/components/schemas/HomeElectricityPricing`.
+        @frozen public enum HomeElectricityPricing: String, Codable, Hashable, Sendable, CaseIterable {
+            case spot = "spot"
+            case fixed = "fixed"
+            case unknown = "unknown"
+        }
+        /// What the home's electricity costs.
+        ///
+        /// - Remark: Generated from `#/components/schemas/HomeElectricityRequest`.
+        public struct HomeElectricityRequest: Codable, Hashable, Sendable {
+            /// Kronor per kWh as a decimal string (`"1.20"`). Required for `fixed`,
+            /// ignored otherwise.
+            ///
+            /// - Remark: Generated from `#/components/schemas/HomeElectricityRequest/fixedPriceKrPerKwh`.
+            public var fixedPriceKrPerKwh: Swift.String?
+            /// The grid fee and tax per kWh in kronor, as a decimal string. Added to
+            /// a fixed price. An hourly price is in euro and a grid fee in kronor
+            /// cannot be added to it: `422 gridFeeCurrencyUnsupported`.
+            ///
+            /// - Remark: Generated from `#/components/schemas/HomeElectricityRequest/gridFeeAndTaxKrPerKwh`.
+            public var gridFeeAndTaxKrPerKwh: Swift.String?
+            /// The home's electricity price area as a zone label (`SE1` to `SE4`,
+            /// `NO2`, `DK1` and the other areas the pricing code knows). Sets the
+            /// home's price area before the contract is written. Required for `spot`
+            /// when the home has none yet (`422 priceAreaRequired`); ignored for
+            /// `unknown`.
+            ///
+            /// - Remark: Generated from `#/components/schemas/HomeElectricityRequest/priceArea`.
+            public var priceArea: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/HomeElectricityRequest/pricing`.
+            public var pricing: Components.Schemas.HomeElectricityPricing
+            /// Creates a new `HomeElectricityRequest`.
+            ///
+            /// - Parameters:
+            ///   - fixedPriceKrPerKwh: Kronor per kWh as a decimal string (`"1.20"`). Required for `fixed`,
+            ///   - gridFeeAndTaxKrPerKwh: The grid fee and tax per kWh in kronor, as a decimal string. Added to
+            ///   - priceArea: The home's electricity price area as a zone label (`SE1` to `SE4`,
+            ///   - pricing:
+            public init(
+                fixedPriceKrPerKwh: Swift.String? = nil,
+                gridFeeAndTaxKrPerKwh: Swift.String? = nil,
+                priceArea: Swift.String? = nil,
+                pricing: Components.Schemas.HomeElectricityPricing
+            ) {
+                self.fixedPriceKrPerKwh = fixedPriceKrPerKwh
+                self.gridFeeAndTaxKrPerKwh = gridFeeAndTaxKrPerKwh
+                self.priceArea = priceArea
+                self.pricing = pricing
+            }
+            public enum CodingKeys: String, CodingKey {
+                case fixedPriceKrPerKwh
+                case gridFeeAndTaxKrPerKwh
+                case priceArea
+                case pricing
+            }
+            public init(from decoder: any Swift.Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                self.fixedPriceKrPerKwh = try container.decodeIfPresent(
+                    Swift.String.self,
+                    forKey: .fixedPriceKrPerKwh
+                )
+                self.gridFeeAndTaxKrPerKwh = try container.decodeIfPresent(
+                    Swift.String.self,
+                    forKey: .gridFeeAndTaxKrPerKwh
+                )
+                self.priceArea = try container.decodeIfPresent(
+                    Swift.String.self,
+                    forKey: .priceArea
+                )
+                self.pricing = try container.decode(
+                    Components.Schemas.HomeElectricityPricing.self,
+                    forKey: .pricing
+                )
+                try decoder.ensureNoAdditionalProperties(knownKeys: [
+                    "fixedPriceKrPerKwh",
+                    "gridFeeAndTaxKrPerKwh",
+                    "priceArea",
+                    "pricing"
+                ])
+            }
+        }
+        /// How many are used and how many are allowed.
+        ///
+        /// - Remark: Generated from `#/components/schemas/HomeLimit`.
+        public struct HomeLimit: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/HomeLimit/max`.
+            public var max: Swift.Int32
+            /// - Remark: Generated from `#/components/schemas/HomeLimit/used`.
+            public var used: Swift.Int32
+            /// Creates a new `HomeLimit`.
+            ///
+            /// - Parameters:
+            ///   - max:
+            ///   - used:
+            public init(
+                max: Swift.Int32,
+                used: Swift.Int32
+            ) {
+                self.max = max
+                self.used = used
+            }
+            public enum CodingKeys: String, CodingKey {
+                case max
+                case used
+            }
+        }
+        /// A home's three fixed limits.
+        ///
+        /// - Remark: Generated from `#/components/schemas/HomeLimits`.
+        public struct HomeLimits: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/HomeLimits/chargers`.
+            public var chargers: Components.Schemas.HomeLimit
+            /// - Remark: Generated from `#/components/schemas/HomeLimits/homes`.
+            public var homes: Components.Schemas.HomeLimit
+            /// - Remark: Generated from `#/components/schemas/HomeLimits/members`.
+            public var members: Components.Schemas.HomeLimit
+            /// Creates a new `HomeLimits`.
+            ///
+            /// - Parameters:
+            ///   - chargers:
+            ///   - homes:
+            ///   - members:
+            public init(
+                chargers: Components.Schemas.HomeLimit,
+                homes: Components.Schemas.HomeLimit,
+                members: Components.Schemas.HomeLimit
+            ) {
+                self.chargers = chargers
+                self.homes = homes
+                self.members = members
+            }
+            public enum CodingKeys: String, CodingKey {
+                case chargers
+                case homes
+                case members
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/HomeLiveActivityRegistration`.
+        public struct HomeLiveActivityRegistration: Codable, Hashable, Sendable {
+            /// Spec 164: `io.flowion.app.clip` when the App Clip registers, else absent.
+            /// `notifications` holds the device's topic and re-decides; this is what
+            /// lets an empty `updateToken` through here.
+            ///
+            /// - Remark: Generated from `#/components/schemas/HomeLiveActivityRegistration/apnsTopic`.
+            public var apnsTopic: Swift.String?
+            /// `sandbox` or `production`.
+            ///
+            /// - Remark: Generated from `#/components/schemas/HomeLiveActivityRegistration/environment`.
+            public var environment: Swift.String
+            /// The device the activity runs on.
+            ///
+            /// - Remark: Generated from `#/components/schemas/HomeLiveActivityRegistration/installationId`.
+            public var installationId: Swift.String
+            /// `local` when the app started the activity, `remote` when a push did.
+            ///
+            /// - Remark: Generated from `#/components/schemas/HomeLiveActivityRegistration/origin`.
+            public var origin: Swift.String
+            /// Spec 164, Clip only: the invocation URL its alerts name as
+            /// `aps.target-content-id`, `https://flowion.io/c/<label>`.
+            ///
+            /// - Remark: Generated from `#/components/schemas/HomeLiveActivityRegistration/targetContentId`.
+            public var targetContentId: Swift.String?
+            /// The charging session the activity shows.
+            ///
+            /// - Remark: Generated from `#/components/schemas/HomeLiveActivityRegistration/transactionId`.
+            public var transactionId: Swift.String
+            /// ActivityKit update token, hex, 32 to 200 characters, even length.
+            /// Empty only for the App Clip (`apnsTopic` below): a Clip has no Live
+            /// Activity, so there is no token, and the registration only makes the
+            /// session followed for its alerts.
+            ///
+            /// - Remark: Generated from `#/components/schemas/HomeLiveActivityRegistration/updateToken`.
+            public var updateToken: Swift.String
+            /// Creates a new `HomeLiveActivityRegistration`.
+            ///
+            /// - Parameters:
+            ///   - apnsTopic: Spec 164: `io.flowion.app.clip` when the App Clip registers, else absent.
+            ///   - environment: `sandbox` or `production`.
+            ///   - installationId: The device the activity runs on.
+            ///   - origin: `local` when the app started the activity, `remote` when a push did.
+            ///   - targetContentId: Spec 164, Clip only: the invocation URL its alerts name as
+            ///   - transactionId: The charging session the activity shows.
+            ///   - updateToken: ActivityKit update token, hex, 32 to 200 characters, even length.
+            public init(
+                apnsTopic: Swift.String? = nil,
+                environment: Swift.String,
+                installationId: Swift.String,
+                origin: Swift.String,
+                targetContentId: Swift.String? = nil,
+                transactionId: Swift.String,
+                updateToken: Swift.String
+            ) {
+                self.apnsTopic = apnsTopic
+                self.environment = environment
+                self.installationId = installationId
+                self.origin = origin
+                self.targetContentId = targetContentId
+                self.transactionId = transactionId
+                self.updateToken = updateToken
+            }
+            public enum CodingKeys: String, CodingKey {
+                case apnsTopic
+                case environment
+                case installationId
+                case origin
+                case targetContentId
+                case transactionId
+                case updateToken
+            }
+            public init(from decoder: any Swift.Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                self.apnsTopic = try container.decodeIfPresent(
+                    Swift.String.self,
+                    forKey: .apnsTopic
+                )
+                self.environment = try container.decode(
+                    Swift.String.self,
+                    forKey: .environment
+                )
+                self.installationId = try container.decode(
+                    Swift.String.self,
+                    forKey: .installationId
+                )
+                self.origin = try container.decode(
+                    Swift.String.self,
+                    forKey: .origin
+                )
+                self.targetContentId = try container.decodeIfPresent(
+                    Swift.String.self,
+                    forKey: .targetContentId
+                )
+                self.transactionId = try container.decode(
+                    Swift.String.self,
+                    forKey: .transactionId
+                )
+                self.updateToken = try container.decode(
+                    Swift.String.self,
+                    forKey: .updateToken
+                )
+                try decoder.ensureNoAdditionalProperties(knownKeys: [
+                    "apnsTopic",
+                    "environment",
+                    "installationId",
+                    "origin",
+                    "targetContentId",
+                    "transactionId",
+                    "updateToken"
+                ])
             }
         }
         /// A place the caller charges: one project, named after its organization.
@@ -13253,6 +16456,52 @@ extension Components {
                 case chargers
                 case name
                 case projectId
+            }
+        }
+        /// One entry of a home's price: the home's own, with no EVSE to name.
+        ///
+        /// - Remark: Generated from `#/components/schemas/HomePriceEntry`.
+        public struct HomePriceEntry: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/HomePriceEntry/now`.
+            public struct NowPayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/HomePriceEntry/now/value1`.
+                public var value1: Components.Schemas.PriceNow
+                /// Creates a new `NowPayload`.
+                ///
+                /// - Parameters:
+                ///   - value1:
+                public init(value1: Components.Schemas.PriceNow) {
+                    self.value1 = value1
+                }
+                public init(from decoder: any Swift.Decoder) throws {
+                    self.value1 = try .init(from: decoder)
+                }
+                public func encode(to encoder: any Swift.Encoder) throws {
+                    try self.value1.encode(to: encoder)
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/HomePriceEntry/now`.
+            public var now: Components.Schemas.HomePriceEntry.NowPayload?
+            /// The home's local today and tomorrow. Absent where the story is
+            /// `none` or `covered`.
+            ///
+            /// - Remark: Generated from `#/components/schemas/HomePriceEntry/quarters`.
+            public var quarters: [Components.Schemas.PriceQuarter]?
+            /// Creates a new `HomePriceEntry`.
+            ///
+            /// - Parameters:
+            ///   - now:
+            ///   - quarters: The home's local today and tomorrow. Absent where the story is
+            public init(
+                now: Components.Schemas.HomePriceEntry.NowPayload? = nil,
+                quarters: [Components.Schemas.PriceQuarter]? = nil
+            ) {
+                self.now = now
+                self.quarters = quarters
+            }
+            public enum CodingKeys: String, CodingKey {
+                case now
+                case quarters
             }
         }
         /// The session running on a charger.
@@ -13305,6 +16554,14 @@ extension Components {
         public struct IdTokenView: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/IdTokenView/blockedAt`.
             public var blockedAt: Foundation.Date?
+            /// Spec 148: `true` for a card or tag (an untyped idTag, `ISO14443` or
+            /// `ISO15693`). A card's number is not secret and can be copied, so a
+            /// charge it starts is convenience level, not strong proof of who is
+            /// charging; clients say so wherever a card is listed or explained.
+            /// `false` for a credential that is not a physical card.
+            ///
+            /// - Remark: Generated from `#/components/schemas/IdTokenView/convenienceLevel`.
+            public var convenienceLevel: Swift.Bool
             /// - Remark: Generated from `#/components/schemas/IdTokenView/createdAt`.
             public var createdAt: Foundation.Date
             /// - Remark: Generated from `#/components/schemas/IdTokenView/expiresAt`.
@@ -13373,6 +16630,7 @@ extension Components {
             ///
             /// - Parameters:
             ///   - blockedAt:
+            ///   - convenienceLevel: Spec 148: `true` for a card or tag (an untyped idTag, `ISO14443` or
             ///   - createdAt:
             ///   - expiresAt:
             ///   - externalUserId: The integrator's own opaque label for who holds this token. Flat,
@@ -13389,6 +16647,7 @@ extension Components {
             ///   - valueRecoverable: Whether this token's value can be recovered at all. `false` for a
             public init(
                 blockedAt: Foundation.Date? = nil,
+                convenienceLevel: Swift.Bool,
                 createdAt: Foundation.Date,
                 expiresAt: Foundation.Date? = nil,
                 externalUserId: Swift.String? = nil,
@@ -13405,6 +16664,7 @@ extension Components {
                 valueRecoverable: Swift.Bool
             ) {
                 self.blockedAt = blockedAt
+                self.convenienceLevel = convenienceLevel
                 self.createdAt = createdAt
                 self.expiresAt = expiresAt
                 self.externalUserId = externalUserId
@@ -13422,6 +16682,7 @@ extension Components {
             }
             public enum CodingKeys: String, CodingKey {
                 case blockedAt
+                case convenienceLevel
                 case createdAt
                 case expiresAt
                 case externalUserId
@@ -13552,6 +16813,1495 @@ extension Components {
                     "circuitLine",
                     "sourceLine"
                 ])
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/InstallerActivity`.
+        public struct InstallerActivity: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/InstallerActivity/conversationId`.
+            public var conversationId: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/InstallerActivity/foreground`.
+            public var foreground: Swift.Bool
+            /// - Remark: Generated from `#/components/schemas/InstallerActivity/installationId`.
+            public var installationId: Swift.String
+            /// - Remark: Generated from `#/components/schemas/InstallerActivity/organizationId`.
+            public var organizationId: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/InstallerActivity/readConversation`.
+            public var readConversation: Swift.Bool
+            /// Highest completed assistant turn actually displayed, required when readConversation is true.
+            ///
+            /// - Remark: Generated from `#/components/schemas/InstallerActivity/readThroughTurn`.
+            public var readThroughTurn: Swift.Int32?
+            /// Creates a new `InstallerActivity`.
+            ///
+            /// - Parameters:
+            ///   - conversationId:
+            ///   - foreground:
+            ///   - installationId:
+            ///   - organizationId:
+            ///   - readConversation:
+            ///   - readThroughTurn: Highest completed assistant turn actually displayed, required when readConversation is true.
+            public init(
+                conversationId: Swift.String? = nil,
+                foreground: Swift.Bool,
+                installationId: Swift.String,
+                organizationId: Swift.String? = nil,
+                readConversation: Swift.Bool,
+                readThroughTurn: Swift.Int32? = nil
+            ) {
+                self.conversationId = conversationId
+                self.foreground = foreground
+                self.installationId = installationId
+                self.organizationId = organizationId
+                self.readConversation = readConversation
+                self.readThroughTurn = readThroughTurn
+            }
+            public enum CodingKeys: String, CodingKey {
+                case conversationId
+                case foreground
+                case installationId
+                case organizationId
+                case readConversation
+                case readThroughTurn
+            }
+            public init(from decoder: any Swift.Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                self.conversationId = try container.decodeIfPresent(
+                    Swift.String.self,
+                    forKey: .conversationId
+                )
+                self.foreground = try container.decode(
+                    Swift.Bool.self,
+                    forKey: .foreground
+                )
+                self.installationId = try container.decode(
+                    Swift.String.self,
+                    forKey: .installationId
+                )
+                self.organizationId = try container.decodeIfPresent(
+                    Swift.String.self,
+                    forKey: .organizationId
+                )
+                self.readConversation = try container.decode(
+                    Swift.Bool.self,
+                    forKey: .readConversation
+                )
+                self.readThroughTurn = try container.decodeIfPresent(
+                    Swift.Int32.self,
+                    forKey: .readThroughTurn
+                )
+                try decoder.ensureNoAdditionalProperties(knownKeys: [
+                    "conversationId",
+                    "foreground",
+                    "installationId",
+                    "organizationId",
+                    "readConversation",
+                    "readThroughTurn"
+                ])
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/InstallerAssistantConversation`.
+        public struct InstallerAssistantConversation: Codable, Hashable, Sendable {
+            /// Compatibility timestamp (24 hours after creation); installer chats remain
+            /// continuable within their retention window, subject to their call caps.
+            ///
+            /// - Remark: Generated from `#/components/schemas/InstallerAssistantConversation/closesAt`.
+            public var closesAt: Foundation.Date
+            /// - Remark: Generated from `#/components/schemas/InstallerAssistantConversation/conversationId`.
+            public var conversationId: Swift.String
+            /// True only when the assistant behind this gateway supports photos.
+            ///
+            /// - Remark: Generated from `#/components/schemas/InstallerAssistantConversation/supportsImages`.
+            public var supportsImages: Swift.Bool?
+            /// Creates a new `InstallerAssistantConversation`.
+            ///
+            /// - Parameters:
+            ///   - closesAt: Compatibility timestamp (24 hours after creation); installer chats remain
+            ///   - conversationId:
+            ///   - supportsImages: True only when the assistant behind this gateway supports photos.
+            public init(
+                closesAt: Foundation.Date,
+                conversationId: Swift.String,
+                supportsImages: Swift.Bool? = nil
+            ) {
+                self.closesAt = closesAt
+                self.conversationId = conversationId
+                self.supportsImages = supportsImages
+            }
+            public enum CodingKeys: String, CodingKey {
+                case closesAt
+                case conversationId
+                case supportsImages
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/InstallerAssistantImage`.
+        public struct InstallerAssistantImage: Codable, Hashable, Sendable {
+            /// Standard base64 JPEG, no data URL prefix. Maximum decoded size 1 MiB;
+            /// both dimensions must be 1..1536 pixels, with at most 1 000 000 pixels total.
+            ///
+            /// - Remark: Generated from `#/components/schemas/InstallerAssistantImage/data`.
+            public var data: Swift.String
+            /// Must be `image/jpeg`.
+            ///
+            /// - Remark: Generated from `#/components/schemas/InstallerAssistantImage/mediaType`.
+            public var mediaType: Swift.String
+            /// Creates a new `InstallerAssistantImage`.
+            ///
+            /// - Parameters:
+            ///   - data: Standard base64 JPEG, no data URL prefix. Maximum decoded size 1 MiB;
+            ///   - mediaType: Must be `image/jpeg`.
+            public init(
+                data: Swift.String,
+                mediaType: Swift.String
+            ) {
+                self.data = data
+                self.mediaType = mediaType
+            }
+            public enum CodingKeys: String, CodingKey {
+                case data
+                case mediaType
+            }
+            public init(from decoder: any Swift.Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                self.data = try container.decode(
+                    Swift.String.self,
+                    forKey: .data
+                )
+                self.mediaType = try container.decode(
+                    Swift.String.self,
+                    forKey: .mediaType
+                )
+                try decoder.ensureNoAdditionalProperties(knownKeys: [
+                    "data",
+                    "mediaType"
+                ])
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/InstallerChatHistory`.
+        public struct InstallerChatHistory: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/InstallerChatHistory/data`.
+            public var data: [Components.Schemas.InstallerChatSummary]
+            /// - Remark: Generated from `#/components/schemas/InstallerChatHistory/nextCursor`.
+            public var nextCursor: Swift.String?
+            /// Creates a new `InstallerChatHistory`.
+            ///
+            /// - Parameters:
+            ///   - data:
+            ///   - nextCursor:
+            public init(
+                data: [Components.Schemas.InstallerChatSummary],
+                nextCursor: Swift.String? = nil
+            ) {
+                self.data = data
+                self.nextCursor = nextCursor
+            }
+            public enum CodingKeys: String, CodingKey {
+                case data
+                case nextCursor
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/InstallerChatSummary`.
+        public struct InstallerChatSummary: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/InstallerChatSummary/id`.
+            public var id: Swift.String
+            /// - Remark: Generated from `#/components/schemas/InstallerChatSummary/jobId`.
+            public var jobId: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/InstallerChatSummary/lastActivity`.
+            public var lastActivity: Foundation.Date
+            /// - Remark: Generated from `#/components/schemas/InstallerChatSummary/preview`.
+            public var preview: Swift.String
+            /// - Remark: Generated from `#/components/schemas/InstallerChatSummary/startedAt`.
+            public var startedAt: Foundation.Date
+            /// - Remark: Generated from `#/components/schemas/InstallerChatSummary/title`.
+            public var title: Swift.String?
+            /// Creates a new `InstallerChatSummary`.
+            ///
+            /// - Parameters:
+            ///   - id:
+            ///   - jobId:
+            ///   - lastActivity:
+            ///   - preview:
+            ///   - startedAt:
+            ///   - title:
+            public init(
+                id: Swift.String,
+                jobId: Swift.String? = nil,
+                lastActivity: Foundation.Date,
+                preview: Swift.String,
+                startedAt: Foundation.Date,
+                title: Swift.String? = nil
+            ) {
+                self.id = id
+                self.jobId = jobId
+                self.lastActivity = lastActivity
+                self.preview = preview
+                self.startedAt = startedAt
+                self.title = title
+            }
+            public enum CodingKeys: String, CodingKey {
+                case id
+                case jobId
+                case lastActivity
+                case preview
+                case startedAt
+                case title
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/InstallerChatTranscript`.
+        public struct InstallerChatTranscript: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/InstallerChatTranscript/canContinue`.
+            public var canContinue: Swift.Bool
+            /// - Remark: Generated from `#/components/schemas/InstallerChatTranscript/id`.
+            public var id: Swift.String
+            /// - Remark: Generated from `#/components/schemas/InstallerChatTranscript/jobId`.
+            public var jobId: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/InstallerChatTranscript/turns`.
+            public var turns: [Components.Schemas.InstallerChatTurn]
+            /// Creates a new `InstallerChatTranscript`.
+            ///
+            /// - Parameters:
+            ///   - canContinue:
+            ///   - id:
+            ///   - jobId:
+            ///   - turns:
+            public init(
+                canContinue: Swift.Bool,
+                id: Swift.String,
+                jobId: Swift.String? = nil,
+                turns: [Components.Schemas.InstallerChatTurn]
+            ) {
+                self.canContinue = canContinue
+                self.id = id
+                self.jobId = jobId
+                self.turns = turns
+            }
+            public enum CodingKeys: String, CodingKey {
+                case canContinue
+                case id
+                case jobId
+                case turns
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/InstallerChatTurn`.
+        public struct InstallerChatTurn: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/InstallerChatTurn/ended`.
+            public var ended: Swift.Bool
+            /// - Remark: Generated from `#/components/schemas/InstallerChatTurn/events`.
+            public var events: [Components.Schemas.AssistantStreamEvent]
+            /// - Remark: Generated from `#/components/schemas/InstallerChatTurn/image`.
+            public struct ImagePayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/InstallerChatTurn/image/value1`.
+                public var value1: Components.Schemas.InstallerAssistantImage
+                /// Creates a new `ImagePayload`.
+                ///
+                /// - Parameters:
+                ///   - value1:
+                public init(value1: Components.Schemas.InstallerAssistantImage) {
+                    self.value1 = value1
+                }
+                public init(from decoder: any Swift.Decoder) throws {
+                    self.value1 = try .init(from: decoder)
+                }
+                public func encode(to encoder: any Swift.Encoder) throws {
+                    try self.value1.encode(to: encoder)
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/InstallerChatTurn/image`.
+            public var image: Components.Schemas.InstallerChatTurn.ImagePayload?
+            /// - Remark: Generated from `#/components/schemas/InstallerChatTurn/text`.
+            public var text: Swift.String
+            /// - Remark: Generated from `#/components/schemas/InstallerChatTurn/turn`.
+            public var turn: Swift.Int32
+            /// Creates a new `InstallerChatTurn`.
+            ///
+            /// - Parameters:
+            ///   - ended:
+            ///   - events:
+            ///   - image:
+            ///   - text:
+            ///   - turn:
+            public init(
+                ended: Swift.Bool,
+                events: [Components.Schemas.AssistantStreamEvent],
+                image: Components.Schemas.InstallerChatTurn.ImagePayload? = nil,
+                text: Swift.String,
+                turn: Swift.Int32
+            ) {
+                self.ended = ended
+                self.events = events
+                self.image = image
+                self.text = text
+                self.turn = turn
+            }
+            public enum CodingKeys: String, CodingKey {
+                case ended
+                case events
+                case image
+                case text
+                case turn
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/InstallerCompanyLookupView`.
+        public struct InstallerCompanyLookupView: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/InstallerCompanyLookupView/name`.
+            public var name: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/InstallerCompanyLookupView/organizationNumber`.
+            public var organizationNumber: Swift.String?
+            /// A registry postal address, never a confirmed site address or contact.
+            ///
+            /// - Remark: Generated from `#/components/schemas/InstallerCompanyLookupView/registeredAddress`.
+            public var registeredAddress: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/InstallerCompanyLookupView/source`.
+            public var source: Swift.String
+            /// found, notFound, notConfigured, unsupportedCountry, unavailable, rateLimited or invalidNumber.
+            ///
+            /// - Remark: Generated from `#/components/schemas/InstallerCompanyLookupView/status`.
+            public var status: Swift.String
+            /// Creates a new `InstallerCompanyLookupView`.
+            ///
+            /// - Parameters:
+            ///   - name:
+            ///   - organizationNumber:
+            ///   - registeredAddress: A registry postal address, never a confirmed site address or contact.
+            ///   - source:
+            ///   - status: found, notFound, notConfigured, unsupportedCountry, unavailable, rateLimited or invalidNumber.
+            public init(
+                name: Swift.String? = nil,
+                organizationNumber: Swift.String? = nil,
+                registeredAddress: Swift.String? = nil,
+                source: Swift.String,
+                status: Swift.String
+            ) {
+                self.name = name
+                self.organizationNumber = organizationNumber
+                self.registeredAddress = registeredAddress
+                self.source = source
+                self.status = status
+            }
+            public enum CodingKeys: String, CodingKey {
+                case name
+                case organizationNumber
+                case registeredAddress
+                case source
+                case status
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/InstallerJobManuals`.
+        public struct InstallerJobManuals: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/InstallerJobManuals/bundleSha256`.
+            public var bundleSha256: Swift.String
+            /// - Remark: Generated from `#/components/schemas/InstallerJobManuals/manuals`.
+            public var manuals: [Components.Schemas.InstallerManual]
+            /// - Remark: Generated from `#/components/schemas/InstallerJobManuals/missingModels`.
+            public var missingModels: [Swift.String]
+            /// Creates a new `InstallerJobManuals`.
+            ///
+            /// - Parameters:
+            ///   - bundleSha256:
+            ///   - manuals:
+            ///   - missingModels:
+            public init(
+                bundleSha256: Swift.String,
+                manuals: [Components.Schemas.InstallerManual],
+                missingModels: [Swift.String]
+            ) {
+                self.bundleSha256 = bundleSha256
+                self.manuals = manuals
+                self.missingModels = missingModels
+            }
+            public enum CodingKeys: String, CodingKey {
+                case bundleSha256
+                case manuals
+                case missingModels
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/InstallerLiveActivityBody`.
+        public struct InstallerLiveActivityBody: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/InstallerLiveActivityBody/environment`.
+            public var environment: Swift.String
+            /// - Remark: Generated from `#/components/schemas/InstallerLiveActivityBody/installationId`.
+            public var installationId: Swift.String
+            /// - Remark: Generated from `#/components/schemas/InstallerLiveActivityBody/jobId`.
+            public var jobId: Swift.String
+            /// - Remark: Generated from `#/components/schemas/InstallerLiveActivityBody/organizationId`.
+            public var organizationId: Swift.String
+            /// - Remark: Generated from `#/components/schemas/InstallerLiveActivityBody/token`.
+            public var token: Swift.String
+            /// Creates a new `InstallerLiveActivityBody`.
+            ///
+            /// - Parameters:
+            ///   - environment:
+            ///   - installationId:
+            ///   - jobId:
+            ///   - organizationId:
+            ///   - token:
+            public init(
+                environment: Swift.String,
+                installationId: Swift.String,
+                jobId: Swift.String,
+                organizationId: Swift.String,
+                token: Swift.String
+            ) {
+                self.environment = environment
+                self.installationId = installationId
+                self.jobId = jobId
+                self.organizationId = organizationId
+                self.token = token
+            }
+            public enum CodingKeys: String, CodingKey {
+                case environment
+                case installationId
+                case jobId
+                case organizationId
+                case token
+            }
+            public init(from decoder: any Swift.Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                self.environment = try container.decode(
+                    Swift.String.self,
+                    forKey: .environment
+                )
+                self.installationId = try container.decode(
+                    Swift.String.self,
+                    forKey: .installationId
+                )
+                self.jobId = try container.decode(
+                    Swift.String.self,
+                    forKey: .jobId
+                )
+                self.organizationId = try container.decode(
+                    Swift.String.self,
+                    forKey: .organizationId
+                )
+                self.token = try container.decode(
+                    Swift.String.self,
+                    forKey: .token
+                )
+                try decoder.ensureNoAdditionalProperties(knownKeys: [
+                    "environment",
+                    "installationId",
+                    "jobId",
+                    "organizationId",
+                    "token"
+                ])
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/InstallerManual`.
+        public struct InstallerManual: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/InstallerManual/documentId`.
+            public var documentId: Swift.String
+            /// - Remark: Generated from `#/components/schemas/InstallerManual/markdown`.
+            public var markdown: Swift.String
+            /// - Remark: Generated from `#/components/schemas/InstallerManual/models`.
+            public var models: [Swift.String]
+            /// - Remark: Generated from `#/components/schemas/InstallerManual/pages`.
+            public var pages: [Components.Schemas.InstallerManualPageReference]
+            /// - Remark: Generated from `#/components/schemas/InstallerManual/revision`.
+            public var revision: Swift.String
+            /// - Remark: Generated from `#/components/schemas/InstallerManual/suggested`.
+            public var suggested: Swift.Bool
+            /// - Remark: Generated from `#/components/schemas/InstallerManual/title`.
+            public var title: Swift.String
+            /// Creates a new `InstallerManual`.
+            ///
+            /// - Parameters:
+            ///   - documentId:
+            ///   - markdown:
+            ///   - models:
+            ///   - pages:
+            ///   - revision:
+            ///   - suggested:
+            ///   - title:
+            public init(
+                documentId: Swift.String,
+                markdown: Swift.String,
+                models: [Swift.String],
+                pages: [Components.Schemas.InstallerManualPageReference],
+                revision: Swift.String,
+                suggested: Swift.Bool,
+                title: Swift.String
+            ) {
+                self.documentId = documentId
+                self.markdown = markdown
+                self.models = models
+                self.pages = pages
+                self.revision = revision
+                self.suggested = suggested
+                self.title = title
+            }
+            public enum CodingKeys: String, CodingKey {
+                case documentId
+                case markdown
+                case models
+                case pages
+                case revision
+                case suggested
+                case title
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/InstallerManualPageReference`.
+        public struct InstallerManualPageReference: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/InstallerManualPageReference/height`.
+            public var height: Swift.Int32
+            /// - Remark: Generated from `#/components/schemas/InstallerManualPageReference/page`.
+            public var page: Swift.Int32
+            /// - Remark: Generated from `#/components/schemas/InstallerManualPageReference/sha256`.
+            public var sha256: Swift.String
+            /// - Remark: Generated from `#/components/schemas/InstallerManualPageReference/width`.
+            public var width: Swift.Int32
+            /// Creates a new `InstallerManualPageReference`.
+            ///
+            /// - Parameters:
+            ///   - height:
+            ///   - page:
+            ///   - sha256:
+            ///   - width:
+            public init(
+                height: Swift.Int32,
+                page: Swift.Int32,
+                sha256: Swift.String,
+                width: Swift.Int32
+            ) {
+                self.height = height
+                self.page = page
+                self.sha256 = sha256
+                self.width = width
+            }
+            public enum CodingKeys: String, CodingKey {
+                case height
+                case page
+                case sha256
+                case width
+            }
+        }
+        /// One charger of a job and its installer mode.
+        ///
+        /// - Remark: Generated from `#/components/schemas/InstallerModeCharger`.
+        public struct InstallerModeCharger: Codable, Hashable, Sendable {
+            /// The number the installer sees on the printed label.
+            ///
+            /// - Remark: Generated from `#/components/schemas/InstallerModeCharger/chargerNumber`.
+            public var chargerNumber: Swift.Int32
+            /// - Remark: Generated from `#/components/schemas/InstallerModeCharger/endedBy`.
+            public struct EndedByPayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/InstallerModeCharger/endedBy/value1`.
+                public var value1: Components.Schemas.InstallerModeEndReason
+                /// Creates a new `EndedByPayload`.
+                ///
+                /// - Parameters:
+                ///   - value1:
+                public init(value1: Components.Schemas.InstallerModeEndReason) {
+                    self.value1 = value1
+                }
+                public init(from decoder: any Swift.Decoder) throws {
+                    self.value1 = try decoder.decodeFromSingleValueContainer()
+                }
+                public func encode(to encoder: any Swift.Encoder) throws {
+                    try encoder.encodeToSingleValueContainer(self.value1)
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/InstallerModeCharger/endedBy`.
+            public var endedBy: Components.Schemas.InstallerModeCharger.EndedByPayload?
+            /// How many faults the test provoked that were set aside when the mode
+            /// ended. Absent at zero.
+            ///
+            /// - Remark: Generated from `#/components/schemas/InstallerModeCharger/faultsSetAside`.
+            public var faultsSetAside: Swift.Int32?
+            /// `true` when a fault is still present on the charger and was not set
+            /// aside. Absent when false.
+            ///
+            /// - Remark: Generated from `#/components/schemas/InstallerModeCharger/faultsStillPresent`.
+            public var faultsStillPresent: Swift.Bool?
+            /// `false` for a charger that cannot take the mode, such as one reached
+            /// through its vendor's cloud rather than over OCPP.
+            ///
+            /// - Remark: Generated from `#/components/schemas/InstallerModeCharger/installerModeAvailable`.
+            public var installerModeAvailable: Swift.Bool
+            /// When the time limit ends the mode.
+            ///
+            /// - Remark: Generated from `#/components/schemas/InstallerModeCharger/limitAt`.
+            public var limitAt: Foundation.Date?
+            /// Since when the charger has not confirmed a change.
+            ///
+            /// - Remark: Generated from `#/components/schemas/InstallerModeCharger/notConfirmedSince`.
+            public var notConfirmedSince: Foundation.Date?
+            /// `true` when the app should ask whether to extend.
+            ///
+            /// - Remark: Generated from `#/components/schemas/InstallerModeCharger/nudgeDue`.
+            public var nudgeDue: Swift.Bool
+            /// Each setting of the profile and what the charger did with it.
+            ///
+            /// - Remark: Generated from `#/components/schemas/InstallerModeCharger/settings`.
+            public var settings: [Components.Schemas.InstallerModeSetting]
+            /// When the open period began.
+            ///
+            /// - Remark: Generated from `#/components/schemas/InstallerModeCharger/since`.
+            public var since: Foundation.Date?
+            /// - Remark: Generated from `#/components/schemas/InstallerModeCharger/state`.
+            public var state: Components.Schemas.InstallerModeState
+            /// - Remark: Generated from `#/components/schemas/InstallerModeCharger/stationId`.
+            public var stationId: Swift.String
+            /// The checks and where each stands. Evaluated when the job is read.
+            ///
+            /// - Remark: Generated from `#/components/schemas/InstallerModeCharger/steps`.
+            public var steps: [Components.Schemas.InstallerModeStepStatus]
+            /// Creates a new `InstallerModeCharger`.
+            ///
+            /// - Parameters:
+            ///   - chargerNumber: The number the installer sees on the printed label.
+            ///   - endedBy:
+            ///   - faultsSetAside: How many faults the test provoked that were set aside when the mode
+            ///   - faultsStillPresent: `true` when a fault is still present on the charger and was not set
+            ///   - installerModeAvailable: `false` for a charger that cannot take the mode, such as one reached
+            ///   - limitAt: When the time limit ends the mode.
+            ///   - notConfirmedSince: Since when the charger has not confirmed a change.
+            ///   - nudgeDue: `true` when the app should ask whether to extend.
+            ///   - settings: Each setting of the profile and what the charger did with it.
+            ///   - since: When the open period began.
+            ///   - state:
+            ///   - stationId:
+            ///   - steps: The checks and where each stands. Evaluated when the job is read.
+            public init(
+                chargerNumber: Swift.Int32,
+                endedBy: Components.Schemas.InstallerModeCharger.EndedByPayload? = nil,
+                faultsSetAside: Swift.Int32? = nil,
+                faultsStillPresent: Swift.Bool? = nil,
+                installerModeAvailable: Swift.Bool,
+                limitAt: Foundation.Date? = nil,
+                notConfirmedSince: Foundation.Date? = nil,
+                nudgeDue: Swift.Bool,
+                settings: [Components.Schemas.InstallerModeSetting],
+                since: Foundation.Date? = nil,
+                state: Components.Schemas.InstallerModeState,
+                stationId: Swift.String,
+                steps: [Components.Schemas.InstallerModeStepStatus]
+            ) {
+                self.chargerNumber = chargerNumber
+                self.endedBy = endedBy
+                self.faultsSetAside = faultsSetAside
+                self.faultsStillPresent = faultsStillPresent
+                self.installerModeAvailable = installerModeAvailable
+                self.limitAt = limitAt
+                self.notConfirmedSince = notConfirmedSince
+                self.nudgeDue = nudgeDue
+                self.settings = settings
+                self.since = since
+                self.state = state
+                self.stationId = stationId
+                self.steps = steps
+            }
+            public enum CodingKeys: String, CodingKey {
+                case chargerNumber
+                case endedBy
+                case faultsSetAside
+                case faultsStillPresent
+                case installerModeAvailable
+                case limitAt
+                case notConfirmedSince
+                case nudgeDue
+                case settings
+                case since
+                case state
+                case stationId
+                case steps
+            }
+        }
+        /// How a charger's latest installer-mode period ended.
+        ///
+        /// - Remark: Generated from `#/components/schemas/InstallerModeEndReason`.
+        public typealias InstallerModeEndReason = FlowionInstallerModeEndReason
+        /// What marking a job ready did to installer mode, on the ready answer.
+        /// Omitted when it did nothing.
+        ///
+        /// - Remark: Generated from `#/components/schemas/InstallerModeHandover`.
+        public struct InstallerModeHandover: Codable, Hashable, Sendable {
+            /// How many chargers were taken out of the mode. Absent at zero.
+            ///
+            /// - Remark: Generated from `#/components/schemas/InstallerModeHandover/ended`.
+            public var ended: Swift.Int32?
+            /// Chargers whose end the charger has not confirmed. They stay flagged and do
+            /// not hold the handover.
+            ///
+            /// - Remark: Generated from `#/components/schemas/InstallerModeHandover/notConfirmedOff`.
+            public var notConfirmedOff: [Swift.String]?
+            /// Step ids (`InstallerModeStep`, 1 to 9) asked for and neither done nor skipped, on any charger of the job.
+            ///
+            /// - Remark: Generated from `#/components/schemas/InstallerModeHandover/notTested`.
+            public var notTested: [Swift.Int32]?
+            /// Creates a new `InstallerModeHandover`.
+            ///
+            /// - Parameters:
+            ///   - ended: How many chargers were taken out of the mode. Absent at zero.
+            ///   - notConfirmedOff: Chargers whose end the charger has not confirmed. They stay flagged and do
+            ///   - notTested: Step ids (`InstallerModeStep`, 1 to 9) asked for and neither done nor skipped, on any charger of the job.
+            public init(
+                ended: Swift.Int32? = nil,
+                notConfirmedOff: [Swift.String]? = nil,
+                notTested: [Swift.Int32]? = nil
+            ) {
+                self.ended = ended
+                self.notConfirmedOff = notConfirmedOff
+                self.notTested = notTested
+            }
+            public enum CodingKeys: String, CodingKey {
+                case ended
+                case notConfirmedOff
+                case notTested
+            }
+        }
+        /// The two states the installer may set a step to by hand.
+        ///
+        /// - Remark: Generated from `#/components/schemas/InstallerModeSettableStepState`.
+        @frozen public enum InstallerModeSettableStepState: String, Codable, Hashable, Sendable, CaseIterable {
+            case done = "done"
+            case skipped = "skipped"
+        }
+        /// One setting of the profile, as the charger took it.
+        ///
+        /// - Remark: Generated from `#/components/schemas/InstallerModeSetting`.
+        public struct InstallerModeSetting: Codable, Hashable, Sendable {
+            /// The setting's name in words the installer reads.
+            ///
+            /// - Remark: Generated from `#/components/schemas/InstallerModeSetting/name`.
+            public var name: Swift.String
+            /// - Remark: Generated from `#/components/schemas/InstallerModeSetting/reason`.
+            public struct ReasonPayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/InstallerModeSetting/reason/value1`.
+                public var value1: Components.Schemas.InstallerModeSkipReason
+                /// Creates a new `ReasonPayload`.
+                ///
+                /// - Parameters:
+                ///   - value1:
+                public init(value1: Components.Schemas.InstallerModeSkipReason) {
+                    self.value1 = value1
+                }
+                public init(from decoder: any Swift.Decoder) throws {
+                    self.value1 = try decoder.decodeFromSingleValueContainer()
+                }
+                public func encode(to encoder: any Swift.Encoder) throws {
+                    try encoder.encodeToSingleValueContainer(self.value1)
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/InstallerModeSetting/reason`.
+            public var reason: Components.Schemas.InstallerModeSetting.ReasonPayload?
+            /// - Remark: Generated from `#/components/schemas/InstallerModeSetting/state`.
+            public var state: Components.Schemas.InstallerModeSettingState
+            /// Creates a new `InstallerModeSetting`.
+            ///
+            /// - Parameters:
+            ///   - name: The setting's name in words the installer reads.
+            ///   - reason:
+            ///   - state:
+            public init(
+                name: Swift.String,
+                reason: Components.Schemas.InstallerModeSetting.ReasonPayload? = nil,
+                state: Components.Schemas.InstallerModeSettingState
+            ) {
+                self.name = name
+                self.reason = reason
+                self.state = state
+            }
+            public enum CodingKeys: String, CodingKey {
+                case name
+                case reason
+                case state
+            }
+        }
+        /// What happened to one setting of the profile.
+        ///
+        /// - Remark: Generated from `#/components/schemas/InstallerModeSettingState`.
+        public typealias InstallerModeSettingState = FlowionInstallerModeSettingState
+        /// Why a setting was not applied. A closed list.
+        ///
+        /// - Remark: Generated from `#/components/schemas/InstallerModeSkipReason`.
+        public typealias InstallerModeSkipReason = FlowionInstallerModeSkipReason
+        /// Where a charger stands in installer mode.
+        ///
+        /// - Remark: Generated from `#/components/schemas/InstallerModeState`.
+        public typealias InstallerModeState = FlowionInstallerModeState
+        /// The closed list of checks an installer walks through.
+        ///
+        /// - Remark: Generated from `#/components/schemas/InstallerModeStep`.
+        public typealias InstallerModeStep = FlowionInstallerModeStep
+        /// Where one check stands.
+        ///
+        /// - Remark: Generated from `#/components/schemas/InstallerModeStepState`.
+        public typealias InstallerModeStepState = FlowionInstallerModeStepState
+        /// One check of the walk-through and where it stands.
+        ///
+        /// - Remark: Generated from `#/components/schemas/InstallerModeStepStatus`.
+        public struct InstallerModeStepStatus: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/InstallerModeStepStatus/confirmedAt`.
+            public var confirmedAt: Foundation.Date?
+            /// `true` when the system saw the evidence itself, `false` when it is the
+            /// installer's word.
+            ///
+            /// - Remark: Generated from `#/components/schemas/InstallerModeStepStatus/confirmedBySystem`.
+            public var confirmedBySystem: Swift.Bool
+            /// What the system saw, in a sentence to show as it is.
+            ///
+            /// - Remark: Generated from `#/components/schemas/InstallerModeStepStatus/evidence`.
+            public var evidence: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/InstallerModeStepStatus/note`.
+            public var note: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/InstallerModeStepStatus/skipReason`.
+            public var skipReason: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/InstallerModeStepStatus/state`.
+            public var state: Components.Schemas.InstallerModeStepState
+            /// - Remark: Generated from `#/components/schemas/InstallerModeStepStatus/step`.
+            public var step: Components.Schemas.InstallerModeStep
+            /// Creates a new `InstallerModeStepStatus`.
+            ///
+            /// - Parameters:
+            ///   - confirmedAt:
+            ///   - confirmedBySystem: `true` when the system saw the evidence itself, `false` when it is the
+            ///   - evidence: What the system saw, in a sentence to show as it is.
+            ///   - note:
+            ///   - skipReason:
+            ///   - state:
+            ///   - step:
+            public init(
+                confirmedAt: Foundation.Date? = nil,
+                confirmedBySystem: Swift.Bool,
+                evidence: Swift.String? = nil,
+                note: Swift.String? = nil,
+                skipReason: Swift.String? = nil,
+                state: Components.Schemas.InstallerModeStepState,
+                step: Components.Schemas.InstallerModeStep
+            ) {
+                self.confirmedAt = confirmedAt
+                self.confirmedBySystem = confirmedBySystem
+                self.evidence = evidence
+                self.note = note
+                self.skipReason = skipReason
+                self.state = state
+                self.step = step
+            }
+            public enum CodingKeys: String, CodingKey {
+                case confirmedAt
+                case confirmedBySystem
+                case evidence
+                case note
+                case skipReason
+                case state
+                case step
+            }
+        }
+        /// What a job's installer-mode state comes to in one line, on the job itself.
+        /// Omitted entirely when there is nothing to say.
+        ///
+        /// - Remark: Generated from `#/components/schemas/InstallerModeSummary`.
+        public struct InstallerModeSummary: Codable, Hashable, Sendable {
+            /// How many chargers of the job are in installer mode now. Absent at zero.
+            ///
+            /// - Remark: Generated from `#/components/schemas/InstallerModeSummary/inModeNow`.
+            public var inModeNow: Swift.Int32?
+            /// Step ids (`InstallerModeStep`, 1 to 9) asked for and neither done nor skipped, on any charger of the job. Absent when there are none.
+            ///
+            /// - Remark: Generated from `#/components/schemas/InstallerModeSummary/notTested`.
+            public var notTested: [Swift.Int32]?
+            /// Creates a new `InstallerModeSummary`.
+            ///
+            /// - Parameters:
+            ///   - inModeNow: How many chargers of the job are in installer mode now. Absent at zero.
+            ///   - notTested: Step ids (`InstallerModeStep`, 1 to 9) asked for and neither done nor skipped, on any charger of the job. Absent when there are none.
+            public init(
+                inModeNow: Swift.Int32? = nil,
+                notTested: [Swift.Int32]? = nil
+            ) {
+                self.inModeNow = inModeNow
+                self.notTested = notTested
+            }
+            public enum CodingKeys: String, CodingKey {
+                case inModeNow
+                case notTested
+            }
+        }
+        /// Installer mode across a job's chargers.
+        ///
+        /// - Remark: Generated from `#/components/schemas/InstallerModeView`.
+        public struct InstallerModeView: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/InstallerModeView/chargers`.
+            public var chargers: [Components.Schemas.InstallerModeCharger]
+            /// - Remark: Generated from `#/components/schemas/InstallerModeView/jobId`.
+            public var jobId: Swift.String
+            /// Step ids (`InstallerModeStep`, 1 to 9) that were asked for on any charger of the job and neither done nor skipped.
+            ///
+            /// - Remark: Generated from `#/components/schemas/InstallerModeView/notTested`.
+            public var notTested: [Swift.Int32]
+            /// Creates a new `InstallerModeView`.
+            ///
+            /// - Parameters:
+            ///   - chargers:
+            ///   - jobId:
+            ///   - notTested: Step ids (`InstallerModeStep`, 1 to 9) that were asked for on any charger of the job and neither done nor skipped.
+            public init(
+                chargers: [Components.Schemas.InstallerModeCharger],
+                jobId: Swift.String,
+                notTested: [Swift.Int32]
+            ) {
+                self.chargers = chargers
+                self.jobId = jobId
+                self.notTested = notTested
+            }
+            public enum CodingKeys: String, CodingKey {
+                case chargers
+                case jobId
+                case notTested
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/InstallerNotificationItem`.
+        public struct InstallerNotificationItem: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/InstallerNotificationItem/id`.
+            public var id: Swift.String
+            /// 1 assigned, 2 unassigned, 3 rescheduled, 4 cancelled, 5 details changed,
+            /// 6 assistant reply. Clients must tolerate future values.
+            ///
+            /// - Remark: Generated from `#/components/schemas/InstallerNotificationItem/kind`.
+            public var kind: Swift.Int32
+            /// - Remark: Generated from `#/components/schemas/InstallerNotificationItem/occurredAt`.
+            public var occurredAt: Foundation.Date
+            /// - Remark: Generated from `#/components/schemas/InstallerNotificationItem/organizationId`.
+            public var organizationId: Swift.String
+            /// - Remark: Generated from `#/components/schemas/InstallerNotificationItem/readAt`.
+            public var readAt: Foundation.Date?
+            /// - Remark: Generated from `#/components/schemas/InstallerNotificationItem/targetId`.
+            public var targetId: Swift.String
+            /// Creates a new `InstallerNotificationItem`.
+            ///
+            /// - Parameters:
+            ///   - id:
+            ///   - kind: 1 assigned, 2 unassigned, 3 rescheduled, 4 cancelled, 5 details changed,
+            ///   - occurredAt:
+            ///   - organizationId:
+            ///   - readAt:
+            ///   - targetId:
+            public init(
+                id: Swift.String,
+                kind: Swift.Int32,
+                occurredAt: Foundation.Date,
+                organizationId: Swift.String,
+                readAt: Foundation.Date? = nil,
+                targetId: Swift.String
+            ) {
+                self.id = id
+                self.kind = kind
+                self.occurredAt = occurredAt
+                self.organizationId = organizationId
+                self.readAt = readAt
+                self.targetId = targetId
+            }
+            public enum CodingKeys: String, CodingKey {
+                case id
+                case kind
+                case occurredAt
+                case organizationId
+                case readAt
+                case targetId
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/InstallerNotificationPage`.
+        public struct InstallerNotificationPage: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/InstallerNotificationPage/data`.
+            public var data: [Components.Schemas.InstallerNotificationItem]
+            /// - Remark: Generated from `#/components/schemas/InstallerNotificationPage/nextCursor`.
+            public var nextCursor: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/InstallerNotificationPage/unread`.
+            public var unread: Swift.Int32
+            /// Creates a new `InstallerNotificationPage`.
+            ///
+            /// - Parameters:
+            ///   - data:
+            ///   - nextCursor:
+            ///   - unread:
+            public init(
+                data: [Components.Schemas.InstallerNotificationItem],
+                nextCursor: Swift.String? = nil,
+                unread: Swift.Int32
+            ) {
+                self.data = data
+                self.nextCursor = nextCursor
+                self.unread = unread
+            }
+            public enum CodingKeys: String, CodingKey {
+                case data
+                case nextCursor
+                case unread
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/InstallerNotificationRead`.
+        public struct InstallerNotificationRead: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/InstallerNotificationRead/ids`.
+            public var ids: [Swift.String]
+            /// Creates a new `InstallerNotificationRead`.
+            ///
+            /// - Parameters:
+            ///   - ids:
+            public init(ids: [Swift.String]) {
+                self.ids = ids
+            }
+            public enum CodingKeys: String, CodingKey {
+                case ids
+            }
+            public init(from decoder: any Swift.Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                self.ids = try container.decode(
+                    [Swift.String].self,
+                    forKey: .ids
+                )
+                try decoder.ensureNoAdditionalProperties(knownKeys: [
+                    "ids"
+                ])
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/InstallerNotificationSettings`.
+        public struct InstallerNotificationSettings: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/InstallerNotificationSettings/assistantReplies`.
+            public var assistantReplies: Swift.Bool
+            /// - Remark: Generated from `#/components/schemas/InstallerNotificationSettings/jobAssignments`.
+            public var jobAssignments: Swift.Bool
+            /// - Remark: Generated from `#/components/schemas/InstallerNotificationSettings/jobChanges`.
+            public var jobChanges: Swift.Bool
+            /// At most 200 jobs. Muting suppresses push, while the inbox keeps history.
+            ///
+            /// - Remark: Generated from `#/components/schemas/InstallerNotificationSettings/mutedJobIds`.
+            public var mutedJobIds: [Swift.String]
+            /// - Remark: Generated from `#/components/schemas/InstallerNotificationSettings/quietEndMinute`.
+            public var quietEndMinute: Swift.Int32?
+            /// - Remark: Generated from `#/components/schemas/InstallerNotificationSettings/quietStartMinute`.
+            public var quietStartMinute: Swift.Int32?
+            /// IANA time zone; quiet hours follow daylight-saving changes.
+            ///
+            /// - Remark: Generated from `#/components/schemas/InstallerNotificationSettings/timeZone`.
+            public var timeZone: Swift.String
+            /// Creates a new `InstallerNotificationSettings`.
+            ///
+            /// - Parameters:
+            ///   - assistantReplies:
+            ///   - jobAssignments:
+            ///   - jobChanges:
+            ///   - mutedJobIds: At most 200 jobs. Muting suppresses push, while the inbox keeps history.
+            ///   - quietEndMinute:
+            ///   - quietStartMinute:
+            ///   - timeZone: IANA time zone; quiet hours follow daylight-saving changes.
+            public init(
+                assistantReplies: Swift.Bool,
+                jobAssignments: Swift.Bool,
+                jobChanges: Swift.Bool,
+                mutedJobIds: [Swift.String],
+                quietEndMinute: Swift.Int32? = nil,
+                quietStartMinute: Swift.Int32? = nil,
+                timeZone: Swift.String
+            ) {
+                self.assistantReplies = assistantReplies
+                self.jobAssignments = jobAssignments
+                self.jobChanges = jobChanges
+                self.mutedJobIds = mutedJobIds
+                self.quietEndMinute = quietEndMinute
+                self.quietStartMinute = quietStartMinute
+                self.timeZone = timeZone
+            }
+            public enum CodingKeys: String, CodingKey {
+                case assistantReplies
+                case jobAssignments
+                case jobChanges
+                case mutedJobIds
+                case quietEndMinute
+                case quietStartMinute
+                case timeZone
+            }
+            public init(from decoder: any Swift.Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                self.assistantReplies = try container.decode(
+                    Swift.Bool.self,
+                    forKey: .assistantReplies
+                )
+                self.jobAssignments = try container.decode(
+                    Swift.Bool.self,
+                    forKey: .jobAssignments
+                )
+                self.jobChanges = try container.decode(
+                    Swift.Bool.self,
+                    forKey: .jobChanges
+                )
+                self.mutedJobIds = try container.decode(
+                    [Swift.String].self,
+                    forKey: .mutedJobIds
+                )
+                self.quietEndMinute = try container.decodeIfPresent(
+                    Swift.Int32.self,
+                    forKey: .quietEndMinute
+                )
+                self.quietStartMinute = try container.decodeIfPresent(
+                    Swift.Int32.self,
+                    forKey: .quietStartMinute
+                )
+                self.timeZone = try container.decode(
+                    Swift.String.self,
+                    forKey: .timeZone
+                )
+                try decoder.ensureNoAdditionalProperties(knownKeys: [
+                    "assistantReplies",
+                    "jobAssignments",
+                    "jobChanges",
+                    "mutedJobIds",
+                    "quietEndMinute",
+                    "quietStartMinute",
+                    "timeZone"
+                ])
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/InstallerNotificationSettingsResult`.
+        public struct InstallerNotificationSettingsResult: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/InstallerNotificationSettingsResult/pushAvailable`.
+            public var pushAvailable: Swift.Bool
+            /// - Remark: Generated from `#/components/schemas/InstallerNotificationSettingsResult/settings`.
+            public var settings: Components.Schemas.InstallerNotificationSettings
+            /// Creates a new `InstallerNotificationSettingsResult`.
+            ///
+            /// - Parameters:
+            ///   - pushAvailable:
+            ///   - settings:
+            public init(
+                pushAvailable: Swift.Bool,
+                settings: Components.Schemas.InstallerNotificationSettings
+            ) {
+                self.pushAvailable = pushAvailable
+                self.settings = settings
+            }
+            public enum CodingKeys: String, CodingKey {
+                case pushAvailable
+                case settings
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/InstallerPushRegistration`.
+        public struct InstallerPushRegistration: Codable, Hashable, Sendable {
+            /// sandbox or production, read from the signed aps-environment entitlement.
+            ///
+            /// - Remark: Generated from `#/components/schemas/InstallerPushRegistration/environment`.
+            public var environment: Swift.String
+            /// - Remark: Generated from `#/components/schemas/InstallerPushRegistration/language`.
+            public var language: Swift.String
+            /// Case-sensitive Firebase Cloud Messaging registration token; never returned or logged.
+            ///
+            /// - Remark: Generated from `#/components/schemas/InstallerPushRegistration/token`.
+            public var token: Swift.String
+            /// Creates a new `InstallerPushRegistration`.
+            ///
+            /// - Parameters:
+            ///   - environment: sandbox or production, read from the signed aps-environment entitlement.
+            ///   - language:
+            ///   - token: Case-sensitive Firebase Cloud Messaging registration token; never returned or logged.
+            public init(
+                environment: Swift.String,
+                language: Swift.String,
+                token: Swift.String
+            ) {
+                self.environment = environment
+                self.language = language
+                self.token = token
+            }
+            public enum CodingKeys: String, CodingKey {
+                case environment
+                case language
+                case token
+            }
+            public init(from decoder: any Swift.Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                self.environment = try container.decode(
+                    Swift.String.self,
+                    forKey: .environment
+                )
+                self.language = try container.decode(
+                    Swift.String.self,
+                    forKey: .language
+                )
+                self.token = try container.decode(
+                    Swift.String.self,
+                    forKey: .token
+                )
+                try decoder.ensureNoAdditionalProperties(knownKeys: [
+                    "environment",
+                    "language",
+                    "token"
+                ])
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/InstallerSettingsView`.
+        public struct InstallerSettingsView: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/InstallerSettingsView/companyLookupAvailable`.
+            public var companyLookupAvailable: Swift.Bool
+            /// ISO 3166-1 alpha-2 countries this company installs in. Empty means not configured.
+            ///
+            /// - Remark: Generated from `#/components/schemas/InstallerSettingsView/operatingCountries`.
+            public var operatingCountries: [Swift.String]
+            /// Creates a new `InstallerSettingsView`.
+            ///
+            /// - Parameters:
+            ///   - companyLookupAvailable:
+            ///   - operatingCountries: ISO 3166-1 alpha-2 countries this company installs in. Empty means not configured.
+            public init(
+                companyLookupAvailable: Swift.Bool,
+                operatingCountries: [Swift.String]
+            ) {
+                self.companyLookupAvailable = companyLookupAvailable
+                self.operatingCountries = operatingCountries
+            }
+            public enum CodingKeys: String, CodingKey {
+                case companyLookupAvailable
+                case operatingCountries
+            }
+            public init(from decoder: any Swift.Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                self.companyLookupAvailable = try container.decode(
+                    Swift.Bool.self,
+                    forKey: .companyLookupAvailable
+                )
+                self.operatingCountries = try container.decode(
+                    [Swift.String].self,
+                    forKey: .operatingCountries
+                )
+                try decoder.ensureNoAdditionalProperties(knownKeys: [
+                    "companyLookupAvailable",
+                    "operatingCountries"
+                ])
+            }
+        }
+        /// Chirp 3 HD generally available locales. Keep aligned with assistant's
+        /// SUPPORTED_LANGUAGES and the installer's SpeechLanguage.supportedLocales.
+        ///
+        /// - Remark: Generated from `#/components/schemas/InstallerSpeechLanguage`.
+        @frozen public enum InstallerSpeechLanguage: String, Codable, Hashable, Sendable, CaseIterable {
+            case arXA = "ar-XA"
+            case bnIN = "bn-IN"
+            case bgBG = "bg-BG"
+            case hrHR = "hr-HR"
+            case csCZ = "cs-CZ"
+            case daDK = "da-DK"
+            case nlBE = "nl-BE"
+            case nlNL = "nl-NL"
+            case enAU = "en-AU"
+            case enIN = "en-IN"
+            case enGB = "en-GB"
+            case enUS = "en-US"
+            case etEE = "et-EE"
+            case fiFI = "fi-FI"
+            case frCA = "fr-CA"
+            case frFR = "fr-FR"
+            case deDE = "de-DE"
+            case elGR = "el-GR"
+            case guIN = "gu-IN"
+            case heIL = "he-IL"
+            case hiIN = "hi-IN"
+            case huHU = "hu-HU"
+            case idID = "id-ID"
+            case itIT = "it-IT"
+            case jaJP = "ja-JP"
+            case knIN = "kn-IN"
+            case koKR = "ko-KR"
+            case lvLV = "lv-LV"
+            case ltLT = "lt-LT"
+            case mlIN = "ml-IN"
+            case cmnCN = "cmn-CN"
+            case mrIN = "mr-IN"
+            case nbNO = "nb-NO"
+            case plPL = "pl-PL"
+            case ptBR = "pt-BR"
+            case roRO = "ro-RO"
+            case ruRU = "ru-RU"
+            case srRS = "sr-RS"
+            case skSK = "sk-SK"
+            case slSI = "sl-SI"
+            case esES = "es-ES"
+            case esUS = "es-US"
+            case swKE = "sw-KE"
+            case svSE = "sv-SE"
+            case taIN = "ta-IN"
+            case teIN = "te-IN"
+            case thTH = "th-TH"
+            case trTR = "tr-TR"
+            case ukUA = "uk-UA"
+            case urIN = "ur-IN"
+            case viVN = "vi-VN"
+        }
+        /// - Remark: Generated from `#/components/schemas/InstallerSpeechVoice`.
+        @frozen public enum InstallerSpeechVoice: String, Codable, Hashable, Sendable, CaseIterable {
+            case aoede = "Aoede"
+            case kore = "Kore"
+            case leda = "Leda"
+            case zephyr = "Zephyr"
+            case puck = "Puck"
+            case charon = "Charon"
+        }
+        /// One visit of an installer to this organization's chargers.
+        ///
+        /// - Remark: Generated from `#/components/schemas/InstallerVisit`.
+        public struct InstallerVisit: Codable, Hashable, Sendable {
+            /// The chargers in installer mode now. Empty once the visit has ended.
+            ///
+            /// - Remark: Generated from `#/components/schemas/InstallerVisit/chargersBeingTested`.
+            public var chargersBeingTested: [Components.Schemas.InstallerVisitCharger]
+            /// When the last charger left the mode. Absent while one is in it, and for a
+            /// visit that never put one in.
+            ///
+            /// - Remark: Generated from `#/components/schemas/InstallerVisit/endedAt`.
+            public var endedAt: Foundation.Date?
+            /// The installer organization. Absent when it cannot be read.
+            ///
+            /// - Remark: Generated from `#/components/schemas/InstallerVisit/installerName`.
+            public var installerName: Swift.String?
+            /// Names the visit in `.../installer-visits/{jobId}/end`.
+            ///
+            /// - Remark: Generated from `#/components/schemas/InstallerVisit/jobId`.
+            public var jobId: Swift.String
+            /// When the first charger went in the mode (when the visit was opened, if none
+            /// has).
+            ///
+            /// - Remark: Generated from `#/components/schemas/InstallerVisit/startedAt`.
+            public var startedAt: Foundation.Date
+            /// Steps the visit's reason asked for that were done.
+            ///
+            /// - Remark: Generated from `#/components/schemas/InstallerVisit/stepsDone`.
+            public var stepsDone: Swift.Int32
+            /// Steps asked for that were neither done nor skipped. Not a failure: they were
+            /// not tested.
+            ///
+            /// - Remark: Generated from `#/components/schemas/InstallerVisit/stepsNotTested`.
+            public var stepsNotTested: Swift.Int32
+            /// Steps the installer skipped.
+            ///
+            /// - Remark: Generated from `#/components/schemas/InstallerVisit/stepsSkipped`.
+            public var stepsSkipped: Swift.Int32
+            /// - Remark: Generated from `#/components/schemas/InstallerVisit/visitReason`.
+            public struct VisitReasonPayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/InstallerVisit/visitReason/value1`.
+                public var value1: Components.Schemas.VisitReason
+                /// Creates a new `VisitReasonPayload`.
+                ///
+                /// - Parameters:
+                ///   - value1:
+                public init(value1: Components.Schemas.VisitReason) {
+                    self.value1 = value1
+                }
+                public init(from decoder: any Swift.Decoder) throws {
+                    self.value1 = try decoder.decodeFromSingleValueContainer()
+                }
+                public func encode(to encoder: any Swift.Encoder) throws {
+                    try encoder.encodeToSingleValueContainer(self.value1)
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/InstallerVisit/visitReason`.
+            public var visitReason: Components.Schemas.InstallerVisit.VisitReasonPayload?
+            /// Creates a new `InstallerVisit`.
+            ///
+            /// - Parameters:
+            ///   - chargersBeingTested: The chargers in installer mode now. Empty once the visit has ended.
+            ///   - endedAt: When the last charger left the mode. Absent while one is in it, and for a
+            ///   - installerName: The installer organization. Absent when it cannot be read.
+            ///   - jobId: Names the visit in `.../installer-visits/{jobId}/end`.
+            ///   - startedAt: When the first charger went in the mode (when the visit was opened, if none
+            ///   - stepsDone: Steps the visit's reason asked for that were done.
+            ///   - stepsNotTested: Steps asked for that were neither done nor skipped. Not a failure: they were
+            ///   - stepsSkipped: Steps the installer skipped.
+            ///   - visitReason:
+            public init(
+                chargersBeingTested: [Components.Schemas.InstallerVisitCharger],
+                endedAt: Foundation.Date? = nil,
+                installerName: Swift.String? = nil,
+                jobId: Swift.String,
+                startedAt: Foundation.Date,
+                stepsDone: Swift.Int32,
+                stepsNotTested: Swift.Int32,
+                stepsSkipped: Swift.Int32,
+                visitReason: Components.Schemas.InstallerVisit.VisitReasonPayload? = nil
+            ) {
+                self.chargersBeingTested = chargersBeingTested
+                self.endedAt = endedAt
+                self.installerName = installerName
+                self.jobId = jobId
+                self.startedAt = startedAt
+                self.stepsDone = stepsDone
+                self.stepsNotTested = stepsNotTested
+                self.stepsSkipped = stepsSkipped
+                self.visitReason = visitReason
+            }
+            public enum CodingKeys: String, CodingKey {
+                case chargersBeingTested
+                case endedAt
+                case installerName
+                case jobId
+                case startedAt
+                case stepsDone
+                case stepsNotTested
+                case stepsSkipped
+                case visitReason
+            }
+        }
+        /// A charger of a visit that is in installer mode now.
+        ///
+        /// - Remark: Generated from `#/components/schemas/InstallerVisitCharger`.
+        public struct InstallerVisitCharger: Codable, Hashable, Sendable {
+            /// The visit's own number for the charger, in the order they went in the mode.
+            ///
+            /// - Remark: Generated from `#/components/schemas/InstallerVisitCharger/chargerNumber`.
+            public var chargerNumber: Swift.Int32
+            /// Since when it has been in the mode.
+            ///
+            /// - Remark: Generated from `#/components/schemas/InstallerVisitCharger/since`.
+            public var since: Foundation.Date
+            /// Creates a new `InstallerVisitCharger`.
+            ///
+            /// - Parameters:
+            ///   - chargerNumber: The visit's own number for the charger, in the order they went in the mode.
+            ///   - since: Since when it has been in the mode.
+            public init(
+                chargerNumber: Swift.Int32,
+                since: Foundation.Date
+            ) {
+                self.chargerNumber = chargerNumber
+                self.since = since
+            }
+            public enum CodingKeys: String, CodingKey {
+                case chargerNumber
+                case since
+            }
+        }
+        /// What ending a visit did.
+        ///
+        /// - Remark: Generated from `#/components/schemas/InstallerVisitEnded`.
+        public struct InstallerVisitEnded: Codable, Hashable, Sendable {
+            /// `false` when no charger of the visit was in the mode: there was nothing to
+            /// end.
+            ///
+            /// - Remark: Generated from `#/components/schemas/InstallerVisitEnded/ended`.
+            public var ended: Swift.Bool
+            /// Creates a new `InstallerVisitEnded`.
+            ///
+            /// - Parameters:
+            ///   - ended: `false` when no charger of the visit was in the mode: there was nothing to
+            public init(ended: Swift.Bool) {
+                self.ended = ended
+            }
+            public enum CodingKeys: String, CodingKey {
+                case ended
+            }
+        }
+        /// The visits to an organization's chargers.
+        ///
+        /// - Remark: Generated from `#/components/schemas/InstallerVisitList`.
+        public struct InstallerVisitList: Codable, Hashable, Sendable {
+            /// Newest first.
+            ///
+            /// - Remark: Generated from `#/components/schemas/InstallerVisitList/visits`.
+            public var visits: [Components.Schemas.InstallerVisit]
+            /// Creates a new `InstallerVisitList`.
+            ///
+            /// - Parameters:
+            ///   - visits: Newest first.
+            public init(visits: [Components.Schemas.InstallerVisit]) {
+                self.visits = visits
+            }
+            public enum CodingKeys: String, CodingKey {
+                case visits
             }
         }
         /// One entry of the integration directory — a not-yet-installed catalog
@@ -13759,6 +18509,269 @@ extension Components {
                 case scope
             }
         }
+        /// - Remark: Generated from `#/components/schemas/InverterCapabilities`.
+        public struct InverterCapabilities: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/InverterCapabilities/activePowerLimitSupported`.
+            public var activePowerLimitSupported: Swift.Bool
+            /// - Remark: Generated from `#/components/schemas/InverterCapabilities/batterySupported`.
+            public var batterySupported: Swift.Bool
+            /// Creates a new `InverterCapabilities`.
+            ///
+            /// - Parameters:
+            ///   - activePowerLimitSupported:
+            ///   - batterySupported:
+            public init(
+                activePowerLimitSupported: Swift.Bool,
+                batterySupported: Swift.Bool
+            ) {
+                self.activePowerLimitSupported = activePowerLimitSupported
+                self.batterySupported = batterySupported
+            }
+            public enum CodingKeys: String, CodingKey {
+                case activePowerLimitSupported
+                case batterySupported
+            }
+            public init(from decoder: any Swift.Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                self.activePowerLimitSupported = try container.decode(
+                    Swift.Bool.self,
+                    forKey: .activePowerLimitSupported
+                )
+                self.batterySupported = try container.decode(
+                    Swift.Bool.self,
+                    forKey: .batterySupported
+                )
+                try decoder.ensureNoAdditionalProperties(knownKeys: [
+                    "activePowerLimitSupported",
+                    "batterySupported"
+                ])
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/InverterDetails`.
+        public struct InverterDetails: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/InverterDetails/capabilities`.
+            public var capabilities: Components.Schemas.InverterCapabilities
+            /// - Remark: Generated from `#/components/schemas/InverterDetails/integrationBinding`.
+            public struct IntegrationBindingPayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/InverterDetails/integrationBinding/value1`.
+                public var value1: Components.Schemas.InverterIntegrationBinding
+                /// Creates a new `IntegrationBindingPayload`.
+                ///
+                /// - Parameters:
+                ///   - value1:
+                public init(value1: Components.Schemas.InverterIntegrationBinding) {
+                    self.value1 = value1
+                }
+                public init(from decoder: any Swift.Decoder) throws {
+                    self.value1 = try .init(from: decoder)
+                }
+                public func encode(to encoder: any Swift.Encoder) throws {
+                    try self.value1.encode(to: encoder)
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/InverterDetails/integrationBinding`.
+            public var integrationBinding: Components.Schemas.InverterDetails.IntegrationBindingPayload?
+            /// - Remark: Generated from `#/components/schemas/InverterDetails/manufacturer`.
+            public var manufacturer: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/InverterDetails/model`.
+            public var model: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/InverterDetails/name`.
+            public var name: Swift.String
+            /// Positive, finite rated AC output in watts. Not installed panel DC peak watts.
+            ///
+            /// - Remark: Generated from `#/components/schemas/InverterDetails/ratedAcWatts`.
+            public var ratedAcWatts: Swift.Double
+            /// - Remark: Generated from `#/components/schemas/InverterDetails/serialNumber`.
+            public var serialNumber: Swift.String?
+            /// Creates a new `InverterDetails`.
+            ///
+            /// - Parameters:
+            ///   - capabilities:
+            ///   - integrationBinding:
+            ///   - manufacturer:
+            ///   - model:
+            ///   - name:
+            ///   - ratedAcWatts: Positive, finite rated AC output in watts. Not installed panel DC peak watts.
+            ///   - serialNumber:
+            public init(
+                capabilities: Components.Schemas.InverterCapabilities,
+                integrationBinding: Components.Schemas.InverterDetails.IntegrationBindingPayload? = nil,
+                manufacturer: Swift.String? = nil,
+                model: Swift.String? = nil,
+                name: Swift.String,
+                ratedAcWatts: Swift.Double,
+                serialNumber: Swift.String? = nil
+            ) {
+                self.capabilities = capabilities
+                self.integrationBinding = integrationBinding
+                self.manufacturer = manufacturer
+                self.model = model
+                self.name = name
+                self.ratedAcWatts = ratedAcWatts
+                self.serialNumber = serialNumber
+            }
+            public enum CodingKeys: String, CodingKey {
+                case capabilities
+                case integrationBinding
+                case manufacturer
+                case model
+                case name
+                case ratedAcWatts
+                case serialNumber
+            }
+            public init(from decoder: any Swift.Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                self.capabilities = try container.decode(
+                    Components.Schemas.InverterCapabilities.self,
+                    forKey: .capabilities
+                )
+                self.integrationBinding = try container.decodeIfPresent(
+                    Components.Schemas.InverterDetails.IntegrationBindingPayload.self,
+                    forKey: .integrationBinding
+                )
+                self.manufacturer = try container.decodeIfPresent(
+                    Swift.String.self,
+                    forKey: .manufacturer
+                )
+                self.model = try container.decodeIfPresent(
+                    Swift.String.self,
+                    forKey: .model
+                )
+                self.name = try container.decode(
+                    Swift.String.self,
+                    forKey: .name
+                )
+                self.ratedAcWatts = try container.decode(
+                    Swift.Double.self,
+                    forKey: .ratedAcWatts
+                )
+                self.serialNumber = try container.decodeIfPresent(
+                    Swift.String.self,
+                    forKey: .serialNumber
+                )
+                try decoder.ensureNoAdditionalProperties(knownKeys: [
+                    "capabilities",
+                    "integrationBinding",
+                    "manufacturer",
+                    "model",
+                    "name",
+                    "ratedAcWatts",
+                    "serialNumber"
+                ])
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/InverterIntegrationBinding`.
+        public struct InverterIntegrationBinding: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/InverterIntegrationBinding/externalDeviceId`.
+            public var externalDeviceId: Swift.String
+            /// Inventory reference only. Does not grant access to the integration.
+            ///
+            /// - Remark: Generated from `#/components/schemas/InverterIntegrationBinding/integrationId`.
+            public var integrationId: Swift.String
+            /// Creates a new `InverterIntegrationBinding`.
+            ///
+            /// - Parameters:
+            ///   - externalDeviceId:
+            ///   - integrationId: Inventory reference only. Does not grant access to the integration.
+            public init(
+                externalDeviceId: Swift.String,
+                integrationId: Swift.String
+            ) {
+                self.externalDeviceId = externalDeviceId
+                self.integrationId = integrationId
+            }
+            public enum CodingKeys: String, CodingKey {
+                case externalDeviceId
+                case integrationId
+            }
+            public init(from decoder: any Swift.Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                self.externalDeviceId = try container.decode(
+                    Swift.String.self,
+                    forKey: .externalDeviceId
+                )
+                self.integrationId = try container.decode(
+                    Swift.String.self,
+                    forKey: .integrationId
+                )
+                try decoder.ensureNoAdditionalProperties(knownKeys: [
+                    "externalDeviceId",
+                    "integrationId"
+                ])
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/InverterList`.
+        public struct InverterList: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/InverterList/data`.
+            public var data: [Components.Schemas.InverterSummary]
+            /// Creates a new `InverterList`.
+            ///
+            /// - Parameters:
+            ///   - data:
+            public init(data: [Components.Schemas.InverterSummary]) {
+                self.data = data
+            }
+            public enum CodingKeys: String, CodingKey {
+                case data
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/InverterSummary`.
+        public struct InverterSummary: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/InverterSummary/circuitId`.
+            public var circuitId: Swift.String
+            /// Unknown until a device integration supplies connection observations.
+            ///
+            /// - Remark: Generated from `#/components/schemas/InverterSummary/connectionState`.
+            public var connectionState: Swift.String
+            /// - Remark: Generated from `#/components/schemas/InverterSummary/createdAt`.
+            public var createdAt: Foundation.Date
+            /// - Remark: Generated from `#/components/schemas/InverterSummary/details`.
+            public var details: Components.Schemas.InverterDetails
+            /// - Remark: Generated from `#/components/schemas/InverterSummary/id`.
+            public var id: Swift.String
+            /// Derived through the assigned circuit; cannot be assigned independently.
+            ///
+            /// - Remark: Generated from `#/components/schemas/InverterSummary/locationId`.
+            public var locationId: Swift.String
+            /// - Remark: Generated from `#/components/schemas/InverterSummary/updatedAt`.
+            public var updatedAt: Foundation.Date
+            /// Creates a new `InverterSummary`.
+            ///
+            /// - Parameters:
+            ///   - circuitId:
+            ///   - connectionState: Unknown until a device integration supplies connection observations.
+            ///   - createdAt:
+            ///   - details:
+            ///   - id:
+            ///   - locationId: Derived through the assigned circuit; cannot be assigned independently.
+            ///   - updatedAt:
+            public init(
+                circuitId: Swift.String,
+                connectionState: Swift.String,
+                createdAt: Foundation.Date,
+                details: Components.Schemas.InverterDetails,
+                id: Swift.String,
+                locationId: Swift.String,
+                updatedAt: Foundation.Date
+            ) {
+                self.circuitId = circuitId
+                self.connectionState = connectionState
+                self.createdAt = createdAt
+                self.details = details
+                self.id = id
+                self.locationId = locationId
+                self.updatedAt = updatedAt
+            }
+            public enum CodingKeys: String, CodingKey {
+                case circuitId
+                case connectionState
+                case createdAt
+                case details
+                case id
+                case locationId
+                case updatedAt
+            }
+        }
         /// One invitation as the API reports it.
         ///
         /// Carries no token: the only response that ever holds one is
@@ -13828,6 +18841,55 @@ extension Components {
                 case id
                 case pending
                 case policyBindings
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/InviteResidentRequest`.
+        public struct InviteResidentRequest: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/InviteResidentRequest/chargingTerms`.
+            public var chargingTerms: Swift.String
+            /// - Remark: Generated from `#/components/schemas/InviteResidentRequest/language`.
+            public var language: Swift.String
+            /// - Remark: Generated from `#/components/schemas/InviteResidentRequest/person`.
+            public var person: Components.Schemas.ResidentImportPerson
+            /// Creates a new `InviteResidentRequest`.
+            ///
+            /// - Parameters:
+            ///   - chargingTerms:
+            ///   - language:
+            ///   - person:
+            public init(
+                chargingTerms: Swift.String,
+                language: Swift.String,
+                person: Components.Schemas.ResidentImportPerson
+            ) {
+                self.chargingTerms = chargingTerms
+                self.language = language
+                self.person = person
+            }
+            public enum CodingKeys: String, CodingKey {
+                case chargingTerms
+                case language
+                case person
+            }
+            public init(from decoder: any Swift.Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                self.chargingTerms = try container.decode(
+                    Swift.String.self,
+                    forKey: .chargingTerms
+                )
+                self.language = try container.decode(
+                    Swift.String.self,
+                    forKey: .language
+                )
+                self.person = try container.decode(
+                    Components.Schemas.ResidentImportPerson.self,
+                    forKey: .person
+                )
+                try decoder.ensureNoAdditionalProperties(knownKeys: [
+                    "chargingTerms",
+                    "language",
+                    "person"
+                ])
             }
         }
         /// - Remark: Generated from `#/components/schemas/InvoiceSummary`.
@@ -13988,6 +19050,69 @@ extension Components {
                 case userId
             }
         }
+        /// - Remark: Generated from `#/components/schemas/JobAdditionKindApi`.
+        public typealias JobAdditionKindApi = FlowionJobAdditionKindApi
+        /// An addition's life: `registered` (limited, not offered yet), `offered` (in an
+        /// open offer), `accepted` (in service and counted), `declined` (limited, back
+        /// with the installer) and `withdrawn` (removed from the customer's location,
+        /// never counted).
+        ///
+        /// - Remark: Generated from `#/components/schemas/JobAdditionStateApi`.
+        public typealias JobAdditionStateApi = FlowionJobAdditionStateApi
+        /// One charger or circuit an installer added at the customer's location.
+        ///
+        /// - Remark: Generated from `#/components/schemas/JobAdditionView`.
+        public struct JobAdditionView: Codable, Hashable, Sendable {
+            /// The charging station's or the circuit's id.
+            ///
+            /// - Remark: Generated from `#/components/schemas/JobAdditionView/assetId`.
+            public var assetId: Swift.String
+            /// - Remark: Generated from `#/components/schemas/JobAdditionView/declinedReason`.
+            public var declinedReason: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/JobAdditionView/id`.
+            public var id: Swift.String
+            /// - Remark: Generated from `#/components/schemas/JobAdditionView/kind`.
+            public var kind: Components.Schemas.JobAdditionKindApi
+            /// Taken at registration: a charger's name, model and serial and charge point
+            /// id, or a circuit's name and rating.
+            ///
+            /// - Remark: Generated from `#/components/schemas/JobAdditionView/label`.
+            public var label: Swift.String
+            /// - Remark: Generated from `#/components/schemas/JobAdditionView/state`.
+            public var state: Components.Schemas.JobAdditionStateApi
+            /// Creates a new `JobAdditionView`.
+            ///
+            /// - Parameters:
+            ///   - assetId: The charging station's or the circuit's id.
+            ///   - declinedReason:
+            ///   - id:
+            ///   - kind:
+            ///   - label: Taken at registration: a charger's name, model and serial and charge point
+            ///   - state:
+            public init(
+                assetId: Swift.String,
+                declinedReason: Swift.String? = nil,
+                id: Swift.String,
+                kind: Components.Schemas.JobAdditionKindApi,
+                label: Swift.String,
+                state: Components.Schemas.JobAdditionStateApi
+            ) {
+                self.assetId = assetId
+                self.declinedReason = declinedReason
+                self.id = id
+                self.kind = kind
+                self.label = label
+                self.state = state
+            }
+            public enum CodingKeys: String, CodingKey {
+                case assetId
+                case declinedReason
+                case id
+                case kind
+                case label
+                case state
+            }
+        }
         /// - Remark: Generated from `#/components/schemas/JobAssignmentView`.
         public struct JobAssignmentView: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/JobAssignmentView/assignedAt`.
@@ -14015,6 +19140,49 @@ extension Components {
                 case assignedAt
                 case assignedBy
                 case memberUserId
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/JobCircuitChangeView`.
+        public struct JobCircuitChangeView: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/JobCircuitChangeView/circuitId`.
+            public var circuitId: Swift.String
+            /// Whole amps.
+            ///
+            /// - Remark: Generated from `#/components/schemas/JobCircuitChangeView/fromAmps`.
+            public var fromAmps: Swift.Int32
+            /// - Remark: Generated from `#/components/schemas/JobCircuitChangeView/label`.
+            public var label: Swift.String
+            /// - Remark: Generated from `#/components/schemas/JobCircuitChangeView/state`.
+            public var state: Components.Schemas.CircuitChangeStateApi
+            /// - Remark: Generated from `#/components/schemas/JobCircuitChangeView/toAmps`.
+            public var toAmps: Swift.Int32
+            /// Creates a new `JobCircuitChangeView`.
+            ///
+            /// - Parameters:
+            ///   - circuitId:
+            ///   - fromAmps: Whole amps.
+            ///   - label:
+            ///   - state:
+            ///   - toAmps:
+            public init(
+                circuitId: Swift.String,
+                fromAmps: Swift.Int32,
+                label: Swift.String,
+                state: Components.Schemas.CircuitChangeStateApi,
+                toAmps: Swift.Int32
+            ) {
+                self.circuitId = circuitId
+                self.fromAmps = fromAmps
+                self.label = label
+                self.state = state
+                self.toAmps = toAmps
+            }
+            public enum CodingKeys: String, CodingKey {
+                case circuitId
+                case fromAmps
+                case label
+                case state
+                case toAmps
             }
         }
         /// - Remark: Generated from `#/components/schemas/JobCircuitInputBody`.
@@ -14066,6 +19234,68 @@ extension Components {
         }
         /// - Remark: Generated from `#/components/schemas/JobContactView`.
         public typealias JobContactView = FlowionJobContactView
+        /// Whether a job has a linked customer, as the installer sees it.
+        ///
+        /// - Remark: Generated from `#/components/schemas/JobCustomerLink`.
+        public struct JobCustomerLink: Codable, Hashable, Sendable {
+            /// When the customer said access is arranged. Absent until they have.
+            ///
+            /// - Remark: Generated from `#/components/schemas/JobCustomerLink/accessArrangedAt`.
+            public var accessArrangedAt: Foundation.Date?
+            /// What the customer has chosen to prepare for the new location, read-only.
+            /// Absent while no customer is linked.
+            ///
+            /// - Remark: Generated from `#/components/schemas/JobCustomerLink/intentions`.
+            public var intentions: [Components.Schemas.LinkedJobIntention]?
+            /// - Remark: Generated from `#/components/schemas/JobCustomerLink/invitation`.
+            public struct InvitationPayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/JobCustomerLink/invitation/value1`.
+                public var value1: Components.Schemas.JobInvitation
+                /// Creates a new `InvitationPayload`.
+                ///
+                /// - Parameters:
+                ///   - value1:
+                public init(value1: Components.Schemas.JobInvitation) {
+                    self.value1 = value1
+                }
+                public init(from decoder: any Swift.Decoder) throws {
+                    self.value1 = try .init(from: decoder)
+                }
+                public func encode(to encoder: any Swift.Encoder) throws {
+                    try self.value1.encode(to: encoder)
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/JobCustomerLink/invitation`.
+            public var invitation: Components.Schemas.JobCustomerLink.InvitationPayload?
+            /// Whether a customer organization is linked to the job.
+            ///
+            /// - Remark: Generated from `#/components/schemas/JobCustomerLink/linked`.
+            public var linked: Swift.Bool
+            /// Creates a new `JobCustomerLink`.
+            ///
+            /// - Parameters:
+            ///   - accessArrangedAt: When the customer said access is arranged. Absent until they have.
+            ///   - intentions: What the customer has chosen to prepare for the new location, read-only.
+            ///   - invitation:
+            ///   - linked: Whether a customer organization is linked to the job.
+            public init(
+                accessArrangedAt: Foundation.Date? = nil,
+                intentions: [Components.Schemas.LinkedJobIntention]? = nil,
+                invitation: Components.Schemas.JobCustomerLink.InvitationPayload? = nil,
+                linked: Swift.Bool
+            ) {
+                self.accessArrangedAt = accessArrangedAt
+                self.intentions = intentions
+                self.invitation = invitation
+                self.linked = linked
+            }
+            public enum CodingKeys: String, CodingKey {
+                case accessArrangedAt
+                case intentions
+                case invitation
+                case linked
+            }
+        }
         /// - Remark: Generated from `#/components/schemas/JobCustomerView`.
         public struct JobCustomerView: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/JobCustomerView/name`.
@@ -14396,6 +19626,234 @@ extension Components {
                 case flowionLocationId
             }
         }
+        /// How the installer ends the job itself instead of handing it to a customer.
+        /// One shape today, `selfRun`; the object is a body of its own so another
+        /// ending can be added beside it without a new route.
+        ///
+        /// - Remark: Generated from `#/components/schemas/JobHandoverRequest`.
+        public struct JobHandoverRequest: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/JobHandoverRequest/selfRun`.
+            public var selfRun: Components.Schemas.SelfRunInput
+            /// Creates a new `JobHandoverRequest`.
+            ///
+            /// - Parameters:
+            ///   - selfRun:
+            public init(selfRun: Components.Schemas.SelfRunInput) {
+                self.selfRun = selfRun
+            }
+            public enum CodingKeys: String, CodingKey {
+                case selfRun
+            }
+        }
+        /// The installer's one-line view of the customer invitation. It is the same
+        /// for an address Flowion knows and one it does not, and it has **no field for
+        /// why** an invitation was not sent: a blocked recipient is `notInvited` and
+        /// nothing more.
+        ///
+        /// - Remark: Generated from `#/components/schemas/JobInvitation`.
+        public struct JobInvitation: Codable, Hashable, Sendable {
+            /// Whether the customer declined (or reported) the invitation.
+            ///
+            /// - Remark: Generated from `#/components/schemas/JobInvitation/customerDeclined`.
+            public var customerDeclined: Swift.Bool
+            /// Whether the customer has accepted and is linked to the job.
+            ///
+            /// - Remark: Generated from `#/components/schemas/JobInvitation/customerLinked`.
+            public var customerLinked: Swift.Bool
+            /// When the link stops working. Absent when nothing was sent.
+            ///
+            /// - Remark: Generated from `#/components/schemas/JobInvitation/expiresAt`.
+            public var expiresAt: Foundation.Date?
+            /// When the email went out. Absent until it has.
+            ///
+            /// - Remark: Generated from `#/components/schemas/JobInvitation/sentAt`.
+            public var sentAt: Foundation.Date?
+            /// - Remark: Generated from `#/components/schemas/JobInvitation/state`.
+            public var state: Components.Schemas.JobInvitationState
+            /// Creates a new `JobInvitation`.
+            ///
+            /// - Parameters:
+            ///   - customerDeclined: Whether the customer declined (or reported) the invitation.
+            ///   - customerLinked: Whether the customer has accepted and is linked to the job.
+            ///   - expiresAt: When the link stops working. Absent when nothing was sent.
+            ///   - sentAt: When the email went out. Absent until it has.
+            ///   - state:
+            public init(
+                customerDeclined: Swift.Bool,
+                customerLinked: Swift.Bool,
+                expiresAt: Foundation.Date? = nil,
+                sentAt: Foundation.Date? = nil,
+                state: Components.Schemas.JobInvitationState
+            ) {
+                self.customerDeclined = customerDeclined
+                self.customerLinked = customerLinked
+                self.expiresAt = expiresAt
+                self.sentAt = sentAt
+                self.state = state
+            }
+            public enum CodingKeys: String, CodingKey {
+                case customerDeclined
+                case customerLinked
+                case expiresAt
+                case sentAt
+                case state
+            }
+        }
+        /// What the person chooses.
+        ///
+        /// - Remark: Generated from `#/components/schemas/JobInvitationDecision`.
+        @frozen public enum JobInvitationDecision: String, Codable, Hashable, Sendable, CaseIterable {
+            case decline = "decline"
+            case declineAndBlock = "declineAndBlock"
+            case report = "report"
+            case removeMyData = "removeMyData"
+        }
+        /// The decision was taken, now or before.
+        ///
+        /// - Remark: Generated from `#/components/schemas/JobInvitationDecisionApplied`.
+        public struct JobInvitationDecisionApplied: Codable, Hashable, Sendable {
+            /// Always `true`: anything else is a `404`.
+            ///
+            /// - Remark: Generated from `#/components/schemas/JobInvitationDecisionApplied/applied`.
+            public var applied: Swift.Bool
+            /// Creates a new `JobInvitationDecisionApplied`.
+            ///
+            /// - Parameters:
+            ///   - applied: Always `true`: anything else is a `404`.
+            public init(applied: Swift.Bool) {
+                self.applied = applied
+            }
+            public enum CodingKeys: String, CodingKey {
+                case applied
+            }
+        }
+        /// What anyone holding the link is told: who invited them, and that a decision
+        /// is waiting. Closed on purpose: no customer, address, job or line.
+        ///
+        /// - Remark: Generated from `#/components/schemas/JobInvitationDecisionOffer`.
+        public struct JobInvitationDecisionOffer: Codable, Hashable, Sendable {
+            /// The installer organization that sent the invitation.
+            ///
+            /// - Remark: Generated from `#/components/schemas/JobInvitationDecisionOffer/installerName`.
+            public var installerName: Swift.String
+            /// Always `true`: an invitation with no decision waiting is a `404`.
+            ///
+            /// - Remark: Generated from `#/components/schemas/JobInvitationDecisionOffer/pending`.
+            public var pending: Swift.Bool
+            /// Creates a new `JobInvitationDecisionOffer`.
+            ///
+            /// - Parameters:
+            ///   - installerName: The installer organization that sent the invitation.
+            ///   - pending: Always `true`: an invitation with no decision waiting is a `404`.
+            public init(
+                installerName: Swift.String,
+                pending: Swift.Bool
+            ) {
+                self.installerName = installerName
+                self.pending = pending
+            }
+            public enum CodingKeys: String, CodingKey {
+                case installerName
+                case pending
+            }
+        }
+        /// The body of the decision.
+        ///
+        /// - Remark: Generated from `#/components/schemas/JobInvitationDecisionRequest`.
+        public struct JobInvitationDecisionRequest: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/JobInvitationDecisionRequest/decision`.
+            public var decision: Components.Schemas.JobInvitationDecision
+            /// Creates a new `JobInvitationDecisionRequest`.
+            ///
+            /// - Parameters:
+            ///   - decision:
+            public init(decision: Components.Schemas.JobInvitationDecision) {
+                self.decision = decision
+            }
+            public enum CodingKeys: String, CodingKey {
+                case decision
+            }
+        }
+        /// What the person sees of an invitation. Before their address matches, only
+        /// the installer and the kind of job; the customer fields appear after a match.
+        ///
+        /// - Remark: Generated from `#/components/schemas/JobInvitationOffer`.
+        public struct JobInvitationOffer: Codable, Hashable, Sendable {
+            /// The site address. Only after a match.
+            ///
+            /// - Remark: Generated from `#/components/schemas/JobInvitationOffer/address`.
+            public var address: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/JobInvitationOffer/customer`.
+            public struct CustomerPayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/JobInvitationOffer/customer/value1`.
+                public var value1: Components.Schemas.JobCustomerView
+                /// Creates a new `CustomerPayload`.
+                ///
+                /// - Parameters:
+                ///   - value1:
+                public init(value1: Components.Schemas.JobCustomerView) {
+                    self.value1 = value1
+                }
+                public init(from decoder: any Swift.Decoder) throws {
+                    self.value1 = try .init(from: decoder)
+                }
+                public func encode(to encoder: any Swift.Encoder) throws {
+                    try self.value1.encode(to: encoder)
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/JobInvitationOffer/customer`.
+            public var customer: Components.Schemas.JobInvitationOffer.CustomerPayload?
+            /// ISO 3166-1 alpha-2 country of the customer's number. Only after a match.
+            ///
+            /// - Remark: Generated from `#/components/schemas/JobInvitationOffer/customerCountry`.
+            public var customerCountry: Swift.String?
+            /// The installer organization that sent the invitation.
+            ///
+            /// - Remark: Generated from `#/components/schemas/JobInvitationOffer/installerName`.
+            public var installerName: Swift.String
+            /// What the job sells. Empty before a match.
+            ///
+            /// - Remark: Generated from `#/components/schemas/JobInvitationOffer/lines`.
+            public var lines: [Components.Schemas.JobLineView]
+            /// - Remark: Generated from `#/components/schemas/JobInvitationOffer/locationKind`.
+            public var locationKind: Components.Schemas.JobLocationKindApi
+            /// Creates a new `JobInvitationOffer`.
+            ///
+            /// - Parameters:
+            ///   - address: The site address. Only after a match.
+            ///   - customer:
+            ///   - customerCountry: ISO 3166-1 alpha-2 country of the customer's number. Only after a match.
+            ///   - installerName: The installer organization that sent the invitation.
+            ///   - lines: What the job sells. Empty before a match.
+            ///   - locationKind:
+            public init(
+                address: Swift.String? = nil,
+                customer: Components.Schemas.JobInvitationOffer.CustomerPayload? = nil,
+                customerCountry: Swift.String? = nil,
+                installerName: Swift.String,
+                lines: [Components.Schemas.JobLineView],
+                locationKind: Components.Schemas.JobLocationKindApi
+            ) {
+                self.address = address
+                self.customer = customer
+                self.customerCountry = customerCountry
+                self.installerName = installerName
+                self.lines = lines
+                self.locationKind = locationKind
+            }
+            public enum CodingKeys: String, CodingKey {
+                case address
+                case customer
+                case customerCountry
+                case installerName
+                case lines
+                case locationKind
+            }
+        }
+        /// Where the customer's invitation stands.
+        ///
+        /// - Remark: Generated from `#/components/schemas/JobInvitationState`.
+        public typealias JobInvitationState = FlowionJobInvitationState
         /// - Remark: Generated from `#/components/schemas/JobLineInput`.
         public typealias JobLineInput = FlowionJobLineInput
         /// - Remark: Generated from `#/components/schemas/JobLineView`.
@@ -14451,6 +19909,17 @@ extension Components {
                 case unit
             }
         }
+        /// Whether a job builds its location or works on one that already exists.
+        /// Fixed at creation. A job with no stated kind builds its location, as every
+        /// job did before the kind existed.
+        ///
+        /// - Remark: Generated from `#/components/schemas/JobLocationKindApi`.
+        public typealias JobLocationKindApi = FlowionJobLocationKindApi
+        /// Who the installer calls to get into the site. Plain information: the
+        /// required `contact` stays the only person who may accept the handover.
+        ///
+        /// - Remark: Generated from `#/components/schemas/JobOnSiteContactView`.
+        public typealias JobOnSiteContactView = FlowionJobOnSiteContactView
         /// - Remark: Generated from `#/components/schemas/JobStageView`.
         public struct JobStageView: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/JobStageView/reason`.
@@ -14482,6 +19951,26 @@ extension Components {
             public var checks: Components.Schemas.JobStageView
             /// - Remark: Generated from `#/components/schemas/JobStagesView/handover`.
             public var handover: Components.Schemas.JobStageView
+            /// - Remark: Generated from `#/components/schemas/JobStagesView/labels`.
+            public struct LabelsPayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/JobStagesView/labels/value1`.
+                public var value1: Components.Schemas.LabelsLineView
+                /// Creates a new `LabelsPayload`.
+                ///
+                /// - Parameters:
+                ///   - value1:
+                public init(value1: Components.Schemas.LabelsLineView) {
+                    self.value1 = value1
+                }
+                public init(from decoder: any Swift.Decoder) throws {
+                    self.value1 = try .init(from: decoder)
+                }
+                public func encode(to encoder: any Swift.Encoder) throws {
+                    try self.value1.encode(to: encoder)
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/JobStagesView/labels`.
+            public var labels: Components.Schemas.JobStagesView.LabelsPayload?
             /// - Remark: Generated from `#/components/schemas/JobStagesView/location`.
             public var location: Components.Schemas.JobStageView
             /// Creates a new `JobStagesView`.
@@ -14490,22 +19979,26 @@ extension Components {
             ///   - chargers:
             ///   - checks:
             ///   - handover:
+            ///   - labels:
             ///   - location:
             public init(
                 chargers: Components.Schemas.JobStageView,
                 checks: Components.Schemas.JobStageView,
                 handover: Components.Schemas.JobStageView,
+                labels: Components.Schemas.JobStagesView.LabelsPayload? = nil,
                 location: Components.Schemas.JobStageView
             ) {
                 self.chargers = chargers
                 self.checks = checks
                 self.handover = handover
+                self.labels = labels
                 self.location = location
             }
             public enum CodingKeys: String, CodingKey {
                 case chargers
                 case checks
                 case handover
+                case labels
                 case location
             }
         }
@@ -14517,10 +20010,40 @@ extension Components {
         ///
         /// - Remark: Generated from `#/components/schemas/JobSubstatusView`.
         public typealias JobSubstatusView = FlowionJobSubstatusView
+        /// Why a linked job's location was not moved to its customer at once.
+        ///
+        /// - Remark: Generated from `#/components/schemas/JobTransferHeldReason`.
+        public typealias JobTransferHeldReason = FlowionJobTransferHeldReason
         /// One job.
         ///
         /// - Remark: Generated from `#/components/schemas/JobView`.
         public struct JobView: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/JobView/additionOffer`.
+            public struct AdditionOfferPayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/JobView/additionOffer/value1`.
+                public var value1: Components.Schemas.AdditionOfferStatusView
+                /// Creates a new `AdditionOfferPayload`.
+                ///
+                /// - Parameters:
+                ///   - value1:
+                public init(value1: Components.Schemas.AdditionOfferStatusView) {
+                    self.value1 = value1
+                }
+                public init(from decoder: any Swift.Decoder) throws {
+                    self.value1 = try .init(from: decoder)
+                }
+                public func encode(to encoder: any Swift.Encoder) throws {
+                    try self.value1.encode(to: encoder)
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/JobView/additionOffer`.
+            public var additionOffer: Components.Schemas.JobView.AdditionOfferPayload?
+            /// What an existing-location job added at the customer's site: chargers and
+            /// circuits, each waiting for the customer, accepted, declined or withdrawn.
+            /// Absent for a job that added nothing.
+            ///
+            /// - Remark: Generated from `#/components/schemas/JobView/additions`.
+            public var additions: [Components.Schemas.JobAdditionView]?
             /// - Remark: Generated from `#/components/schemas/JobView/address`.
             public var address: Swift.String
             /// - Remark: Generated from `#/components/schemas/JobView/assignments`.
@@ -14529,6 +20052,11 @@ extension Components {
             public var cancelledReason: Swift.String?
             /// - Remark: Generated from `#/components/schemas/JobView/checks`.
             public var checks: [Components.Schemas.CommissioningCheckView]
+            /// Rated-current changes on circuits the customer already had: raises held
+            /// until acceptance and decreases already applied. Absent when there are none.
+            ///
+            /// - Remark: Generated from `#/components/schemas/JobView/circuitChanges`.
+            public var circuitChanges: [Components.Schemas.JobCircuitChangeView]?
             /// - Remark: Generated from `#/components/schemas/JobView/contact`.
             public struct ContactPayload: Codable, Hashable, Sendable {
                 /// - Remark: Generated from `#/components/schemas/JobView/contact/value1`.
@@ -14573,6 +20101,40 @@ extension Components {
             }
             /// - Remark: Generated from `#/components/schemas/JobView/customer`.
             public var customer: Components.Schemas.JobView.CustomerPayload?
+            /// When the linked customer said access to the site is arranged. Absent when
+            /// no customer is linked or they have not said so.
+            ///
+            /// - Remark: Generated from `#/components/schemas/JobView/customerAccessArrangedAt`.
+            public var customerAccessArrangedAt: Foundation.Date?
+            /// ISO 3166-1 alpha-2 country of `customer.organizationNumber`. Absent only
+            /// on a job made before jobs held a country, whose number was Swedish.
+            ///
+            /// - Remark: Generated from `#/components/schemas/JobView/customerCountry`.
+            public var customerCountry: Swift.String?
+            /// How many choices the linked customer has recorded for this job: what the
+            /// 90 days after a cancel will remove. Absent when there are none or no
+            /// customer is linked.
+            ///
+            /// - Remark: Generated from `#/components/schemas/JobView/customerIntentionsPending`.
+            public var customerIntentionsPending: Swift.Int32?
+            /// Whether a validator for `customerCountry` accepted the number. `false`
+            /// means it is held as typed and normalised: no validator exists for that
+            /// country yet.
+            ///
+            /// - Remark: Generated from `#/components/schemas/JobView/customerNumberVerified`.
+            public var customerNumberVerified: Swift.Bool
+            /// For a job on a served customer's site: the customer access grant it works
+            /// under.
+            ///
+            /// - Remark: Generated from `#/components/schemas/JobView/existingGrantId`.
+            public var existingGrantId: Swift.String?
+            /// For a job on an existing location: the location it works on. Not
+            /// `locationId`, which is the location a job built. Absent when the job
+            /// works under a grant that names stations, or several sites, and so no
+            /// single site.
+            ///
+            /// - Remark: Generated from `#/components/schemas/JobView/existingLocationId`.
+            public var existingLocationId: Swift.String?
             /// - Remark: Generated from `#/components/schemas/JobView/expectedChargers`.
             public var expectedChargers: [Components.Schemas.ExpectedChargerView]
             /// - Remark: Generated from `#/components/schemas/JobView/handover`.
@@ -14597,16 +20159,97 @@ extension Components {
             public var handover: Components.Schemas.JobView.HandoverPayload?
             /// - Remark: Generated from `#/components/schemas/JobView/id`.
             public var id: Swift.String
+            /// Country the installation is in, independent of the customer's registration country.
+            ///
+            /// - Remark: Generated from `#/components/schemas/JobView/installationCountry`.
+            public var installationCountry: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/JobView/installerModeSummary`.
+            public struct InstallerModeSummaryPayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/JobView/installerModeSummary/value1`.
+                public var value1: Components.Schemas.InstallerModeSummary
+                /// Creates a new `InstallerModeSummaryPayload`.
+                ///
+                /// - Parameters:
+                ///   - value1:
+                public init(value1: Components.Schemas.InstallerModeSummary) {
+                    self.value1 = value1
+                }
+                public init(from decoder: any Swift.Decoder) throws {
+                    self.value1 = try .init(from: decoder)
+                }
+                public func encode(to encoder: any Swift.Encoder) throws {
+                    try self.value1.encode(to: encoder)
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/JobView/installerModeSummary`.
+            public var installerModeSummary: Components.Schemas.JobView.InstallerModeSummaryPayload?
             /// - Remark: Generated from `#/components/schemas/JobView/installerOrganizationId`.
             public var installerOrganizationId: Swift.String
+            /// - Remark: Generated from `#/components/schemas/JobView/invitation`.
+            public struct InvitationPayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/JobView/invitation/value1`.
+                public var value1: Components.Schemas.JobInvitation
+                /// Creates a new `InvitationPayload`.
+                ///
+                /// - Parameters:
+                ///   - value1:
+                public init(value1: Components.Schemas.JobInvitation) {
+                    self.value1 = value1
+                }
+                public init(from decoder: any Swift.Decoder) throws {
+                    self.value1 = try .init(from: decoder)
+                }
+                public func encode(to encoder: any Swift.Encoder) throws {
+                    try self.value1.encode(to: encoder)
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/JobView/invitation`.
+            public var invitation: Components.Schemas.JobView.InvitationPayload?
             /// - Remark: Generated from `#/components/schemas/JobView/lines`.
             public var lines: [Components.Schemas.JobLineView]
             /// - Remark: Generated from `#/components/schemas/JobView/locationId`.
             public var locationId: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/JobView/locationKind`.
+            public var locationKind: Components.Schemas.JobLocationKindApi
             /// - Remark: Generated from `#/components/schemas/JobView/locationProjectId`.
             public var locationProjectId: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/JobView/onSiteContact`.
+            public struct OnSiteContactPayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/JobView/onSiteContact/value1`.
+                public var value1: Components.Schemas.JobOnSiteContactView
+                /// Creates a new `OnSiteContactPayload`.
+                ///
+                /// - Parameters:
+                ///   - value1:
+                public init(value1: Components.Schemas.JobOnSiteContactView) {
+                    self.value1 = value1
+                }
+                public init(from decoder: any Swift.Decoder) throws {
+                    self.value1 = try .init(from: decoder)
+                }
+                public func encode(to encoder: any Swift.Encoder) throws {
+                    try self.value1.encode(to: encoder)
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/JobView/onSiteContact`.
+            public var onSiteContact: Components.Schemas.JobView.OnSiteContactPayload?
             /// - Remark: Generated from `#/components/schemas/JobView/plannedDate`.
             public var plannedDate: Swift.String?
+            /// Whether the installer has confirmed `plannedDate` with the customer.
+            /// Absent means not confirmed.
+            ///
+            /// - Remark: Generated from `#/components/schemas/JobView/plannedDateConfirmed`.
+            public var plannedDateConfirmed: Swift.Bool?
+            /// The `installations` project the job belongs to (fixed for life). Always
+            /// set; the field stays optional in the schema only so the SDKs' types
+            /// are unchanged.
+            ///
+            /// - Remark: Generated from `#/components/schemas/JobView/projectId`.
+            public var projectId: Swift.String?
+            /// The project's name, so a list that spans projects can name each row.
+            ///
+            /// - Remark: Generated from `#/components/schemas/JobView/projectName`.
+            public var projectName: Swift.String?
             /// - Remark: Generated from `#/components/schemas/JobView/stages`.
             public struct StagesPayload: Codable, Hashable, Sendable {
                 /// - Remark: Generated from `#/components/schemas/JobView/stages/value1`.
@@ -14651,93 +20294,392 @@ extension Components {
             public var substatus: Components.Schemas.JobView.SubstatusPayload?
             /// - Remark: Generated from `#/components/schemas/JobView/updatedAt`.
             public var updatedAt: Foundation.Date
+            /// - Remark: Generated from `#/components/schemas/JobView/visitReason`.
+            public struct VisitReasonPayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/JobView/visitReason/value1`.
+                public var value1: Components.Schemas.VisitReason
+                /// Creates a new `VisitReasonPayload`.
+                ///
+                /// - Parameters:
+                ///   - value1:
+                public init(value1: Components.Schemas.VisitReason) {
+                    self.value1 = value1
+                }
+                public init(from decoder: any Swift.Decoder) throws {
+                    self.value1 = try decoder.decodeFromSingleValueContainer()
+                }
+                public func encode(to encoder: any Swift.Encoder) throws {
+                    try encoder.encodeToSingleValueContainer(self.value1)
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/JobView/visitReason`.
+            public var visitReason: Components.Schemas.JobView.VisitReasonPayload?
             /// Creates a new `JobView`.
             ///
             /// - Parameters:
+            ///   - additionOffer:
+            ///   - additions: What an existing-location job added at the customer's site: chargers and
             ///   - address:
             ///   - assignments:
             ///   - cancelledReason:
             ///   - checks:
+            ///   - circuitChanges: Rated-current changes on circuits the customer already had: raises held
             ///   - contact:
             ///   - createdAt:
             ///   - createdBy:
             ///   - customer:
+            ///   - customerAccessArrangedAt: When the linked customer said access to the site is arranged. Absent when
+            ///   - customerCountry: ISO 3166-1 alpha-2 country of `customer.organizationNumber`. Absent only
+            ///   - customerIntentionsPending: How many choices the linked customer has recorded for this job: what the
+            ///   - customerNumberVerified: Whether a validator for `customerCountry` accepted the number. `false`
+            ///   - existingGrantId: For a job on a served customer's site: the customer access grant it works
+            ///   - existingLocationId: For a job on an existing location: the location it works on. Not
             ///   - expectedChargers:
             ///   - handover:
             ///   - id:
+            ///   - installationCountry: Country the installation is in, independent of the customer's registration country.
+            ///   - installerModeSummary:
             ///   - installerOrganizationId:
+            ///   - invitation:
             ///   - lines:
             ///   - locationId:
+            ///   - locationKind:
             ///   - locationProjectId:
+            ///   - onSiteContact:
             ///   - plannedDate:
+            ///   - plannedDateConfirmed: Whether the installer has confirmed `plannedDate` with the customer.
+            ///   - projectId: The `installations` project the job belongs to (fixed for life). Always
+            ///   - projectName: The project's name, so a list that spans projects can name each row.
             ///   - stages:
             ///   - status:
             ///   - substatus:
             ///   - updatedAt:
+            ///   - visitReason:
             public init(
+                additionOffer: Components.Schemas.JobView.AdditionOfferPayload? = nil,
+                additions: [Components.Schemas.JobAdditionView]? = nil,
                 address: Swift.String,
                 assignments: [Components.Schemas.JobAssignmentView],
                 cancelledReason: Swift.String? = nil,
                 checks: [Components.Schemas.CommissioningCheckView],
+                circuitChanges: [Components.Schemas.JobCircuitChangeView]? = nil,
                 contact: Components.Schemas.JobView.ContactPayload? = nil,
                 createdAt: Foundation.Date,
                 createdBy: Swift.String,
                 customer: Components.Schemas.JobView.CustomerPayload? = nil,
+                customerAccessArrangedAt: Foundation.Date? = nil,
+                customerCountry: Swift.String? = nil,
+                customerIntentionsPending: Swift.Int32? = nil,
+                customerNumberVerified: Swift.Bool,
+                existingGrantId: Swift.String? = nil,
+                existingLocationId: Swift.String? = nil,
                 expectedChargers: [Components.Schemas.ExpectedChargerView],
                 handover: Components.Schemas.JobView.HandoverPayload? = nil,
                 id: Swift.String,
+                installationCountry: Swift.String? = nil,
+                installerModeSummary: Components.Schemas.JobView.InstallerModeSummaryPayload? = nil,
                 installerOrganizationId: Swift.String,
+                invitation: Components.Schemas.JobView.InvitationPayload? = nil,
                 lines: [Components.Schemas.JobLineView],
                 locationId: Swift.String? = nil,
+                locationKind: Components.Schemas.JobLocationKindApi,
                 locationProjectId: Swift.String? = nil,
+                onSiteContact: Components.Schemas.JobView.OnSiteContactPayload? = nil,
                 plannedDate: Swift.String? = nil,
+                plannedDateConfirmed: Swift.Bool? = nil,
+                projectId: Swift.String? = nil,
+                projectName: Swift.String? = nil,
                 stages: Components.Schemas.JobView.StagesPayload? = nil,
                 status: Components.Schemas.JobStatusApi,
                 substatus: Components.Schemas.JobView.SubstatusPayload? = nil,
-                updatedAt: Foundation.Date
+                updatedAt: Foundation.Date,
+                visitReason: Components.Schemas.JobView.VisitReasonPayload? = nil
             ) {
+                self.additionOffer = additionOffer
+                self.additions = additions
                 self.address = address
                 self.assignments = assignments
                 self.cancelledReason = cancelledReason
                 self.checks = checks
+                self.circuitChanges = circuitChanges
                 self.contact = contact
                 self.createdAt = createdAt
                 self.createdBy = createdBy
                 self.customer = customer
+                self.customerAccessArrangedAt = customerAccessArrangedAt
+                self.customerCountry = customerCountry
+                self.customerIntentionsPending = customerIntentionsPending
+                self.customerNumberVerified = customerNumberVerified
+                self.existingGrantId = existingGrantId
+                self.existingLocationId = existingLocationId
                 self.expectedChargers = expectedChargers
                 self.handover = handover
                 self.id = id
+                self.installationCountry = installationCountry
+                self.installerModeSummary = installerModeSummary
                 self.installerOrganizationId = installerOrganizationId
+                self.invitation = invitation
                 self.lines = lines
                 self.locationId = locationId
+                self.locationKind = locationKind
                 self.locationProjectId = locationProjectId
+                self.onSiteContact = onSiteContact
                 self.plannedDate = plannedDate
+                self.plannedDateConfirmed = plannedDateConfirmed
+                self.projectId = projectId
+                self.projectName = projectName
                 self.stages = stages
                 self.status = status
                 self.substatus = substatus
                 self.updatedAt = updatedAt
+                self.visitReason = visitReason
             }
             public enum CodingKeys: String, CodingKey {
+                case additionOffer
+                case additions
                 case address
                 case assignments
                 case cancelledReason
                 case checks
+                case circuitChanges
                 case contact
                 case createdAt
                 case createdBy
                 case customer
+                case customerAccessArrangedAt
+                case customerCountry
+                case customerIntentionsPending
+                case customerNumberVerified
+                case existingGrantId
+                case existingLocationId
                 case expectedChargers
                 case handover
                 case id
+                case installationCountry
+                case installerModeSummary
                 case installerOrganizationId
+                case invitation
                 case lines
                 case locationId
+                case locationKind
                 case locationProjectId
+                case onSiteContact
                 case plannedDate
+                case plannedDateConfirmed
+                case projectId
+                case projectName
                 case stages
                 case status
                 case substatus
                 case updatedAt
+                case visitReason
+            }
+        }
+        /// The answer to a link.
+        ///
+        /// - Remark: Generated from `#/components/schemas/LabelLinked`.
+        public struct LabelLinked: Codable, Hashable, Sendable {
+            /// `true` when this very link already existed and nothing changed.
+            ///
+            /// - Remark: Generated from `#/components/schemas/LabelLinked/alreadyLinked`.
+            public var alreadyLinked: Swift.Bool
+            /// - Remark: Generated from `#/components/schemas/LabelLinked/label`.
+            public var label: Components.Schemas.LabelView
+            /// The ID of the label `replace` retired, when there was one.
+            ///
+            /// - Remark: Generated from `#/components/schemas/LabelLinked/replacedLabelId`.
+            public var replacedLabelId: Swift.String?
+            /// Creates a new `LabelLinked`.
+            ///
+            /// - Parameters:
+            ///   - alreadyLinked: `true` when this very link already existed and nothing changed.
+            ///   - label:
+            ///   - replacedLabelId: The ID of the label `replace` retired, when there was one.
+            public init(
+                alreadyLinked: Swift.Bool,
+                label: Components.Schemas.LabelView,
+                replacedLabelId: Swift.String? = nil
+            ) {
+                self.alreadyLinked = alreadyLinked
+                self.label = label
+                self.replacedLabelId = replacedLabelId
+            }
+            public enum CodingKeys: String, CodingKey {
+                case alreadyLinked
+                case label
+                case replacedLabelId
+            }
+        }
+        /// What a scan was told.
+        ///
+        /// - Remark: Generated from `#/components/schemas/LabelResolution`.
+        public typealias LabelResolution = FlowionLabelResolution
+        /// What a label is now.
+        ///
+        /// - Remark: Generated from `#/components/schemas/LabelView`.
+        public struct LabelView: Codable, Hashable, Sendable {
+            /// The printed form, `XXXX-XXX`.
+            ///
+            /// - Remark: Generated from `#/components/schemas/LabelView/display`.
+            public var display: Swift.String
+            /// The outlet the label names, when linked.
+            ///
+            /// - Remark: Generated from `#/components/schemas/LabelView/evseId`.
+            public var evseId: Swift.String?
+            /// The seven characters, upper case, no separator.
+            ///
+            /// - Remark: Generated from `#/components/schemas/LabelView/labelId`.
+            public var labelId: Swift.String
+            /// `unused`, `linked` or `retired`. Open: a client tolerates a value it
+            /// has not seen.
+            ///
+            /// - Remark: Generated from `#/components/schemas/LabelView/state`.
+            public var state: Swift.String
+            /// Creates a new `LabelView`.
+            ///
+            /// - Parameters:
+            ///   - display: The printed form, `XXXX-XXX`.
+            ///   - evseId: The outlet the label names, when linked.
+            ///   - labelId: The seven characters, upper case, no separator.
+            ///   - state: `unused`, `linked` or `retired`. Open: a client tolerates a value it
+            public init(
+                display: Swift.String,
+                evseId: Swift.String? = nil,
+                labelId: Swift.String,
+                state: Swift.String
+            ) {
+                self.display = display
+                self.evseId = evseId
+                self.labelId = labelId
+                self.state = state
+            }
+            public enum CodingKeys: String, CodingKey {
+                case display
+                case evseId
+                case labelId
+                case state
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/LabelsLineView`.
+        public struct LabelsLineView: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/LabelsLineView/labelled`.
+            public var labelled: Swift.Int32
+            /// - Remark: Generated from `#/components/schemas/LabelsLineView/outlets`.
+            public var outlets: Swift.Int32
+            /// Creates a new `LabelsLineView`.
+            ///
+            /// - Parameters:
+            ///   - labelled:
+            ///   - outlets:
+            public init(
+                labelled: Swift.Int32,
+                outlets: Swift.Int32
+            ) {
+                self.labelled = labelled
+                self.outlets = outlets
+            }
+            public enum CodingKeys: String, CodingKey {
+                case labelled
+                case outlets
+            }
+        }
+        /// The candidate a learn session found.
+        ///
+        /// - Remark: Generated from `#/components/schemas/LearnCandidate`.
+        public struct LearnCandidate: Codable, Hashable, Sendable {
+            /// The last four characters of what the charger sent. Never the whole.
+            ///
+            /// - Remark: Generated from `#/components/schemas/LearnCandidate/lastFour`.
+            public var lastFour: Swift.String
+            /// The charger model that sent it, as its boot report named it.
+            ///
+            /// - Remark: Generated from `#/components/schemas/LearnCandidate/model`.
+            public var model: Swift.String
+            /// Creates a new `LearnCandidate`.
+            ///
+            /// - Parameters:
+            ///   - lastFour: The last four characters of what the charger sent. Never the whole.
+            ///   - model: The charger model that sent it, as its boot report named it.
+            public init(
+                lastFour: Swift.String,
+                model: Swift.String
+            ) {
+                self.lastFour = lastFour
+                self.model = model
+            }
+            public enum CodingKeys: String, CodingKey {
+                case lastFour
+                case model
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/LearnRead`.
+        public struct LearnRead: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/LearnRead/learn`.
+            public var learn: Components.Schemas.LearnView
+            /// Creates a new `LearnRead`.
+            ///
+            /// - Parameters:
+            ///   - learn:
+            public init(learn: Components.Schemas.LearnView) {
+                self.learn = learn
+            }
+            public enum CodingKeys: String, CodingKey {
+                case learn
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/LearnStarted`.
+        public struct LearnStarted: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/LearnStarted/learn`.
+            public var learn: Components.Schemas.LearnView
+            /// Creates a new `LearnStarted`.
+            ///
+            /// - Parameters:
+            ///   - learn:
+            public init(learn: Components.Schemas.LearnView) {
+                self.learn = learn
+            }
+            public enum CodingKeys: String, CodingKey {
+                case learn
+            }
+        }
+        /// A learn session: "tap a card on the charger you use".
+        ///
+        /// - Remark: Generated from `#/components/schemas/LearnView`.
+        public struct LearnView: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/LearnView/candidate`.
+            public var candidate: Components.Schemas.LearnCandidate?
+            /// - Remark: Generated from `#/components/schemas/LearnView/expiresAt`.
+            public var expiresAt: Foundation.Date
+            /// - Remark: Generated from `#/components/schemas/LearnView/id`.
+            public var id: Swift.String
+            /// `open`, `offered`, `confirmed`, `expired` or `cancelled`. Handle a
+            /// state you do not recognise as `open`.
+            ///
+            /// - Remark: Generated from `#/components/schemas/LearnView/state`.
+            public var state: Swift.String
+            /// Creates a new `LearnView`.
+            ///
+            /// - Parameters:
+            ///   - candidate:
+            ///   - expiresAt:
+            ///   - id:
+            ///   - state: `open`, `offered`, `confirmed`, `expired` or `cancelled`. Handle a
+            public init(
+                candidate: Components.Schemas.LearnCandidate? = nil,
+                expiresAt: Foundation.Date,
+                id: Swift.String,
+                state: Swift.String
+            ) {
+                self.candidate = candidate
+                self.expiresAt = expiresAt
+                self.id = id
+                self.state = state
+            }
+            public enum CodingKeys: String, CodingKey {
+                case candidate
+                case expiresAt
+                case id
+                case state
             }
         }
         /// Current on each line, in amperes.
@@ -14952,6 +20894,49 @@ extension Components {
                 case organisationNumber
             }
         }
+        /// What a link request carries.
+        ///
+        /// - Remark: Generated from `#/components/schemas/LinkLabelBody`.
+        public struct LinkLabelBody: Codable, Hashable, Sendable {
+            /// The label's ID as printed or scanned: seven characters, any case, with
+            /// or without the dash. Its check character is validated.
+            ///
+            /// - Remark: Generated from `#/components/schemas/LinkLabelBody/labelId`.
+            public var labelId: Swift.String
+            /// Move the label here from the outlet it is on instead of refusing with
+            /// `409 labelLinkedElsewhere`. Default `false`. Allowed for 24 hours after
+            /// the label's first link and until it is charged, and only for a caller
+            /// who may set up **both** outlets (`403 forbidden` otherwise): a `409`
+            /// whose `movable` is `false` is final.
+            ///
+            /// - Remark: Generated from `#/components/schemas/LinkLabelBody/relink`.
+            public var relink: Swift.Bool?
+            /// Retire the outlet's current label (as `replaced`) instead of refusing
+            /// with `409 outletHasLabel`. Default `false`.
+            ///
+            /// - Remark: Generated from `#/components/schemas/LinkLabelBody/replace`.
+            public var replace: Swift.Bool?
+            /// Creates a new `LinkLabelBody`.
+            ///
+            /// - Parameters:
+            ///   - labelId: The label's ID as printed or scanned: seven characters, any case, with
+            ///   - relink: Move the label here from the outlet it is on instead of refusing with
+            ///   - replace: Retire the outlet's current label (as `replaced`) instead of refusing
+            public init(
+                labelId: Swift.String,
+                relink: Swift.Bool? = nil,
+                replace: Swift.Bool? = nil
+            ) {
+                self.labelId = labelId
+                self.relink = relink
+                self.replace = replace
+            }
+            public enum CodingKeys: String, CodingKey {
+                case labelId
+                case relink
+                case replace
+            }
+        }
         /// - Remark: Generated from `#/components/schemas/LinkProposal`.
         public struct LinkProposal: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/LinkProposal/candidates`.
@@ -14999,6 +20984,368 @@ extension Components {
                 case flowionLabel
                 case reason
                 case recordKind
+            }
+        }
+        /// One charger under test: its number and since when, and nothing else.
+        ///
+        /// - Remark: Generated from `#/components/schemas/LinkedChargerBeingTested`.
+        public struct LinkedChargerBeingTested: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/LinkedChargerBeingTested/chargerNumber`.
+            public var chargerNumber: Swift.Int32
+            /// - Remark: Generated from `#/components/schemas/LinkedChargerBeingTested/since`.
+            public var since: Foundation.Date
+            /// Creates a new `LinkedChargerBeingTested`.
+            ///
+            /// - Parameters:
+            ///   - chargerNumber:
+            ///   - since:
+            public init(
+                chargerNumber: Swift.Int32,
+                since: Foundation.Date
+            ) {
+                self.chargerNumber = chargerNumber
+                self.since = since
+            }
+            public enum CodingKeys: String, CodingKey {
+                case chargerNumber
+                case since
+            }
+        }
+        /// A job as the customer it is linked to may see it.
+        ///
+        /// - Remark: Generated from `#/components/schemas/LinkedJob`.
+        public struct LinkedJob: Codable, Hashable, Sendable {
+            /// Whether the customer has said access to the site is arranged.
+            ///
+            /// - Remark: Generated from `#/components/schemas/LinkedJob/accessArranged`.
+            public var accessArranged: Swift.Bool
+            /// - Remark: Generated from `#/components/schemas/LinkedJob/address`.
+            public var address: Swift.String
+            /// The chargers being tested right now, by the installer's number and since
+            /// when. Omitted when none is.
+            ///
+            /// - Remark: Generated from `#/components/schemas/LinkedJob/chargersBeingTested`.
+            public var chargersBeingTested: [Components.Schemas.LinkedChargerBeingTested]?
+            /// The organization's own project the job is linked in: where the choices
+            /// it records are judged. Absent until the link has one.
+            ///
+            /// - Remark: Generated from `#/components/schemas/LinkedJob/customerProjectId`.
+            public var customerProjectId: Swift.String?
+            /// The installer organization doing the work.
+            ///
+            /// - Remark: Generated from `#/components/schemas/LinkedJob/installerName`.
+            public var installerName: Swift.String
+            /// The installer's assigned person by display name; empty when none.
+            ///
+            /// - Remark: Generated from `#/components/schemas/LinkedJob/installerPersonName`.
+            public var installerPersonName: Swift.String
+            /// - Remark: Generated from `#/components/schemas/LinkedJob/jobId`.
+            public var jobId: Swift.String
+            /// - Remark: Generated from `#/components/schemas/LinkedJob/lines`.
+            public var lines: [Components.Schemas.LinkedJobLine]
+            /// - Remark: Generated from `#/components/schemas/LinkedJob/locationId`.
+            public var locationId: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/LinkedJob/locationKind`.
+            public var locationKind: Components.Schemas.JobLocationKindApi
+            /// The tests that were asked for and not done, once the job is ready: a plain
+            /// list, never a failure. Omitted when empty.
+            ///
+            /// - Remark: Generated from `#/components/schemas/LinkedJob/notTested`.
+            public var notTested: [Components.Schemas.InstallerModeStep]?
+            /// - Remark: Generated from `#/components/schemas/LinkedJob/plannedDate`.
+            public var plannedDate: Swift.String?
+            /// Whether the installer has confirmed `plannedDate` with the customer.
+            ///
+            /// - Remark: Generated from `#/components/schemas/LinkedJob/plannedDateConfirmed`.
+            public var plannedDateConfirmed: Swift.Bool
+            /// - Remark: Generated from `#/components/schemas/LinkedJob/stages`.
+            public var stages: [Components.Schemas.LinkedJobStage]
+            /// - Remark: Generated from `#/components/schemas/LinkedJob/status`.
+            public var status: Components.Schemas.JobStatusApi
+            /// Creates a new `LinkedJob`.
+            ///
+            /// - Parameters:
+            ///   - accessArranged: Whether the customer has said access to the site is arranged.
+            ///   - address:
+            ///   - chargersBeingTested: The chargers being tested right now, by the installer's number and since
+            ///   - customerProjectId: The organization's own project the job is linked in: where the choices
+            ///   - installerName: The installer organization doing the work.
+            ///   - installerPersonName: The installer's assigned person by display name; empty when none.
+            ///   - jobId:
+            ///   - lines:
+            ///   - locationId:
+            ///   - locationKind:
+            ///   - notTested: The tests that were asked for and not done, once the job is ready: a plain
+            ///   - plannedDate:
+            ///   - plannedDateConfirmed: Whether the installer has confirmed `plannedDate` with the customer.
+            ///   - stages:
+            ///   - status:
+            public init(
+                accessArranged: Swift.Bool,
+                address: Swift.String,
+                chargersBeingTested: [Components.Schemas.LinkedChargerBeingTested]? = nil,
+                customerProjectId: Swift.String? = nil,
+                installerName: Swift.String,
+                installerPersonName: Swift.String,
+                jobId: Swift.String,
+                lines: [Components.Schemas.LinkedJobLine],
+                locationId: Swift.String? = nil,
+                locationKind: Components.Schemas.JobLocationKindApi,
+                notTested: [Components.Schemas.InstallerModeStep]? = nil,
+                plannedDate: Swift.String? = nil,
+                plannedDateConfirmed: Swift.Bool,
+                stages: [Components.Schemas.LinkedJobStage],
+                status: Components.Schemas.JobStatusApi
+            ) {
+                self.accessArranged = accessArranged
+                self.address = address
+                self.chargersBeingTested = chargersBeingTested
+                self.customerProjectId = customerProjectId
+                self.installerName = installerName
+                self.installerPersonName = installerPersonName
+                self.jobId = jobId
+                self.lines = lines
+                self.locationId = locationId
+                self.locationKind = locationKind
+                self.notTested = notTested
+                self.plannedDate = plannedDate
+                self.plannedDateConfirmed = plannedDateConfirmed
+                self.stages = stages
+                self.status = status
+            }
+            public enum CodingKeys: String, CodingKey {
+                case accessArranged
+                case address
+                case chargersBeingTested
+                case customerProjectId
+                case installerName
+                case installerPersonName
+                case jobId
+                case lines
+                case locationId
+                case locationKind
+                case notTested
+                case plannedDate
+                case plannedDateConfirmed
+                case stages
+                case status
+            }
+        }
+        /// Says access to the site is (or is no longer) arranged.
+        ///
+        /// - Remark: Generated from `#/components/schemas/LinkedJobAccessArrangedRequest`.
+        public struct LinkedJobAccessArrangedRequest: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/LinkedJobAccessArrangedRequest/arranged`.
+            public var arranged: Swift.Bool
+            /// Creates a new `LinkedJobAccessArrangedRequest`.
+            ///
+            /// - Parameters:
+            ///   - arranged:
+            public init(arranged: Swift.Bool) {
+                self.arranged = arranged
+            }
+            public enum CodingKeys: String, CodingKey {
+                case arranged
+            }
+            public init(from decoder: any Swift.Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                self.arranged = try container.decode(
+                    Swift.Bool.self,
+                    forKey: .arranged
+                )
+                try decoder.ensureNoAdditionalProperties(knownKeys: [
+                    "arranged"
+                ])
+            }
+        }
+        /// One recorded choice.
+        ///
+        /// - Remark: Generated from `#/components/schemas/LinkedJobIntention`.
+        public struct LinkedJobIntention: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/LinkedJobIntention/createdAt`.
+            public var createdAt: Foundation.Date
+            /// - Remark: Generated from `#/components/schemas/LinkedJobIntention/id`.
+            public var id: Swift.String
+            /// - Remark: Generated from `#/components/schemas/LinkedJobIntention/kind`.
+            public var kind: Components.Schemas.LinkedJobIntentionKind
+            /// The item this names: a tariff id, `open`, `private` or `paid`, or a setting name.
+            ///
+            /// - Remark: Generated from `#/components/schemas/LinkedJobIntention/ref`.
+            public var ref: Swift.String
+            /// Why a skipped or failed choice was not applied, as a short fixed word.
+            ///
+            /// - Remark: Generated from `#/components/schemas/LinkedJobIntention/skippedReason`.
+            public var skippedReason: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/LinkedJobIntention/state`.
+            public var state: Components.Schemas.LinkedJobIntentionState
+            /// The value of a device setting; absent for the other kinds.
+            ///
+            /// - Remark: Generated from `#/components/schemas/LinkedJobIntention/value`.
+            public var value: Swift.String?
+            /// Creates a new `LinkedJobIntention`.
+            ///
+            /// - Parameters:
+            ///   - createdAt:
+            ///   - id:
+            ///   - kind:
+            ///   - ref: The item this names: a tariff id, `open`, `private` or `paid`, or a setting name.
+            ///   - skippedReason: Why a skipped or failed choice was not applied, as a short fixed word.
+            ///   - state:
+            ///   - value: The value of a device setting; absent for the other kinds.
+            public init(
+                createdAt: Foundation.Date,
+                id: Swift.String,
+                kind: Components.Schemas.LinkedJobIntentionKind,
+                ref: Swift.String,
+                skippedReason: Swift.String? = nil,
+                state: Components.Schemas.LinkedJobIntentionState,
+                value: Swift.String? = nil
+            ) {
+                self.createdAt = createdAt
+                self.id = id
+                self.kind = kind
+                self.ref = ref
+                self.skippedReason = skippedReason
+                self.state = state
+                self.value = value
+            }
+            public enum CodingKeys: String, CodingKey {
+                case createdAt
+                case id
+                case kind
+                case ref
+                case skippedReason
+                case state
+                case value
+            }
+        }
+        /// What a recorded choice is about.
+        ///
+        /// - Remark: Generated from `#/components/schemas/LinkedJobIntentionKind`.
+        public typealias LinkedJobIntentionKind = FlowionLinkedJobIntentionKind
+        /// The choices recorded for a job.
+        ///
+        /// - Remark: Generated from `#/components/schemas/LinkedJobIntentionList`.
+        public struct LinkedJobIntentionList: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/LinkedJobIntentionList/data`.
+            public var data: [Components.Schemas.LinkedJobIntention]
+            /// Creates a new `LinkedJobIntentionList`.
+            ///
+            /// - Parameters:
+            ///   - data:
+            public init(data: [Components.Schemas.LinkedJobIntention]) {
+                self.data = data
+            }
+            public enum CodingKeys: String, CodingKey {
+                case data
+            }
+        }
+        /// Where a recorded choice stands.
+        ///
+        /// - Remark: Generated from `#/components/schemas/LinkedJobIntentionState`.
+        public typealias LinkedJobIntentionState = FlowionLinkedJobIntentionState
+        /// One line of the offer, as the customer reads it.
+        ///
+        /// - Remark: Generated from `#/components/schemas/LinkedJobLine`.
+        public struct LinkedJobLine: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/LinkedJobLine/description`.
+            public var description: Swift.String
+            /// - Remark: Generated from `#/components/schemas/LinkedJobLine/quantity`.
+            public var quantity: Swift.Int32
+            /// - Remark: Generated from `#/components/schemas/LinkedJobLine/unit`.
+            public var unit: Swift.String
+            /// Creates a new `LinkedJobLine`.
+            ///
+            /// - Parameters:
+            ///   - description:
+            ///   - quantity:
+            ///   - unit:
+            public init(
+                description: Swift.String,
+                quantity: Swift.Int32,
+                unit: Swift.String
+            ) {
+                self.description = description
+                self.quantity = quantity
+                self.unit = unit
+            }
+            public enum CodingKeys: String, CodingKey {
+                case description
+                case quantity
+                case unit
+            }
+        }
+        /// The jobs linked to the organization, newest first.
+        ///
+        /// - Remark: Generated from `#/components/schemas/LinkedJobList`.
+        public struct LinkedJobList: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/LinkedJobList/data`.
+            public var data: [Components.Schemas.LinkedJob]
+            /// Creates a new `LinkedJobList`.
+            ///
+            /// - Parameters:
+            ///   - data:
+            public init(data: [Components.Schemas.LinkedJob]) {
+                self.data = data
+            }
+            public enum CodingKeys: String, CodingKey {
+                case data
+            }
+        }
+        /// What leaving a job removes, or removed.
+        ///
+        /// - Remark: Generated from `#/components/schemas/LinkedJobRemoval`.
+        public struct LinkedJobRemoval: Codable, Hashable, Sendable {
+            /// The choices recorded for this job.
+            ///
+            /// - Remark: Generated from `#/components/schemas/LinkedJobRemoval/intentions`.
+            public var intentions: Swift.Int32
+            /// The items prepared for this job in the organization's own project.
+            ///
+            /// - Remark: Generated from `#/components/schemas/LinkedJobRemoval/preparedItems`.
+            public var preparedItems: Swift.Int32
+            /// Creates a new `LinkedJobRemoval`.
+            ///
+            /// - Parameters:
+            ///   - intentions: The choices recorded for this job.
+            ///   - preparedItems: The items prepared for this job in the organization's own project.
+            public init(
+                intentions: Swift.Int32,
+                preparedItems: Swift.Int32
+            ) {
+                self.intentions = intentions
+                self.preparedItems = preparedItems
+            }
+            public enum CodingKeys: String, CodingKey {
+                case intentions
+                case preparedItems
+            }
+        }
+        /// One stage of the work: a short name and where it stands, never a reason.
+        ///
+        /// - Remark: Generated from `#/components/schemas/LinkedJobStage`.
+        public struct LinkedJobStage: Codable, Hashable, Sendable {
+            /// A short, customer-safe name such as `chargers` or `commissioning`.
+            ///
+            /// - Remark: Generated from `#/components/schemas/LinkedJobStage/key`.
+            public var key: Swift.String
+            /// - Remark: Generated from `#/components/schemas/LinkedJobStage/state`.
+            public var state: Components.Schemas.StageStateApi
+            /// Creates a new `LinkedJobStage`.
+            ///
+            /// - Parameters:
+            ///   - key: A short, customer-safe name such as `chargers` or `commissioning`.
+            ///   - state:
+            public init(
+                key: Swift.String,
+                state: Components.Schemas.StageStateApi
+            ) {
+                self.key = key
+                self.state = state
+            }
+            public enum CodingKeys: String, CodingKey {
+                case key
+                case state
             }
         }
         /// - Remark: Generated from `#/components/schemas/ListActiveFaultsResponse`.
@@ -15219,32 +21566,6 @@ extension Components {
             ///   - nextCursor: Pass as `cursor` to fetch the next page. `null` on the last page.
             public init(
                 data: [Components.Schemas.BootReportEntry],
-                nextCursor: Swift.String? = nil
-            ) {
-                self.data = data
-                self.nextCursor = nextCursor
-            }
-            public enum CodingKeys: String, CodingKey {
-                case data
-                case nextCursor
-            }
-        }
-        /// - Remark: Generated from `#/components/schemas/ListCertificatesResponse`.
-        public struct ListCertificatesResponse: Codable, Hashable, Sendable {
-            /// - Remark: Generated from `#/components/schemas/ListCertificatesResponse/data`.
-            public var data: [Components.Schemas.CertificateSummary]
-            /// Pass back as `cursor` to fetch the next page. Absent means this was
-            /// the last one.
-            ///
-            /// - Remark: Generated from `#/components/schemas/ListCertificatesResponse/nextCursor`.
-            public var nextCursor: Swift.String?
-            /// Creates a new `ListCertificatesResponse`.
-            ///
-            /// - Parameters:
-            ///   - data:
-            ///   - nextCursor: Pass back as `cursor` to fetch the next page. Absent means this was
-            public init(
-                data: [Components.Schemas.CertificateSummary],
                 nextCursor: Swift.String? = nil
             ) {
                 self.data = data
@@ -15483,6 +21804,21 @@ extension Components {
             }
             public enum CodingKeys: String, CodingKey {
                 case data
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/ListCustomerSitesResponse`.
+        public struct ListCustomerSitesResponse: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/ListCustomerSitesResponse/sites`.
+            public var sites: [Components.Schemas.CustomerSiteView]
+            /// Creates a new `ListCustomerSitesResponse`.
+            ///
+            /// - Parameters:
+            ///   - sites:
+            public init(sites: [Components.Schemas.CustomerSiteView]) {
+                self.sites = sites
+            }
+            public enum CodingKeys: String, CodingKey {
+                case sites
             }
         }
         /// - Remark: Generated from `#/components/schemas/ListDeliveriesResponse`.
@@ -15996,6 +22332,35 @@ extension Components {
                 case data
             }
         }
+        /// - Remark: Generated from `#/components/schemas/ListPolicyHoldersResponse`.
+        public struct ListPolicyHoldersResponse: Codable, Hashable, Sendable {
+            /// One row per binding (and per invitation), so a principal that holds the
+            /// policy at several nodes appears once per node: this list can be longer
+            /// than `holders.total` on the policy, which counts principals.
+            ///
+            /// - Remark: Generated from `#/components/schemas/ListPolicyHoldersResponse/data`.
+            public var data: [Components.Schemas.PolicyHolder]
+            /// Pass as `cursor` to fetch the next page. `null` on the last page.
+            ///
+            /// - Remark: Generated from `#/components/schemas/ListPolicyHoldersResponse/nextCursor`.
+            public var nextCursor: Swift.String?
+            /// Creates a new `ListPolicyHoldersResponse`.
+            ///
+            /// - Parameters:
+            ///   - data: One row per binding (and per invitation), so a principal that holds the
+            ///   - nextCursor: Pass as `cursor` to fetch the next page. `null` on the last page.
+            public init(
+                data: [Components.Schemas.PolicyHolder],
+                nextCursor: Swift.String? = nil
+            ) {
+                self.data = data
+                self.nextCursor = nextCursor
+            }
+            public enum CodingKeys: String, CodingKey {
+                case data
+                case nextCursor
+            }
+        }
         /// - Remark: Generated from `#/components/schemas/ListPricesResponse`.
         public struct ListPricesResponse: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/ListPricesResponse/clock`.
@@ -16231,6 +22596,21 @@ extension Components {
                 case articles
             }
         }
+        /// - Remark: Generated from `#/components/schemas/ListSyncedCustomersResponse`.
+        public struct ListSyncedCustomersResponse: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/ListSyncedCustomersResponse/customers`.
+            public var customers: [Components.Schemas.SyncedCustomerView]
+            /// Creates a new `ListSyncedCustomersResponse`.
+            ///
+            /// - Parameters:
+            ///   - customers:
+            public init(customers: [Components.Schemas.SyncedCustomerView]) {
+                self.customers = customers
+            }
+            public enum CodingKeys: String, CodingKey {
+                case customers
+            }
+        }
         /// A page of a project's active tariff assignments.
         ///
         /// - Remark: Generated from `#/components/schemas/ListTariffAssignmentsResponse`.
@@ -16361,15 +22741,35 @@ extension Components {
         public struct ListVehicleConnectionsResponse: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/ListVehicleConnectionsResponse/data`.
             public var data: [Components.Schemas.VehicleConnectionSummary]
+            /// Whether a person can take the optional tracking step now. Always
+            /// `false` on a project's list.
+            ///
+            /// - Remark: Generated from `#/components/schemas/ListVehicleConnectionsResponse/trackingAvailable`.
+            public var trackingAvailable: Swift.Bool
+            /// What the person must be told before they take the step: show it as
+            /// written. Present exactly when `trackingAvailable` is `true`.
+            ///
+            /// - Remark: Generated from `#/components/schemas/ListVehicleConnectionsResponse/trackingNotice`.
+            public var trackingNotice: Swift.String?
             /// Creates a new `ListVehicleConnectionsResponse`.
             ///
             /// - Parameters:
             ///   - data:
-            public init(data: [Components.Schemas.VehicleConnectionSummary]) {
+            ///   - trackingAvailable: Whether a person can take the optional tracking step now. Always
+            ///   - trackingNotice: What the person must be told before they take the step: show it as
+            public init(
+                data: [Components.Schemas.VehicleConnectionSummary],
+                trackingAvailable: Swift.Bool,
+                trackingNotice: Swift.String? = nil
+            ) {
                 self.data = data
+                self.trackingAvailable = trackingAvailable
+                self.trackingNotice = trackingNotice
             }
             public enum CodingKeys: String, CodingKey {
                 case data
+                case trackingAvailable
+                case trackingNotice
             }
         }
         /// - Remark: Generated from `#/components/schemas/ListVehicleSessionsResponse`.
@@ -16639,6 +23039,17 @@ extension Components {
             public var capacity: Components.Schemas.CapacityView
             /// - Remark: Generated from `#/components/schemas/LocalAuthListView/chargingStationId`.
             public var chargingStationId: Swift.String
+            /// Spec 148: when the charger last confirmed it (`reportedAt`), only
+            /// alongside `confirmedVersion`.
+            ///
+            /// - Remark: Generated from `#/components/schemas/LocalAuthListView/confirmedAt`.
+            public var confirmedAt: Foundation.Date?
+            /// Spec 148: the list version the charger last confirmed holding. `0` is
+            /// an empty list. `null` until it has confirmed one, or when it does not
+            /// support lists.
+            ///
+            /// - Remark: Generated from `#/components/schemas/LocalAuthListView/confirmedVersion`.
+            public var confirmedVersion: Swift.Int32?
             /// Every entry, unpaginated.
             ///
             /// Not naturally bounded the way a closed catalog or a
@@ -16662,49 +23073,100 @@ extension Components {
             public var reported: Components.Schemas.ReportedVersionView
             /// - Remark: Generated from `#/components/schemas/LocalAuthListView/reportedAt`.
             public var reportedAt: Foundation.Date?
+            /// Spec 148: seconds since `confirmedAt`, at the time of this read; `null`
+            /// without one. A list nobody has confirmed for a long time is a list a
+            /// charger may no longer hold.
+            ///
+            /// - Remark: Generated from `#/components/schemas/LocalAuthListView/stalenessSeconds`.
+            public var stalenessSeconds: Swift.Int64?
+            /// Spec 148: how many tags the charger holds, known only when it has
+            /// confirmed the version the platform wants (an empty list at version 0
+            /// counts); `null` otherwise,
+            /// never a guess. Read against `capacity.listMaxLength`.
+            ///
+            /// - Remark: Generated from `#/components/schemas/LocalAuthListView/tagsHeld`.
+            public var tagsHeld: Swift.Int32?
+            /// Spec 148: how many tags the platform scopes to this charger, i.e. the
+            /// entries it wants the charger to hold (`entries`). Blocked entries are
+            /// counted: they occupy the charger's list, which is what `capacity`
+            /// bounds.
+            ///
+            /// - Remark: Generated from `#/components/schemas/LocalAuthListView/tagsScoped`.
+            public var tagsScoped: Swift.Int32
             /// The version the CSMS believes the charging station should hold.
             ///
             /// - Remark: Generated from `#/components/schemas/LocalAuthListView/version`.
             public var version: Swift.Int32
+            /// Spec 148: whether this charger authorizes the tags on its list while it
+            /// cannot reach the platform. `false` when it reported that it does not
+            /// support local lists or has switched the profile off, `true` when it
+            /// supports them and has them on, `null` until it has told us either.
+            ///
+            /// - Remark: Generated from `#/components/schemas/LocalAuthListView/worksOffline`.
+            public var worksOffline: Swift.Bool?
             /// Creates a new `LocalAuthListView`.
             ///
             /// - Parameters:
             ///   - capacity:
             ///   - chargingStationId:
+            ///   - confirmedAt: Spec 148: when the charger last confirmed it (`reportedAt`), only
+            ///   - confirmedVersion: Spec 148: the list version the charger last confirmed holding. `0` is
             ///   - entries: Every entry, unpaginated.
             ///   - id:
             ///   - inSync: `null` until the charging station has been asked. Divergence is a
             ///   - reported:
             ///   - reportedAt:
+            ///   - stalenessSeconds: Spec 148: seconds since `confirmedAt`, at the time of this read; `null`
+            ///   - tagsHeld: Spec 148: how many tags the charger holds, known only when it has
+            ///   - tagsScoped: Spec 148: how many tags the platform scopes to this charger, i.e. the
             ///   - version: The version the CSMS believes the charging station should hold.
+            ///   - worksOffline: Spec 148: whether this charger authorizes the tags on its list while it
             public init(
                 capacity: Components.Schemas.CapacityView,
                 chargingStationId: Swift.String,
+                confirmedAt: Foundation.Date? = nil,
+                confirmedVersion: Swift.Int32? = nil,
                 entries: [Components.Schemas.LocalAuthListEntryView],
                 id: Swift.String,
                 inSync: Swift.Bool? = nil,
                 reported: Components.Schemas.ReportedVersionView,
                 reportedAt: Foundation.Date? = nil,
-                version: Swift.Int32
+                stalenessSeconds: Swift.Int64? = nil,
+                tagsHeld: Swift.Int32? = nil,
+                tagsScoped: Swift.Int32,
+                version: Swift.Int32,
+                worksOffline: Swift.Bool? = nil
             ) {
                 self.capacity = capacity
                 self.chargingStationId = chargingStationId
+                self.confirmedAt = confirmedAt
+                self.confirmedVersion = confirmedVersion
                 self.entries = entries
                 self.id = id
                 self.inSync = inSync
                 self.reported = reported
                 self.reportedAt = reportedAt
+                self.stalenessSeconds = stalenessSeconds
+                self.tagsHeld = tagsHeld
+                self.tagsScoped = tagsScoped
                 self.version = version
+                self.worksOffline = worksOffline
             }
             public enum CodingKeys: String, CodingKey {
                 case capacity
                 case chargingStationId
+                case confirmedAt
+                case confirmedVersion
                 case entries
                 case id
                 case inSync
                 case reported
                 case reportedAt
+                case stalenessSeconds
+                case tagsHeld
+                case tagsScoped
                 case version
+                case worksOffline
             }
         }
         /// The clock a location's hours are read on, over a response's window.
@@ -16737,6 +23199,21 @@ extension Components {
             public enum CodingKeys: String, CodingKey {
                 case offsets
                 case timeZone
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/LocationAdditionOffersView`.
+        public struct LocationAdditionOffersView: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/LocationAdditionOffersView/offers`.
+            public var offers: [Components.Schemas.AdditionOfferView]
+            /// Creates a new `LocationAdditionOffersView`.
+            ///
+            /// - Parameters:
+            ///   - offers:
+            public init(offers: [Components.Schemas.AdditionOfferView]) {
+                self.offers = offers
+            }
+            public enum CodingKeys: String, CodingKey {
+                case offers
             }
         }
         /// A location's postal address, sent when creating or updating a location.
@@ -16803,6 +23280,42 @@ extension Components {
                 case line2
                 case postalCode
                 case state
+            }
+        }
+        /// A location's autocharge setting.
+        ///
+        /// - Remark: Generated from `#/components/schemas/LocationAutochargeView`.
+        public struct LocationAutochargeView: Codable, Hashable, Sendable {
+            /// What the default is at this location, whatever the operator chose.
+            ///
+            /// - Remark: Generated from `#/components/schemas/LocationAutochargeView/default`.
+            public var _default: Swift.Bool
+            /// Whether autocharge is on here: the operator's choice if they made one,
+            /// otherwise the default.
+            ///
+            /// - Remark: Generated from `#/components/schemas/LocationAutochargeView/enabled`.
+            public var enabled: Swift.Bool
+            /// - Remark: Generated from `#/components/schemas/LocationAutochargeView/reason`.
+            public var reason: Components.Schemas.AutochargeReason
+            /// Creates a new `LocationAutochargeView`.
+            ///
+            /// - Parameters:
+            ///   - _default: What the default is at this location, whatever the operator chose.
+            ///   - enabled: Whether autocharge is on here: the operator's choice if they made one,
+            ///   - reason:
+            public init(
+                _default: Swift.Bool,
+                enabled: Swift.Bool,
+                reason: Components.Schemas.AutochargeReason
+            ) {
+                self._default = _default
+                self.enabled = enabled
+                self.reason = reason
+            }
+            public enum CodingKeys: String, CodingKey {
+                case _default = "default"
+                case enabled
+                case reason
             }
         }
         /// A location's geographic position, sent when creating or updating a location.
@@ -17243,6 +23756,120 @@ extension Components {
                 case to
             }
         }
+        /// - Remark: Generated from `#/components/schemas/LocationSolarCapacity`.
+        public struct LocationSolarCapacity: Codable, Hashable, Sendable {
+            /// Installed module peak power in watts at 1000 W/m². Null disables solar forecasting.
+            ///
+            /// - Remark: Generated from `#/components/schemas/LocationSolarCapacity/peakWatts`.
+            public var peakWatts: Swift.Double?
+            /// Creates a new `LocationSolarCapacity`.
+            ///
+            /// - Parameters:
+            ///   - peakWatts: Installed module peak power in watts at 1000 W/m². Null disables solar forecasting.
+            public init(peakWatts: Swift.Double? = nil) {
+                self.peakWatts = peakWatts
+            }
+            public enum CodingKeys: String, CodingKey {
+                case peakWatts
+            }
+            public init(from decoder: any Swift.Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                self.peakWatts = try container.decodeIfPresent(
+                    Swift.Double.self,
+                    forKey: .peakWatts
+                )
+                try decoder.ensureNoAdditionalProperties(knownKeys: [
+                    "peakWatts"
+                ])
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/LocationSolarForecast`.
+        public struct LocationSolarForecast: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/LocationSolarForecast/attribution`.
+            public var attribution: Swift.String
+            /// - Remark: Generated from `#/components/schemas/LocationSolarForecast/coverageEnd`.
+            public var coverageEnd: Foundation.Date?
+            /// - Remark: Generated from `#/components/schemas/LocationSolarForecast/coverageStart`.
+            public var coverageStart: Foundation.Date?
+            /// - Remark: Generated from `#/components/schemas/LocationSolarForecast/forecastRun`.
+            public var forecastRun: Foundation.Date?
+            /// - Remark: Generated from `#/components/schemas/LocationSolarForecast/metric`.
+            public var metric: Swift.String
+            /// Horizontal-irradiance capacity proxy: not roof-specific AC output or surplus.
+            ///
+            /// - Remark: Generated from `#/components/schemas/LocationSolarForecast/model`.
+            public var model: Swift.String
+            /// - Remark: Generated from `#/components/schemas/LocationSolarForecast/nativeShapeFallback`.
+            public var nativeShapeFallback: Swift.Bool
+            /// `ok` or `notConfigured`. Unconfigured sites have an empty series.
+            ///
+            /// - Remark: Generated from `#/components/schemas/LocationSolarForecast/outcome`.
+            public var outcome: Swift.String
+            /// - Remark: Generated from `#/components/schemas/LocationSolarForecast/peakWatts`.
+            public var peakWatts: Swift.Double?
+            /// - Remark: Generated from `#/components/schemas/LocationSolarForecast/range`.
+            public var range: Swift.String
+            /// - Remark: Generated from `#/components/schemas/LocationSolarForecast/series`.
+            public var series: [Components.Schemas.SolarForecastSeries]
+            /// - Remark: Generated from `#/components/schemas/LocationSolarForecast/stepSeconds`.
+            public var stepSeconds: Swift.Int32
+            /// Creates a new `LocationSolarForecast`.
+            ///
+            /// - Parameters:
+            ///   - attribution:
+            ///   - coverageEnd:
+            ///   - coverageStart:
+            ///   - forecastRun:
+            ///   - metric:
+            ///   - model: Horizontal-irradiance capacity proxy: not roof-specific AC output or surplus.
+            ///   - nativeShapeFallback:
+            ///   - outcome: `ok` or `notConfigured`. Unconfigured sites have an empty series.
+            ///   - peakWatts:
+            ///   - range:
+            ///   - series:
+            ///   - stepSeconds:
+            public init(
+                attribution: Swift.String,
+                coverageEnd: Foundation.Date? = nil,
+                coverageStart: Foundation.Date? = nil,
+                forecastRun: Foundation.Date? = nil,
+                metric: Swift.String,
+                model: Swift.String,
+                nativeShapeFallback: Swift.Bool,
+                outcome: Swift.String,
+                peakWatts: Swift.Double? = nil,
+                range: Swift.String,
+                series: [Components.Schemas.SolarForecastSeries],
+                stepSeconds: Swift.Int32
+            ) {
+                self.attribution = attribution
+                self.coverageEnd = coverageEnd
+                self.coverageStart = coverageStart
+                self.forecastRun = forecastRun
+                self.metric = metric
+                self.model = model
+                self.nativeShapeFallback = nativeShapeFallback
+                self.outcome = outcome
+                self.peakWatts = peakWatts
+                self.range = range
+                self.series = series
+                self.stepSeconds = stepSeconds
+            }
+            public enum CodingKeys: String, CodingKey {
+                case attribution
+                case coverageEnd
+                case coverageStart
+                case forecastRun
+                case metric
+                case model
+                case nativeShapeFallback
+                case outcome
+                case peakWatts
+                case range
+                case series
+                case stepSeconds
+            }
+        }
         /// A location: a physical location within an environment that houses charging
         /// stations.
         ///
@@ -17517,6 +24144,173 @@ extension Components {
                 case window
             }
         }
+        /// - Remark: Generated from `#/components/schemas/LocationWeatherForecastResponse`.
+        public struct LocationWeatherForecastResponse: Codable, Hashable, Sendable {
+            /// Retain ECMWF/CC-BY attribution wherever the forecast is displayed.
+            ///
+            /// - Remark: Generated from `#/components/schemas/LocationWeatherForecastResponse/attribution`.
+            public var attribution: Swift.String
+            /// Exclusive end of the cached coverage; not 36 hours ahead of now.
+            ///
+            /// - Remark: Generated from `#/components/schemas/LocationWeatherForecastResponse/coverageEnd`.
+            public var coverageEnd: Foundation.Date
+            /// - Remark: Generated from `#/components/schemas/LocationWeatherForecastResponse/coverageStart`.
+            public var coverageStart: Foundation.Date
+            /// - Remark: Generated from `#/components/schemas/LocationWeatherForecastResponse/forecastAgeSeconds`.
+            public var forecastAgeSeconds: Swift.Int64
+            /// - Remark: Generated from `#/components/schemas/LocationWeatherForecastResponse/forecastRun`.
+            public var forecastRun: Foundation.Date
+            /// - Remark: Generated from `#/components/schemas/LocationWeatherForecastResponse/metric`.
+            public var metric: Components.Schemas.WeatherForecastMetric
+            /// - Remark: Generated from `#/components/schemas/LocationWeatherForecastResponse/model`.
+            public var model: Swift.String
+            /// At least one interval retained its native mean because daylight was negligible.
+            ///
+            /// - Remark: Generated from `#/components/schemas/LocationWeatherForecastResponse/nativeShapeFallback`.
+            public var nativeShapeFallback: Swift.Bool
+            /// - Remark: Generated from `#/components/schemas/LocationWeatherForecastResponse/range`.
+            public var range: Components.Schemas.WeatherForecastRange
+            /// - Remark: Generated from `#/components/schemas/LocationWeatherForecastResponse/series`.
+            public var series: [Components.Schemas.WeatherForecastSeries]
+            /// - Remark: Generated from `#/components/schemas/LocationWeatherForecastResponse/stale`.
+            public var stale: Swift.Bool
+            /// Each timestamp marks the start of this many seconds of averaging.
+            ///
+            /// - Remark: Generated from `#/components/schemas/LocationWeatherForecastResponse/stepSeconds`.
+            public var stepSeconds: Swift.Int32
+            /// Creates a new `LocationWeatherForecastResponse`.
+            ///
+            /// - Parameters:
+            ///   - attribution: Retain ECMWF/CC-BY attribution wherever the forecast is displayed.
+            ///   - coverageEnd: Exclusive end of the cached coverage; not 36 hours ahead of now.
+            ///   - coverageStart:
+            ///   - forecastAgeSeconds:
+            ///   - forecastRun:
+            ///   - metric:
+            ///   - model:
+            ///   - nativeShapeFallback: At least one interval retained its native mean because daylight was negligible.
+            ///   - range:
+            ///   - series:
+            ///   - stale:
+            ///   - stepSeconds: Each timestamp marks the start of this many seconds of averaging.
+            public init(
+                attribution: Swift.String,
+                coverageEnd: Foundation.Date,
+                coverageStart: Foundation.Date,
+                forecastAgeSeconds: Swift.Int64,
+                forecastRun: Foundation.Date,
+                metric: Components.Schemas.WeatherForecastMetric,
+                model: Swift.String,
+                nativeShapeFallback: Swift.Bool,
+                range: Components.Schemas.WeatherForecastRange,
+                series: [Components.Schemas.WeatherForecastSeries],
+                stale: Swift.Bool,
+                stepSeconds: Swift.Int32
+            ) {
+                self.attribution = attribution
+                self.coverageEnd = coverageEnd
+                self.coverageStart = coverageStart
+                self.forecastAgeSeconds = forecastAgeSeconds
+                self.forecastRun = forecastRun
+                self.metric = metric
+                self.model = model
+                self.nativeShapeFallback = nativeShapeFallback
+                self.range = range
+                self.series = series
+                self.stale = stale
+                self.stepSeconds = stepSeconds
+            }
+            public enum CodingKeys: String, CodingKey {
+                case attribution
+                case coverageEnd
+                case coverageStart
+                case forecastAgeSeconds
+                case forecastRun
+                case metric
+                case model
+                case nativeShapeFallback
+                case range
+                case series
+                case stale
+                case stepSeconds
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/LocationWeatherResponse`.
+        public struct LocationWeatherResponse: Codable, Hashable, Sendable {
+            /// Retain ECMWF/CC-BY attribution wherever the forecast is displayed.
+            ///
+            /// - Remark: Generated from `#/components/schemas/LocationWeatherResponse/attribution`.
+            public var attribution: Swift.String
+            /// - Remark: Generated from `#/components/schemas/LocationWeatherResponse/forecastAgeSeconds`.
+            public var forecastAgeSeconds: Swift.Int64
+            /// - Remark: Generated from `#/components/schemas/LocationWeatherResponse/forecastRun`.
+            public var forecastRun: Foundation.Date
+            /// Exclusive UTC end of the averaging interval.
+            ///
+            /// - Remark: Generated from `#/components/schemas/LocationWeatherResponse/intervalEnd`.
+            public var intervalEnd: Foundation.Date
+            /// - Remark: Generated from `#/components/schemas/LocationWeatherResponse/intervalStart`.
+            public var intervalStart: Foundation.Date
+            /// - Remark: Generated from `#/components/schemas/LocationWeatherResponse/model`.
+            public var model: Swift.String
+            /// True when negligible daylight required retaining the native three-hour mean.
+            ///
+            /// - Remark: Generated from `#/components/schemas/LocationWeatherResponse/nativeShapeFallback`.
+            public var nativeShapeFallback: Swift.Bool
+            /// True when the ECMWF run is older than twelve hours.
+            ///
+            /// - Remark: Generated from `#/components/schemas/LocationWeatherResponse/stale`.
+            public var stale: Swift.Bool
+            /// Estimated 15-minute mean global horizontal irradiance in W/m², not an observation
+            /// or a prediction of roof/panel output.
+            ///
+            /// - Remark: Generated from `#/components/schemas/LocationWeatherResponse/wattsPerSquareMetre`.
+            public var wattsPerSquareMetre: Swift.Double
+            /// Creates a new `LocationWeatherResponse`.
+            ///
+            /// - Parameters:
+            ///   - attribution: Retain ECMWF/CC-BY attribution wherever the forecast is displayed.
+            ///   - forecastAgeSeconds:
+            ///   - forecastRun:
+            ///   - intervalEnd: Exclusive UTC end of the averaging interval.
+            ///   - intervalStart:
+            ///   - model:
+            ///   - nativeShapeFallback: True when negligible daylight required retaining the native three-hour mean.
+            ///   - stale: True when the ECMWF run is older than twelve hours.
+            ///   - wattsPerSquareMetre: Estimated 15-minute mean global horizontal irradiance in W/m², not an observation
+            public init(
+                attribution: Swift.String,
+                forecastAgeSeconds: Swift.Int64,
+                forecastRun: Foundation.Date,
+                intervalEnd: Foundation.Date,
+                intervalStart: Foundation.Date,
+                model: Swift.String,
+                nativeShapeFallback: Swift.Bool,
+                stale: Swift.Bool,
+                wattsPerSquareMetre: Swift.Double
+            ) {
+                self.attribution = attribution
+                self.forecastAgeSeconds = forecastAgeSeconds
+                self.forecastRun = forecastRun
+                self.intervalEnd = intervalEnd
+                self.intervalStart = intervalStart
+                self.model = model
+                self.nativeShapeFallback = nativeShapeFallback
+                self.stale = stale
+                self.wattsPerSquareMetre = wattsPerSquareMetre
+            }
+            public enum CodingKeys: String, CodingKey {
+                case attribution
+                case forecastAgeSeconds
+                case forecastRun
+                case intervalEnd
+                case intervalStart
+                case model
+                case nativeShapeFallback
+                case stale
+                case wattsPerSquareMetre
+            }
+        }
         /// - Remark: Generated from `#/components/schemas/MainMeterSummary`.
         public struct MainMeterSummary: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/MainMeterSummary/meterType`.
@@ -17538,6 +24332,129 @@ extension Components {
             public enum CodingKeys: String, CodingKey {
                 case meterType
                 case serialNumber
+            }
+        }
+        /// The job after it was marked ready, and which way the handover went.
+        ///
+        /// - Remark: Generated from `#/components/schemas/MarkJobReadyResponse`.
+        public struct MarkJobReadyResponse: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/MarkJobReadyResponse/value1`.
+            public var value1: Components.Schemas.JobView
+            /// - Remark: Generated from `#/components/schemas/MarkJobReadyResponse/value2`.
+            public var value2: Components.Schemas.SwiftMarkJobReadyResponseVariant2
+            /// Creates a new `MarkJobReadyResponse`.
+            ///
+            /// - Parameters:
+            ///   - value1:
+            ///   - value2:
+            public init(
+                value1: Components.Schemas.JobView,
+                value2: Components.Schemas.SwiftMarkJobReadyResponseVariant2
+            ) {
+                self.value1 = value1
+                self.value2 = value2
+            }
+            public init(from decoder: any Swift.Decoder) throws {
+                self.value1 = try .init(from: decoder)
+                self.value2 = try .init(from: decoder)
+            }
+            public func encode(to encoder: any Swift.Encoder) throws {
+                try self.value1.encode(to: encoder)
+                try self.value2.encode(to: encoder)
+            }
+        }
+        /// The `data:` payload of one frame: what changed and where, and nothing else.
+        ///
+        /// - Remark: Generated from `#/components/schemas/MeLiveEventPayload`.
+        public struct MeLiveEventPayload: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/MeLiveEventPayload/chargingStationId`.
+            public var chargingStationId: Swift.String
+            /// - Remark: Generated from `#/components/schemas/MeLiveEventPayload/type`.
+            public var _type: Components.Schemas.LiveEventType
+            /// Creates a new `MeLiveEventPayload`.
+            ///
+            /// - Parameters:
+            ///   - chargingStationId:
+            ///   - _type:
+            public init(
+                chargingStationId: Swift.String,
+                _type: Components.Schemas.LiveEventType
+            ) {
+                self.chargingStationId = chargingStationId
+                self._type = _type
+            }
+            public enum CodingKeys: String, CodingKey {
+                case chargingStationId
+                case _type = "type"
+            }
+        }
+        /// Who the signed-in person is.
+        ///
+        /// - Remark: Generated from `#/components/schemas/MeProfile`.
+        public struct MeProfile: Codable, Hashable, Sendable {
+            /// The account's id: the token's subject.
+            ///
+            /// - Remark: Generated from `#/components/schemas/MeProfile/accountId`.
+            public var accountId: Swift.String
+            /// - Remark: Generated from `#/components/schemas/MeProfile/addresses`.
+            public var addresses: [Components.Schemas.SwiftMeProfileAddressesItems]
+            /// What the person was called, or `null` when the account has no name.
+            ///
+            /// - Remark: Generated from `#/components/schemas/MeProfile/displayName`.
+            public var displayName: Swift.String?
+            /// Whether the account has enrolled at least one factor: a passkey or an
+            /// authenticator app.
+            ///
+            /// - Remark: Generated from `#/components/schemas/MeProfile/factorEnrolled`.
+            public var factorEnrolled: Swift.Bool
+            /// A live Apple method: deletion must obtain a fresh Apple authorization code.
+            ///
+            /// - Remark: Generated from `#/components/schemas/MeProfile/hasAppleSignIn`.
+            public var hasAppleSignIn: Swift.Bool
+            /// Whether the account has proved at least one email address.
+            ///
+            /// - Remark: Generated from `#/components/schemas/MeProfile/hasProvedAddress`.
+            public var hasProvedAddress: Swift.Bool
+            /// The caller's own primary proved address, for sharing an invitation address.
+            /// Never an account identifier. Other addresses are masked below.
+            ///
+            /// - Remark: Generated from `#/components/schemas/MeProfile/primaryAddress`.
+            public var primaryAddress: Swift.String?
+            /// Creates a new `MeProfile`.
+            ///
+            /// - Parameters:
+            ///   - accountId: The account's id: the token's subject.
+            ///   - addresses:
+            ///   - displayName: What the person was called, or `null` when the account has no name.
+            ///   - factorEnrolled: Whether the account has enrolled at least one factor: a passkey or an
+            ///   - hasAppleSignIn: A live Apple method: deletion must obtain a fresh Apple authorization code.
+            ///   - hasProvedAddress: Whether the account has proved at least one email address.
+            ///   - primaryAddress: The caller's own primary proved address, for sharing an invitation address.
+            public init(
+                accountId: Swift.String,
+                addresses: [Components.Schemas.SwiftMeProfileAddressesItems],
+                displayName: Swift.String? = nil,
+                factorEnrolled: Swift.Bool,
+                hasAppleSignIn: Swift.Bool,
+                hasProvedAddress: Swift.Bool,
+                primaryAddress: Swift.String? = nil
+            ) {
+                self.accountId = accountId
+                self.addresses = addresses
+                self.displayName = displayName
+                self.factorEnrolled = factorEnrolled
+                self.hasAppleSignIn = hasAppleSignIn
+                self.hasProvedAddress = hasProvedAddress
+                self.primaryAddress = primaryAddress
+            }
+            public enum CodingKeys: String, CodingKey {
+                case accountId
+                case addresses
+                case displayName
+                case factorEnrolled
+                case hasAppleSignIn
+                case hasProvedAddress
+                case primaryAddress
             }
         }
         /// Mirrors OCPP 2.0.1's `MeasurandEnumType`, matching the protocol's wire
@@ -18431,6 +25348,146 @@ extension Components {
                 case to
             }
         }
+        /// A person's autocharge switch.
+        ///
+        /// - Remark: Generated from `#/components/schemas/MyAutocharge`.
+        public struct MyAutocharge: Codable, Hashable, Sendable {
+            /// Whether the person has taken the location step for a car. The switch
+            /// can only be turned on once this is `true`.
+            ///
+            /// - Remark: Generated from `#/components/schemas/MyAutocharge/locationStepTaken`.
+            public var locationStepTaken: Swift.Bool
+            /// What to show beside the switch, the same words in every client.
+            ///
+            /// - Remark: Generated from `#/components/schemas/MyAutocharge/notice`.
+            public var notice: Swift.String
+            /// Whether the person's own switch is on. Off until they turn it on.
+            ///
+            /// - Remark: Generated from `#/components/schemas/MyAutocharge/switch`.
+            public var _switch: Swift.Bool
+            /// Creates a new `MyAutocharge`.
+            ///
+            /// - Parameters:
+            ///   - locationStepTaken: Whether the person has taken the location step for a car. The switch
+            ///   - notice: What to show beside the switch, the same words in every client.
+            ///   - _switch: Whether the person's own switch is on. Off until they turn it on.
+            public init(
+                locationStepTaken: Swift.Bool,
+                notice: Swift.String,
+                _switch: Swift.Bool
+            ) {
+                self.locationStepTaken = locationStepTaken
+                self.notice = notice
+                self._switch = _switch
+            }
+            public enum CodingKeys: String, CodingKey {
+                case locationStepTaken
+                case notice
+                case _switch = "switch"
+            }
+        }
+        /// The account's cards and where they work.
+        ///
+        /// - Remark: Generated from `#/components/schemas/MyCards`.
+        public struct MyCards: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/MyCards/cards`.
+            public var cards: [Components.Schemas.PersonCard]
+            /// - Remark: Generated from `#/components/schemas/MyCards/cardsOnAt`.
+            public var cardsOnAt: [Components.Schemas.CardsOnAt]
+            /// Creates a new `MyCards`.
+            ///
+            /// - Parameters:
+            ///   - cards:
+            ///   - cardsOnAt:
+            public init(
+                cards: [Components.Schemas.PersonCard],
+                cardsOnAt: [Components.Schemas.CardsOnAt]
+            ) {
+                self.cards = cards
+                self.cardsOnAt = cardsOnAt
+            }
+            public enum CodingKeys: String, CodingKey {
+                case cards
+                case cardsOnAt
+            }
+        }
+        /// What charging costs at one of the caller's chargers.
+        ///
+        /// - Remark: Generated from `#/components/schemas/MyChargerPrice`.
+        public struct MyChargerPrice: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/MyChargerPrice/chargerId`.
+            public var chargerId: Swift.String
+            /// Absent where the story is `none`.
+            ///
+            /// - Remark: Generated from `#/components/schemas/MyChargerPrice/currency`.
+            public var currency: Swift.String?
+            /// The quarter that is current now, which `now` describes.
+            ///
+            /// - Remark: Generated from `#/components/schemas/MyChargerPrice/currentQuarterStart`.
+            public var currentQuarterStart: Foundation.Date
+            /// - Remark: Generated from `#/components/schemas/MyChargerPrice/evses`.
+            public var evses: [Components.Schemas.EvsePrice]
+            /// The end of the prices that are known: the market publishes a day ahead.
+            ///
+            /// - Remark: Generated from `#/components/schemas/MyChargerPrice/knownUntil`.
+            public var knownUntil: Foundation.Date?
+            /// - Remark: Generated from `#/components/schemas/MyChargerPrice/outcome`.
+            public var outcome: Components.Schemas.PriceOutcome
+            /// - Remark: Generated from `#/components/schemas/MyChargerPrice/story`.
+            public var story: Components.Schemas.PriceStory
+            /// The energy's tax as one rate in basis points (2500 = 25%).
+            ///
+            /// - Remark: Generated from `#/components/schemas/MyChargerPrice/taxRateBp`.
+            public var taxRateBp: Swift.Int32?
+            /// The clock the day was read on; absent means UTC.
+            ///
+            /// - Remark: Generated from `#/components/schemas/MyChargerPrice/timeZone`.
+            public var timeZone: Swift.String?
+            /// Creates a new `MyChargerPrice`.
+            ///
+            /// - Parameters:
+            ///   - chargerId:
+            ///   - currency: Absent where the story is `none`.
+            ///   - currentQuarterStart: The quarter that is current now, which `now` describes.
+            ///   - evses:
+            ///   - knownUntil: The end of the prices that are known: the market publishes a day ahead.
+            ///   - outcome:
+            ///   - story:
+            ///   - taxRateBp: The energy's tax as one rate in basis points (2500 = 25%).
+            ///   - timeZone: The clock the day was read on; absent means UTC.
+            public init(
+                chargerId: Swift.String,
+                currency: Swift.String? = nil,
+                currentQuarterStart: Foundation.Date,
+                evses: [Components.Schemas.EvsePrice],
+                knownUntil: Foundation.Date? = nil,
+                outcome: Components.Schemas.PriceOutcome,
+                story: Components.Schemas.PriceStory,
+                taxRateBp: Swift.Int32? = nil,
+                timeZone: Swift.String? = nil
+            ) {
+                self.chargerId = chargerId
+                self.currency = currency
+                self.currentQuarterStart = currentQuarterStart
+                self.evses = evses
+                self.knownUntil = knownUntil
+                self.outcome = outcome
+                self.story = story
+                self.taxRateBp = taxRateBp
+                self.timeZone = timeZone
+            }
+            public enum CodingKeys: String, CodingKey {
+                case chargerId
+                case currency
+                case currentQuarterStart
+                case evses
+                case knownUntil
+                case outcome
+                case story
+                case taxRateBp
+                case timeZone
+            }
+        }
         /// A calendar month of the caller's own charging, place by place.
         ///
         /// - Remark: Generated from `#/components/schemas/MyChargingMonth`.
@@ -18562,6 +25619,245 @@ extension Components {
         ///
         /// - Remark: Generated from `#/components/schemas/MyChargingState`.
         public typealias MyChargingState = FlowionMyChargingState
+        /// A home the person owns.
+        ///
+        /// - Remark: Generated from `#/components/schemas/MyHome`.
+        public struct MyHome: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/MyHome/limits`.
+            public var limits: Components.Schemas.HomeLimits
+            /// The home's location. Absent while the location has not been made (a
+            /// first create that stopped after identity; the same `requestId` makes
+            /// it).
+            ///
+            /// - Remark: Generated from `#/components/schemas/MyHome/locationId`.
+            public var locationId: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/MyHome/name`.
+            public var name: Swift.String
+            /// - Remark: Generated from `#/components/schemas/MyHome/organizationId`.
+            public var organizationId: Swift.String
+            /// `ready`, or `finishing` while the person's place is still being
+            /// completed in the background.
+            ///
+            /// - Remark: Generated from `#/components/schemas/MyHome/placeState`.
+            public var placeState: Swift.String
+            /// - Remark: Generated from `#/components/schemas/MyHome/projectId`.
+            public var projectId: Swift.String
+            /// Creates a new `MyHome`.
+            ///
+            /// - Parameters:
+            ///   - limits:
+            ///   - locationId: The home's location. Absent while the location has not been made (a
+            ///   - name:
+            ///   - organizationId:
+            ///   - placeState: `ready`, or `finishing` while the person's place is still being
+            ///   - projectId:
+            public init(
+                limits: Components.Schemas.HomeLimits,
+                locationId: Swift.String? = nil,
+                name: Swift.String,
+                organizationId: Swift.String,
+                placeState: Swift.String,
+                projectId: Swift.String
+            ) {
+                self.limits = limits
+                self.locationId = locationId
+                self.name = name
+                self.organizationId = organizationId
+                self.placeState = placeState
+                self.projectId = projectId
+            }
+            public enum CodingKeys: String, CodingKey {
+                case limits
+                case locationId
+                case name
+                case organizationId
+                case placeState
+                case projectId
+            }
+        }
+        /// What electricity costs at one of the caller's homes, from the home's own
+        /// electricity setting: the shape of a charger's price (`MyChargerPrice`)
+        /// without `chargerId`, and with one entry in `evses` that names no EVSE.
+        ///
+        /// - Remark: Generated from `#/components/schemas/MyHomePrice`.
+        public struct MyHomePrice: Codable, Hashable, Sendable {
+            /// Absent where the story is `none`.
+            ///
+            /// - Remark: Generated from `#/components/schemas/MyHomePrice/currency`.
+            public var currency: Swift.String?
+            /// The quarter that is current now, which `now` describes.
+            ///
+            /// - Remark: Generated from `#/components/schemas/MyHomePrice/currentQuarterStart`.
+            public var currentQuarterStart: Foundation.Date
+            /// - Remark: Generated from `#/components/schemas/MyHomePrice/display`.
+            public struct DisplayPayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/MyHomePrice/display/value1`.
+                public var value1: Components.Schemas.HomeDisplayPrice
+                /// Creates a new `DisplayPayload`.
+                ///
+                /// - Parameters:
+                ///   - value1:
+                public init(value1: Components.Schemas.HomeDisplayPrice) {
+                    self.value1 = value1
+                }
+                public init(from decoder: any Swift.Decoder) throws {
+                    self.value1 = try .init(from: decoder)
+                }
+                public func encode(to encoder: any Swift.Encoder) throws {
+                    try self.value1.encode(to: encoder)
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/MyHomePrice/display`.
+            public var display: Components.Schemas.MyHomePrice.DisplayPayload?
+            /// One entry: the home's price.
+            ///
+            /// - Remark: Generated from `#/components/schemas/MyHomePrice/evses`.
+            public var evses: [Components.Schemas.HomePriceEntry]
+            /// The end of the prices that are known: the market publishes a day ahead.
+            ///
+            /// - Remark: Generated from `#/components/schemas/MyHomePrice/knownUntil`.
+            public var knownUntil: Foundation.Date?
+            /// - Remark: Generated from `#/components/schemas/MyHomePrice/outcome`.
+            public var outcome: Components.Schemas.PriceOutcome
+            /// - Remark: Generated from `#/components/schemas/MyHomePrice/story`.
+            public var story: Components.Schemas.PriceStory
+            /// The energy's tax as one rate in basis points. Absent: a home's price
+            /// is what the person said it costs, grid fee and tax included.
+            ///
+            /// - Remark: Generated from `#/components/schemas/MyHomePrice/taxRateBp`.
+            public var taxRateBp: Swift.Int32?
+            /// The clock the day was read on; absent means UTC.
+            ///
+            /// - Remark: Generated from `#/components/schemas/MyHomePrice/timeZone`.
+            public var timeZone: Swift.String?
+            /// Creates a new `MyHomePrice`.
+            ///
+            /// - Parameters:
+            ///   - currency: Absent where the story is `none`.
+            ///   - currentQuarterStart: The quarter that is current now, which `now` describes.
+            ///   - display:
+            ///   - evses: One entry: the home's price.
+            ///   - knownUntil: The end of the prices that are known: the market publishes a day ahead.
+            ///   - outcome:
+            ///   - story:
+            ///   - taxRateBp: The energy's tax as one rate in basis points. Absent: a home's price
+            ///   - timeZone: The clock the day was read on; absent means UTC.
+            public init(
+                currency: Swift.String? = nil,
+                currentQuarterStart: Foundation.Date,
+                display: Components.Schemas.MyHomePrice.DisplayPayload? = nil,
+                evses: [Components.Schemas.HomePriceEntry],
+                knownUntil: Foundation.Date? = nil,
+                outcome: Components.Schemas.PriceOutcome,
+                story: Components.Schemas.PriceStory,
+                taxRateBp: Swift.Int32? = nil,
+                timeZone: Swift.String? = nil
+            ) {
+                self.currency = currency
+                self.currentQuarterStart = currentQuarterStart
+                self.display = display
+                self.evses = evses
+                self.knownUntil = knownUntil
+                self.outcome = outcome
+                self.story = story
+                self.taxRateBp = taxRateBp
+                self.timeZone = timeZone
+            }
+            public enum CodingKeys: String, CodingKey {
+                case currency
+                case currentQuarterStart
+                case display
+                case evses
+                case knownUntil
+                case outcome
+                case story
+                case taxRateBp
+                case timeZone
+            }
+        }
+        /// Every home the person owns.
+        ///
+        /// - Remark: Generated from `#/components/schemas/MyHomes`.
+        public struct MyHomes: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/MyHomes/homes`.
+            public var homes: [Components.Schemas.MyHome]
+            /// Creates a new `MyHomes`.
+            ///
+            /// - Parameters:
+            ///   - homes:
+            public init(homes: [Components.Schemas.MyHome]) {
+                self.homes = homes
+            }
+            public enum CodingKeys: String, CodingKey {
+                case homes
+            }
+        }
+        /// One invitation addressed to the caller.
+        ///
+        /// - Remark: Generated from `#/components/schemas/MyJobInvitation`.
+        public struct MyJobInvitation: Codable, Hashable, Sendable {
+            /// When the link stops working.
+            ///
+            /// - Remark: Generated from `#/components/schemas/MyJobInvitation/expiresAt`.
+            public var expiresAt: Foundation.Date?
+            /// The installer organization that sent it.
+            ///
+            /// - Remark: Generated from `#/components/schemas/MyJobInvitation/installerName`.
+            public var installerName: Swift.String
+            /// Use this to decline it.
+            ///
+            /// - Remark: Generated from `#/components/schemas/MyJobInvitation/invitationId`.
+            public var invitationId: Swift.String
+            /// - Remark: Generated from `#/components/schemas/MyJobInvitation/jobId`.
+            public var jobId: Swift.String
+            /// - Remark: Generated from `#/components/schemas/MyJobInvitation/locationKind`.
+            public var locationKind: Components.Schemas.JobLocationKindApi
+            /// Creates a new `MyJobInvitation`.
+            ///
+            /// - Parameters:
+            ///   - expiresAt: When the link stops working.
+            ///   - installerName: The installer organization that sent it.
+            ///   - invitationId: Use this to decline it.
+            ///   - jobId:
+            ///   - locationKind:
+            public init(
+                expiresAt: Foundation.Date? = nil,
+                installerName: Swift.String,
+                invitationId: Swift.String,
+                jobId: Swift.String,
+                locationKind: Components.Schemas.JobLocationKindApi
+            ) {
+                self.expiresAt = expiresAt
+                self.installerName = installerName
+                self.invitationId = invitationId
+                self.jobId = jobId
+                self.locationKind = locationKind
+            }
+            public enum CodingKeys: String, CodingKey {
+                case expiresAt
+                case installerName
+                case invitationId
+                case jobId
+                case locationKind
+            }
+        }
+        /// The caller's invitations.
+        ///
+        /// - Remark: Generated from `#/components/schemas/MyJobInvitations`.
+        public struct MyJobInvitations: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/MyJobInvitations/invitations`.
+            public var invitations: [Components.Schemas.MyJobInvitation]
+            /// Creates a new `MyJobInvitations`.
+            ///
+            /// - Parameters:
+            ///   - invitations:
+            public init(invitations: [Components.Schemas.MyJobInvitation]) {
+                self.invitations = invitations
+            }
+            public enum CodingKeys: String, CodingKey {
+                case invitations
+            }
+        }
         /// One item of a person's inbox. `title` and `body` are rendered by
         /// `notifications` in the person's language when read, so changing language
         /// re-words history.
@@ -18649,6 +25945,69 @@ extension Components {
             }
             public enum CodingKeys: String, CodingKey {
                 case permissions
+            }
+        }
+        /// An invitation addressed to the person, as the recipient may see it: the
+        /// organization and the place, never who sent it.
+        ///
+        /// - Remark: Generated from `#/components/schemas/MyResidentInvitation`.
+        public struct MyResidentInvitation: Codable, Hashable, Sendable {
+            /// What accepting grants, e.g. `charging`.
+            ///
+            /// - Remark: Generated from `#/components/schemas/MyResidentInvitation/grants`.
+            public var grants: [Swift.String]
+            /// - Remark: Generated from `#/components/schemas/MyResidentInvitation/id`.
+            public var id: Swift.String
+            /// - Remark: Generated from `#/components/schemas/MyResidentInvitation/organizationName`.
+            public var organizationName: Swift.String
+            /// - Remark: Generated from `#/components/schemas/MyResidentInvitation/placeName`.
+            public var placeName: Swift.String
+            /// - Remark: Generated from `#/components/schemas/MyResidentInvitation/sentAt`.
+            public var sentAt: Foundation.Date
+            /// Creates a new `MyResidentInvitation`.
+            ///
+            /// - Parameters:
+            ///   - grants: What accepting grants, e.g. `charging`.
+            ///   - id:
+            ///   - organizationName:
+            ///   - placeName:
+            ///   - sentAt:
+            public init(
+                grants: [Swift.String],
+                id: Swift.String,
+                organizationName: Swift.String,
+                placeName: Swift.String,
+                sentAt: Foundation.Date
+            ) {
+                self.grants = grants
+                self.id = id
+                self.organizationName = organizationName
+                self.placeName = placeName
+                self.sentAt = sentAt
+            }
+            public enum CodingKeys: String, CodingKey {
+                case grants
+                case id
+                case organizationName
+                case placeName
+                case sentAt
+            }
+        }
+        /// The person's pending invitations.
+        ///
+        /// - Remark: Generated from `#/components/schemas/MyResidentInvitations`.
+        public struct MyResidentInvitations: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/MyResidentInvitations/invitations`.
+            public var invitations: [Components.Schemas.MyResidentInvitation]
+            /// Creates a new `MyResidentInvitations`.
+            ///
+            /// - Parameters:
+            ///   - invitations:
+            public init(invitations: [Components.Schemas.MyResidentInvitation]) {
+                self.invitations = invitations
+            }
+            public enum CodingKeys: String, CodingKey {
+                case invitations
             }
         }
         /// One of the caller's sessions, quarter-hour by quarter-hour.
@@ -18956,6 +26315,34 @@ extension Components {
         }
         /// - Remark: Generated from `#/components/schemas/MyVehicleKind`.
         public typealias MyVehicleKind = FlowionMyVehicleKind
+        /// - Remark: Generated from `#/components/schemas/MyVehicleStartConnectionRequest`.
+        public struct MyVehicleStartConnectionRequest: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/MyVehicleStartConnectionRequest/brand`.
+            public var brand: Components.Schemas.VehicleBrand
+            /// Also take the optional tracking step: Flowion follows where the car is,
+            /// only to notice when it arrives at one of the person's own chargers.
+            /// Tesla only, and only while `trackingAvailable` is `true` on the list of
+            /// connections; show `trackingNotice` first. Default `false`.
+            ///
+            /// - Remark: Generated from `#/components/schemas/MyVehicleStartConnectionRequest/trackingConsent`.
+            public var trackingConsent: Swift.Bool?
+            /// Creates a new `MyVehicleStartConnectionRequest`.
+            ///
+            /// - Parameters:
+            ///   - brand:
+            ///   - trackingConsent: Also take the optional tracking step: Flowion follows where the car is,
+            public init(
+                brand: Components.Schemas.VehicleBrand,
+                trackingConsent: Swift.Bool? = nil
+            ) {
+                self.brand = brand
+                self.trackingConsent = trackingConsent
+            }
+            public enum CodingKeys: String, CodingKey {
+                case brand
+                case trackingConsent
+            }
+        }
         /// - Remark: Generated from `#/components/schemas/MyVehicleStartConnectionResponse`.
         public struct MyVehicleStartConnectionResponse: Codable, Hashable, Sendable {
             /// The brand's own consent page. Send the browser here.
@@ -19315,22 +26702,46 @@ extension Components {
         public struct NewOrganizationInput: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/NewOrganizationInput/name`.
             public var name: Swift.String
+            /// - Remark: Generated from `#/components/schemas/NewOrganizationInput/preset`.
+            public struct PresetPayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/NewOrganizationInput/preset/value1`.
+                public var value1: Components.Schemas.HandoverPresetInput
+                /// Creates a new `PresetPayload`.
+                ///
+                /// - Parameters:
+                ///   - value1:
+                public init(value1: Components.Schemas.HandoverPresetInput) {
+                    self.value1 = value1
+                }
+                public init(from decoder: any Swift.Decoder) throws {
+                    self.value1 = try decoder.decodeFromSingleValueContainer()
+                }
+                public func encode(to encoder: any Swift.Encoder) throws {
+                    try encoder.encodeToSingleValueContainer(self.value1)
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/NewOrganizationInput/preset`.
+            public var preset: Components.Schemas.NewOrganizationInput.PresetPayload?
             /// - Remark: Generated from `#/components/schemas/NewOrganizationInput/slug`.
             public var slug: Swift.String
             /// Creates a new `NewOrganizationInput`.
             ///
             /// - Parameters:
             ///   - name:
+            ///   - preset:
             ///   - slug:
             public init(
                 name: Swift.String,
+                preset: Components.Schemas.NewOrganizationInput.PresetPayload? = nil,
                 slug: Swift.String
             ) {
                 self.name = name
+                self.preset = preset
                 self.slug = slug
             }
             public enum CodingKeys: String, CodingKey {
                 case name
+                case preset
                 case slug
             }
         }
@@ -19361,6 +26772,62 @@ extension Components {
                 case displayName
                 case email
                 case phone
+            }
+        }
+        /// A project to create in an organization you already run, and to receive the
+        /// location into.
+        ///
+        /// - Remark: Generated from `#/components/schemas/NewProjectInput`.
+        public struct NewProjectInput: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/NewProjectInput/name`.
+            public var name: Swift.String
+            /// - Remark: Generated from `#/components/schemas/NewProjectInput/organizationId`.
+            public var organizationId: Swift.String
+            /// - Remark: Generated from `#/components/schemas/NewProjectInput/preset`.
+            public struct PresetPayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/NewProjectInput/preset/value1`.
+                public var value1: Components.Schemas.HandoverPresetInput
+                /// Creates a new `PresetPayload`.
+                ///
+                /// - Parameters:
+                ///   - value1:
+                public init(value1: Components.Schemas.HandoverPresetInput) {
+                    self.value1 = value1
+                }
+                public init(from decoder: any Swift.Decoder) throws {
+                    self.value1 = try decoder.decodeFromSingleValueContainer()
+                }
+                public func encode(to encoder: any Swift.Encoder) throws {
+                    try encoder.encodeToSingleValueContainer(self.value1)
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/NewProjectInput/preset`.
+            public var preset: Components.Schemas.NewProjectInput.PresetPayload?
+            /// - Remark: Generated from `#/components/schemas/NewProjectInput/slug`.
+            public var slug: Swift.String
+            /// Creates a new `NewProjectInput`.
+            ///
+            /// - Parameters:
+            ///   - name:
+            ///   - organizationId:
+            ///   - preset:
+            ///   - slug:
+            public init(
+                name: Swift.String,
+                organizationId: Swift.String,
+                preset: Components.Schemas.NewProjectInput.PresetPayload? = nil,
+                slug: Swift.String
+            ) {
+                self.name = name
+                self.organizationId = organizationId
+                self.preset = preset
+                self.slug = slug
+            }
+            public enum CodingKeys: String, CodingKey {
+                case name
+                case organizationId
+                case preset
+                case slug
             }
         }
         /// Discriminates [`NoTariffAssignedTransactionCost`].
@@ -19556,29 +27023,48 @@ extension Components {
                 case weeks
             }
         }
-        /// - Remark: Generated from `#/components/schemas/OnboardingLinkResponse`.
-        public struct OnboardingLinkResponse: Codable, Hashable, Sendable {
-            /// - Remark: Generated from `#/components/schemas/OnboardingLinkResponse/expiresAt`.
-            public var expiresAt: Foundation.Date
-            /// Single-use, short-lived.
+        /// - Remark: Generated from `#/components/schemas/OfferAdditionsRequest`.
+        public struct OfferAdditionsRequest: Codable, Hashable, Sendable {
+            /// Where to send the link. Defaults to the job's contact. The link works only
+            /// for a person signed in with this verified address.
             ///
-            /// - Remark: Generated from `#/components/schemas/OnboardingLinkResponse/url`.
-            public var url: Swift.String
-            /// Creates a new `OnboardingLinkResponse`.
+            /// - Remark: Generated from `#/components/schemas/OfferAdditionsRequest/contactEmail`.
+            public var contactEmail: Swift.String?
+            /// Creates a new `OfferAdditionsRequest`.
             ///
             /// - Parameters:
-            ///   - expiresAt:
-            ///   - url: Single-use, short-lived.
-            public init(
-                expiresAt: Foundation.Date,
-                url: Swift.String
-            ) {
-                self.expiresAt = expiresAt
-                self.url = url
+            ///   - contactEmail: Where to send the link. Defaults to the job's contact. The link works only
+            public init(contactEmail: Swift.String? = nil) {
+                self.contactEmail = contactEmail
             }
             public enum CodingKeys: String, CodingKey {
-                case expiresAt
-                case url
+                case contactEmail
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/OfferAdditionsResponseView`.
+        public struct OfferAdditionsResponseView: Codable, Hashable, Sendable {
+            /// Whether the email was sent now. `false` leaves it queued; the link still
+            /// works once it goes out.
+            ///
+            /// - Remark: Generated from `#/components/schemas/OfferAdditionsResponseView/emailed`.
+            public var emailed: Swift.Bool
+            /// - Remark: Generated from `#/components/schemas/OfferAdditionsResponseView/job`.
+            public var job: Components.Schemas.JobView
+            /// Creates a new `OfferAdditionsResponseView`.
+            ///
+            /// - Parameters:
+            ///   - emailed: Whether the email was sent now. `false` leaves it queued; the link still
+            ///   - job:
+            public init(
+                emailed: Swift.Bool,
+                job: Components.Schemas.JobView
+            ) {
+                self.emailed = emailed
+                self.job = job
+            }
+            public enum CodingKeys: String, CodingKey {
+                case emailed
+                case job
             }
         }
         /// - Remark: Generated from `#/components/schemas/OrganizationSummary`.
@@ -19602,14 +27088,30 @@ extension Components {
             public var createdAt: Foundation.Date
             /// - Remark: Generated from `#/components/schemas/OrganizationSummary/id`.
             public var id: Swift.String
+            /// What kind of organization this is: `organization` (the ordinary one)
+            /// or `home` (a person's own home: free, with fixed limits, and no
+            /// billing, statements, sandbox or installer work). A value this
+            /// gateway does not know reads as `organization`.
+            ///
+            /// - Remark: Generated from `#/components/schemas/OrganizationSummary/kind`.
+            public var kind: Swift.String
             /// - Remark: Generated from `#/components/schemas/OrganizationSummary/name`.
             public var name: Swift.String
-            /// The organization's Swedish organization number (spec 112, R10), in
-            /// display form (`556703-7485`) — never the stored ten-digit wire form.
-            /// `null` when unset.
+            /// The organization's registration number. For a Swedish one it is in
+            /// display form (`556703-7485`), never the stored ten-digit wire form;
+            /// for any other country it is the number as stored: trimmed and
+            /// upper-cased, with a Danish or Finnish VAT form reduced to the
+            /// registration number. A VAT number is never held here -- give it on the
+            /// billing page. `null` when unset.
             ///
             /// - Remark: Generated from `#/components/schemas/OrganizationSummary/organizationNumber`.
             public var organizationNumber: Swift.String?
+            /// The country that issued `organizationNumber`, ISO 3166-1 alpha-2
+            /// (`SE`). This is the registration country, not the billing country.
+            /// `null` exactly when `organizationNumber` is.
+            ///
+            /// - Remark: Generated from `#/components/schemas/OrganizationSummary/organizationNumberCountry`.
+            public var organizationNumberCountry: Swift.String?
             /// - Remark: Generated from `#/components/schemas/OrganizationSummary/slug`.
             public var slug: Swift.String
             /// - Remark: Generated from `#/components/schemas/OrganizationSummary/updatedAt`.
@@ -19629,8 +27131,10 @@ extension Components {
             ///   - capabilities: This organization's currently *active* capabilities (spec 111) —
             ///   - createdAt:
             ///   - id:
+            ///   - kind: What kind of organization this is: `organization` (the ordinary one)
             ///   - name:
-            ///   - organizationNumber: The organization's Swedish organization number (spec 112, R10), in
+            ///   - organizationNumber: The organization's registration number. For a Swedish one it is in
+            ///   - organizationNumberCountry: The country that issued `organizationNumber`, ISO 3166-1 alpha-2
             ///   - slug:
             ///   - updatedAt:
             ///   - viewerPermissions: What the *authenticated caller* may do in this organization, as
@@ -19639,8 +27143,10 @@ extension Components {
                 capabilities: [Swift.String],
                 createdAt: Foundation.Date,
                 id: Swift.String,
+                kind: Swift.String,
                 name: Swift.String,
                 organizationNumber: Swift.String? = nil,
+                organizationNumberCountry: Swift.String? = nil,
                 slug: Swift.String,
                 updatedAt: Foundation.Date,
                 viewerPermissions: [Swift.String]
@@ -19649,8 +27155,10 @@ extension Components {
                 self.capabilities = capabilities
                 self.createdAt = createdAt
                 self.id = id
+                self.kind = kind
                 self.name = name
                 self.organizationNumber = organizationNumber
+                self.organizationNumberCountry = organizationNumberCountry
                 self.slug = slug
                 self.updatedAt = updatedAt
                 self.viewerPermissions = viewerPermissions
@@ -19660,8 +27168,10 @@ extension Components {
                 case capabilities
                 case createdAt
                 case id
+                case kind
                 case name
                 case organizationNumber
+                case organizationNumberCountry
                 case slug
                 case updatedAt
                 case viewerPermissions
@@ -19698,6 +27208,48 @@ extension Components {
                 case evseId
             }
         }
+        /// A charging schedule the car keeps itself, which may interfere with Flowion's
+        /// smart charging. Shown to the holder as a warning; nothing plans from it.
+        ///
+        /// - Remark: Generated from `#/components/schemas/OwnChargingSchedule`.
+        public struct OwnChargingSchedule: Codable, Hashable, Sendable {
+            /// When the car wants to be done. Only for `departBy`, and `null` when the
+            /// car has not said.
+            ///
+            /// - Remark: Generated from `#/components/schemas/OwnChargingSchedule/departureAt`.
+            public var departureAt: Foundation.Date?
+            /// - Remark: Generated from `#/components/schemas/OwnChargingSchedule/mode`.
+            public var mode: Components.Schemas.OwnChargingScheduleMode
+            /// When the car starts charging. Only for `startAt`, and `null` when the
+            /// car has not said.
+            ///
+            /// - Remark: Generated from `#/components/schemas/OwnChargingSchedule/startAt`.
+            public var startAt: Foundation.Date?
+            /// Creates a new `OwnChargingSchedule`.
+            ///
+            /// - Parameters:
+            ///   - departureAt: When the car wants to be done. Only for `departBy`, and `null` when the
+            ///   - mode:
+            ///   - startAt: When the car starts charging. Only for `startAt`, and `null` when the
+            public init(
+                departureAt: Foundation.Date? = nil,
+                mode: Components.Schemas.OwnChargingScheduleMode,
+                startAt: Foundation.Date? = nil
+            ) {
+                self.departureAt = departureAt
+                self.mode = mode
+                self.startAt = startAt
+            }
+            public enum CodingKeys: String, CodingKey {
+                case departureAt
+                case mode
+                case startAt
+            }
+        }
+        /// How a car's own charging schedule works.
+        ///
+        /// - Remark: Generated from `#/components/schemas/OwnChargingScheduleMode`.
+        public typealias OwnChargingScheduleMode = FlowionOwnChargingScheduleMode
         /// - Remark: Generated from `#/components/schemas/PairEaseeRequest`.
         public struct PairEaseeRequest: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/PairEaseeRequest/pin`.
@@ -19868,38 +27420,32 @@ extension Components {
                 case stripeAccountId
             }
         }
-        /// - Remark: Generated from `#/components/schemas/PaymentsAccountSession`.
-        public struct PaymentsAccountSession: Codable, Hashable, Sendable {
-            /// For Connect.js's embedded onboarding. Short-lived, single-use, and
-            /// never stored by Flowion.
+        /// - Remark: Generated from `#/components/schemas/PaymentsAccountLink`.
+        public struct PaymentsAccountLink: Codable, Hashable, Sendable {
+            /// After this the link no longer works; ask for a new one.
             ///
-            /// - Remark: Generated from `#/components/schemas/PaymentsAccountSession/clientSecret`.
-            public var clientSecret: Swift.String
-            /// - Remark: Generated from `#/components/schemas/PaymentsAccountSession/expiresAt`.
+            /// - Remark: Generated from `#/components/schemas/PaymentsAccountLink/expiresAt`.
             public var expiresAt: Foundation.Date
-            /// `pk_live_...` or `pk_test_...`, for initializing Connect.js.
+            /// Redirect the browser here. Single use and short-lived; never stored by
+            /// Flowion.
             ///
-            /// - Remark: Generated from `#/components/schemas/PaymentsAccountSession/publishableKey`.
-            public var publishableKey: Swift.String
-            /// Creates a new `PaymentsAccountSession`.
+            /// - Remark: Generated from `#/components/schemas/PaymentsAccountLink/url`.
+            public var url: Swift.String
+            /// Creates a new `PaymentsAccountLink`.
             ///
             /// - Parameters:
-            ///   - clientSecret: For Connect.js's embedded onboarding. Short-lived, single-use, and
-            ///   - expiresAt:
-            ///   - publishableKey: `pk_live_...` or `pk_test_...`, for initializing Connect.js.
+            ///   - expiresAt: After this the link no longer works; ask for a new one.
+            ///   - url: Redirect the browser here. Single use and short-lived; never stored by
             public init(
-                clientSecret: Swift.String,
                 expiresAt: Foundation.Date,
-                publishableKey: Swift.String
+                url: Swift.String
             ) {
-                self.clientSecret = clientSecret
                 self.expiresAt = expiresAt
-                self.publishableKey = publishableKey
+                self.url = url
             }
             public enum CodingKeys: String, CodingKey {
-                case clientSecret
                 case expiresAt
-                case publishableKey
+                case url
             }
         }
         /// Where the organization's connected account stands, derived from what
@@ -19917,9 +27463,9 @@ extension Components {
             public var detailsSubmitted: Swift.Bool
             /// - Remark: Generated from `#/components/schemas/PayoutsResponse/disabledReason`.
             public var disabledReason: Swift.String?
-            /// The platform cut on driver payments the organization's tier
-            /// carries, basis points — the tier's entitlement, not a property of
-            /// the connected account itself.
+            /// The platform cut on driver payments, basis points, from the
+            /// organization's billing entitlements — not a property of the
+            /// connected account itself.
             ///
             /// - Remark: Generated from `#/components/schemas/PayoutsResponse/paymentFeeBps`.
             public var paymentFeeBps: Swift.Int32
@@ -19939,7 +27485,7 @@ extension Components {
             ///   - chargesEnabled:
             ///   - detailsSubmitted:
             ///   - disabledReason:
-            ///   - paymentFeeBps: The platform cut on driver payments the organization's tier
+            ///   - paymentFeeBps: The platform cut on driver payments, basis points, from the
             ///   - payoutsEnabled:
             ///   - status: `not_started` (no account) | `onboarding` (account exists, charges
             ///   - stripeAccountId:
@@ -19970,6 +27516,10 @@ extension Components {
                 case stripeAccountId
             }
         }
+        /// The lowest provided policy that includes a permission.
+        ///
+        /// - Remark: Generated from `#/components/schemas/PermissionBundle`.
+        public typealias PermissionBundle = FlowionPermissionBundle
         /// Which side of the platform a permission acts on.
         ///
         /// - Remark: Generated from `#/components/schemas/PermissionPlane`.
@@ -19982,6 +27532,8 @@ extension Components {
             public var createdAt: Foundation.Date
             /// - Remark: Generated from `#/components/schemas/PermissionPolicySummary/document`.
             public var document: Components.Schemas.PolicyDocument
+            /// - Remark: Generated from `#/components/schemas/PermissionPolicySummary/holders`.
+            public var holders: Components.Schemas.PolicyHolderCounts
             /// The id a binding names (`policyId`).
             ///
             /// - Remark: Generated from `#/components/schemas/PermissionPolicySummary/id`.
@@ -20006,6 +27558,7 @@ extension Components {
             /// - Parameters:
             ///   - createdAt:
             ///   - document:
+            ///   - holders:
             ///   - id: The id a binding names (`policyId`).
             ///   - kind:
             ///   - name:
@@ -20015,6 +27568,7 @@ extension Components {
             public init(
                 createdAt: Foundation.Date,
                 document: Components.Schemas.PolicyDocument,
+                holders: Components.Schemas.PolicyHolderCounts,
                 id: Swift.String,
                 kind: Components.Schemas.PermissionPolicyKind,
                 name: Swift.String,
@@ -20024,6 +27578,7 @@ extension Components {
             ) {
                 self.createdAt = createdAt
                 self.document = document
+                self.holders = holders
                 self.id = id
                 self.kind = kind
                 self.name = name
@@ -20034,6 +27589,7 @@ extension Components {
             public enum CodingKeys: String, CodingKey {
                 case createdAt
                 case document
+                case holders
                 case id
                 case kind
                 case name
@@ -20048,31 +27604,123 @@ extension Components {
             ///
             /// - Remark: Generated from `#/components/schemas/PermissionSummary/description`.
             public var description: Swift.String
+            /// - Remark: Generated from `#/components/schemas/PermissionSummary/lowestBundle`.
+            public struct LowestBundlePayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/PermissionSummary/lowestBundle/value1`.
+                public var value1: Components.Schemas.PermissionBundle
+                /// Creates a new `LowestBundlePayload`.
+                ///
+                /// - Parameters:
+                ///   - value1:
+                public init(value1: Components.Schemas.PermissionBundle) {
+                    self.value1 = value1
+                }
+                public init(from decoder: any Swift.Decoder) throws {
+                    self.value1 = try decoder.decodeFromSingleValueContainer()
+                }
+                public func encode(to encoder: any Swift.Encoder) throws {
+                    try encoder.encodeToSingleValueContainer(self.value1)
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/PermissionSummary/lowestBundle`.
+            public var lowestBundle: Components.Schemas.PermissionSummary.LowestBundlePayload?
             /// The permission's name, `service.resource.verb`. Published contract.
             ///
             /// - Remark: Generated from `#/components/schemas/PermissionSummary/name`.
             public var name: Swift.String
             /// - Remark: Generated from `#/components/schemas/PermissionSummary/plane`.
             public var plane: Components.Schemas.PermissionPlane
+            /// Whether holding it makes an account need two kinds of sign-in factor
+            /// and recovery codes.
+            ///
+            /// - Remark: Generated from `#/components/schemas/PermissionSummary/privileged`.
+            public var privileged: Swift.Bool
             /// Creates a new `PermissionSummary`.
             ///
             /// - Parameters:
             ///   - description: What holding the permission lets someone do, in plain language.
+            ///   - lowestBundle:
             ///   - name: The permission's name, `service.resource.verb`. Published contract.
             ///   - plane:
+            ///   - privileged: Whether holding it makes an account need two kinds of sign-in factor
             public init(
                 description: Swift.String,
+                lowestBundle: Components.Schemas.PermissionSummary.LowestBundlePayload? = nil,
                 name: Swift.String,
-                plane: Components.Schemas.PermissionPlane
+                plane: Components.Schemas.PermissionPlane,
+                privileged: Swift.Bool
             ) {
                 self.description = description
+                self.lowestBundle = lowestBundle
                 self.name = name
                 self.plane = plane
+                self.privileged = privileged
             }
             public enum CodingKeys: String, CodingKey {
                 case description
+                case lowestBundle
                 case name
                 case plane
+                case privileged
+            }
+        }
+        /// One of the account's cards. Never its value.
+        ///
+        /// - Remark: Generated from `#/components/schemas/PersonCard`.
+        public struct PersonCard: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/PersonCard/createdAt`.
+            public var createdAt: Foundation.Date
+            /// - Remark: Generated from `#/components/schemas/PersonCard/id`.
+            public var id: Swift.String
+            /// The card's last four characters, to tell two cards apart.
+            ///
+            /// - Remark: Generated from `#/components/schemas/PersonCard/lastFour`.
+            public var lastFour: Swift.String
+            /// For a string-only card, the charger model it was learned at.
+            ///
+            /// - Remark: Generated from `#/components/schemas/PersonCard/learnedModel`.
+            public var learnedModel: Swift.String?
+            /// For a string-only card, the charger vendor it was learned at.
+            ///
+            /// - Remark: Generated from `#/components/schemas/PersonCard/learnedVendor`.
+            public var learnedVendor: Swift.String?
+            /// True for a card learned from a charger's own string: it works only at
+            /// the charger models that sent that string, until a phone read confirms
+            /// the model's encoding.
+            ///
+            /// - Remark: Generated from `#/components/schemas/PersonCard/stringOnly`.
+            public var stringOnly: Swift.Bool
+            /// Creates a new `PersonCard`.
+            ///
+            /// - Parameters:
+            ///   - createdAt:
+            ///   - id:
+            ///   - lastFour: The card's last four characters, to tell two cards apart.
+            ///   - learnedModel: For a string-only card, the charger model it was learned at.
+            ///   - learnedVendor: For a string-only card, the charger vendor it was learned at.
+            ///   - stringOnly: True for a card learned from a charger's own string: it works only at
+            public init(
+                createdAt: Foundation.Date,
+                id: Swift.String,
+                lastFour: Swift.String,
+                learnedModel: Swift.String? = nil,
+                learnedVendor: Swift.String? = nil,
+                stringOnly: Swift.Bool
+            ) {
+                self.createdAt = createdAt
+                self.id = id
+                self.lastFour = lastFour
+                self.learnedModel = learnedModel
+                self.learnedVendor = learnedVendor
+                self.stringOnly = stringOnly
+            }
+            public enum CodingKeys: String, CodingKey {
+                case createdAt
+                case id
+                case lastFour
+                case learnedModel
+                case learnedVendor
+                case stringOnly
             }
         }
         /// Mirrors OCPP's `PhaseEnumType`, carrying the protocol's own spelling
@@ -20163,6 +27811,123 @@ extension Components {
                 case evses
             }
         }
+        /// What decided the first quarter of the plan.
+        ///
+        /// - Remark: Generated from `#/components/schemas/PlanDecidedBy`.
+        public typealias PlanDecidedBy = FlowionPlanDecidedBy
+        /// When Flowion would charge a goal, as of now. An estimate: it is the
+        /// planner's own rule on what it knows at this moment, and the real plan
+        /// moves with the neighbours' charging and the prices published later.
+        ///
+        /// - Remark: Generated from `#/components/schemas/PlanPreview`.
+        public struct PlanPreview: Codable, Hashable, Sendable {
+            /// The instant the preview was computed for.
+            ///
+            /// - Remark: Generated from `#/components/schemas/PlanPreview/asOf`.
+            public var asOf: Foundation.Date
+            /// - Remark: Generated from `#/components/schemas/PlanPreview/currency`.
+            public var currency: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/PlanPreview/decidedBy`.
+            public struct DecidedByPayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/PlanPreview/decidedBy/value1`.
+                public var value1: Components.Schemas.PlanDecidedBy
+                /// Creates a new `DecidedByPayload`.
+                ///
+                /// - Parameters:
+                ///   - value1:
+                public init(value1: Components.Schemas.PlanDecidedBy) {
+                    self.value1 = value1
+                }
+                public init(from decoder: any Swift.Decoder) throws {
+                    self.value1 = try decoder.decodeFromSingleValueContainer()
+                }
+                public func encode(to encoder: any Swift.Encoder) throws {
+                    try encoder.encodeToSingleValueContainer(self.value1)
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/PlanPreview/decidedBy`.
+            public var decidedBy: Components.Schemas.PlanPreview.DecidedByPayload?
+            /// Decimal string, in `currency`.
+            ///
+            /// - Remark: Generated from `#/components/schemas/PlanPreview/expectedCost`.
+            public var expectedCost: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/PlanPreview/outcome`.
+            public var outcome: Components.Schemas.PlanPreviewOutcome
+            /// Chronological. Empty unless `outcome` is `planned`.
+            ///
+            /// - Remark: Generated from `#/components/schemas/PlanPreview/segments`.
+            public var segments: [Components.Schemas.PlannedSegmentBody]
+            /// Creates a new `PlanPreview`.
+            ///
+            /// - Parameters:
+            ///   - asOf: The instant the preview was computed for.
+            ///   - currency:
+            ///   - decidedBy:
+            ///   - expectedCost: Decimal string, in `currency`.
+            ///   - outcome:
+            ///   - segments: Chronological. Empty unless `outcome` is `planned`.
+            public init(
+                asOf: Foundation.Date,
+                currency: Swift.String? = nil,
+                decidedBy: Components.Schemas.PlanPreview.DecidedByPayload? = nil,
+                expectedCost: Swift.String? = nil,
+                outcome: Components.Schemas.PlanPreviewOutcome,
+                segments: [Components.Schemas.PlannedSegmentBody]
+            ) {
+                self.asOf = asOf
+                self.currency = currency
+                self.decidedBy = decidedBy
+                self.expectedCost = expectedCost
+                self.outcome = outcome
+                self.segments = segments
+            }
+            public enum CodingKeys: String, CodingKey {
+                case asOf
+                case currency
+                case decidedBy
+                case expectedCost
+                case outcome
+                case segments
+            }
+        }
+        /// What the planner could say about the goal.
+        ///
+        /// - Remark: Generated from `#/components/schemas/PlanPreviewOutcome`.
+        public typealias PlanPreviewOutcome = FlowionPlanPreviewOutcome
+        /// A charging goal to preview: how much to add, and by when.
+        ///
+        /// - Remark: Generated from `#/components/schemas/PlanPreviewRequest`.
+        public struct PlanPreviewRequest: Codable, Hashable, Sendable {
+            /// Energy to add from now, in kWh, as a decimal string.
+            ///
+            /// - Remark: Generated from `#/components/schemas/PlanPreviewRequest/energyKwhToAdd`.
+            public var energyKwhToAdd: Swift.String
+            /// When charging should be finished, RFC 3339.
+            ///
+            /// - Remark: Generated from `#/components/schemas/PlanPreviewRequest/readyBy`.
+            public var readyBy: Foundation.Date
+            /// Creates a new `PlanPreviewRequest`.
+            ///
+            /// - Parameters:
+            ///   - energyKwhToAdd: Energy to add from now, in kWh, as a decimal string.
+            ///   - readyBy: When charging should be finished, RFC 3339.
+            public init(
+                energyKwhToAdd: Swift.String,
+                readyBy: Foundation.Date
+            ) {
+                self.energyKwhToAdd = energyKwhToAdd
+                self.readyBy = readyBy
+            }
+            public enum CodingKeys: String, CodingKey {
+                case energyKwhToAdd
+                case readyBy
+            }
+        }
+        /// What the planner decided for the session, from its own record of the
+        /// cycle.
+        ///
+        /// - Remark: Generated from `#/components/schemas/PlanState`.
+        public typealias PlanState = FlowionPlanState
         /// - Remark: Generated from `#/components/schemas/PlannedScheduleEntryResponse`.
         public struct PlannedScheduleEntryResponse: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/PlannedScheduleEntryResponse/chargingStationId`.
@@ -20236,6 +28001,48 @@ extension Components {
             public enum CodingKeys: String, CodingKey {
                 case from
                 case to
+            }
+        }
+        /// Consecutive planned quarters, merged.
+        ///
+        /// - Remark: Generated from `#/components/schemas/PlannedSegmentBody`.
+        public struct PlannedSegmentBody: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/PlannedSegmentBody/end`.
+            public var end: Foundation.Date
+            /// Decimal string, kWh.
+            ///
+            /// - Remark: Generated from `#/components/schemas/PlannedSegmentBody/energyKwh`.
+            public var energyKwh: Swift.String
+            /// Decimal string per kWh, tax included: the mean of the segment's
+            /// quarters weighted by energy.
+            ///
+            /// - Remark: Generated from `#/components/schemas/PlannedSegmentBody/pricePerKwh`.
+            public var pricePerKwh: Swift.String
+            /// - Remark: Generated from `#/components/schemas/PlannedSegmentBody/start`.
+            public var start: Foundation.Date
+            /// Creates a new `PlannedSegmentBody`.
+            ///
+            /// - Parameters:
+            ///   - end:
+            ///   - energyKwh: Decimal string, kWh.
+            ///   - pricePerKwh: Decimal string per kWh, tax included: the mean of the segment's
+            ///   - start:
+            public init(
+                end: Foundation.Date,
+                energyKwh: Swift.String,
+                pricePerKwh: Swift.String,
+                start: Foundation.Date
+            ) {
+                self.end = end
+                self.energyKwh = energyKwh
+                self.pricePerKwh = pricePerKwh
+                self.start = start
+            }
+            public enum CodingKeys: String, CodingKey {
+                case end
+                case energyKwh
+                case pricePerKwh
+                case start
             }
         }
         /// - Remark: Generated from `#/components/schemas/PlugInRequestBody`.
@@ -20558,6 +28365,157 @@ extension Components {
         ///
         /// - Remark: Generated from `#/components/schemas/PolicyEffect`.
         public typealias PolicyEffect = FlowionPolicyEffect
+        /// One place a policy is held: a binding, or an invitation that will bind it.
+        ///
+        /// - Remark: Generated from `#/components/schemas/PolicyHolder`.
+        public struct PolicyHolder: Codable, Hashable, Sendable {
+            /// Invitations only: true when the invitation is past its expiry.
+            ///
+            /// - Remark: Generated from `#/components/schemas/PolicyHolder/expired`.
+            public var expired: Swift.Bool?
+            /// Invitations only.
+            ///
+            /// - Remark: Generated from `#/components/schemas/PolicyHolder/invitationId`.
+            public var invitationId: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/PolicyHolder/kind`.
+            public var kind: Components.Schemas.PolicyHolderKind
+            /// A member's address (their user id when none is recorded), an API key's
+            /// name, an invitation's address, a driver's display name. Empty for the
+            /// public group.
+            ///
+            /// - Remark: Generated from `#/components/schemas/PolicyHolder/label`.
+            public var label: Swift.String
+            /// - Remark: Generated from `#/components/schemas/PolicyHolder/mode`.
+            public var mode: Components.Schemas.PolicyMode?
+            /// - Remark: Generated from `#/components/schemas/PolicyHolder/node`.
+            public var node: Components.Schemas.PolicyHolderNode
+            /// Absent for an invitation.
+            ///
+            /// - Remark: Generated from `#/components/schemas/PolicyHolder/principalId`.
+            public var principalId: Swift.String?
+            /// Creates a new `PolicyHolder`.
+            ///
+            /// - Parameters:
+            ///   - expired: Invitations only: true when the invitation is past its expiry.
+            ///   - invitationId: Invitations only.
+            ///   - kind:
+            ///   - label: A member's address (their user id when none is recorded), an API key's
+            ///   - mode:
+            ///   - node:
+            ///   - principalId: Absent for an invitation.
+            public init(
+                expired: Swift.Bool? = nil,
+                invitationId: Swift.String? = nil,
+                kind: Components.Schemas.PolicyHolderKind,
+                label: Swift.String,
+                mode: Components.Schemas.PolicyMode? = nil,
+                node: Components.Schemas.PolicyHolderNode,
+                principalId: Swift.String? = nil
+            ) {
+                self.expired = expired
+                self.invitationId = invitationId
+                self.kind = kind
+                self.label = label
+                self.mode = mode
+                self.node = node
+                self.principalId = principalId
+            }
+            public enum CodingKeys: String, CodingKey {
+                case expired
+                case invitationId
+                case kind
+                case label
+                case mode
+                case node
+                case principalId
+            }
+        }
+        /// Who holds a policy, counted. A principal bound at several nodes counts once.
+        ///
+        /// - Remark: Generated from `#/components/schemas/PolicyHolderCounts`.
+        public struct PolicyHolderCounts: Codable, Hashable, Sendable {
+            /// API keys that hold it.
+            ///
+            /// - Remark: Generated from `#/components/schemas/PolicyHolderCounts/apiKeys`.
+            public var apiKeys: Swift.Int32
+            /// Invitations that have not been accepted and name it, expired ones
+            /// included.
+            ///
+            /// - Remark: Generated from `#/components/schemas/PolicyHolderCounts/invitations`.
+            public var invitations: Swift.Int32
+            /// Members of the organization who hold the policy.
+            ///
+            /// - Remark: Generated from `#/components/schemas/PolicyHolderCounts/members`.
+            public var members: Swift.Int32
+            /// Drivers and the public group.
+            ///
+            /// - Remark: Generated from `#/components/schemas/PolicyHolderCounts/other`.
+            public var other: Swift.Int32
+            /// The sum of the four. A policy no one holds has `0`, which is also when
+            /// `DELETE` can succeed.
+            ///
+            /// - Remark: Generated from `#/components/schemas/PolicyHolderCounts/total`.
+            public var total: Swift.Int32
+            /// Creates a new `PolicyHolderCounts`.
+            ///
+            /// - Parameters:
+            ///   - apiKeys: API keys that hold it.
+            ///   - invitations: Invitations that have not been accepted and name it, expired ones
+            ///   - members: Members of the organization who hold the policy.
+            ///   - other: Drivers and the public group.
+            ///   - total: The sum of the four. A policy no one holds has `0`, which is also when
+            public init(
+                apiKeys: Swift.Int32,
+                invitations: Swift.Int32,
+                members: Swift.Int32,
+                other: Swift.Int32,
+                total: Swift.Int32
+            ) {
+                self.apiKeys = apiKeys
+                self.invitations = invitations
+                self.members = members
+                self.other = other
+                self.total = total
+            }
+            public enum CodingKeys: String, CodingKey {
+                case apiKeys
+                case invitations
+                case members
+                case other
+                case total
+            }
+        }
+        /// What kind of holder a row is.
+        ///
+        /// - Remark: Generated from `#/components/schemas/PolicyHolderKind`.
+        public typealias PolicyHolderKind = FlowionPolicyHolderKind
+        /// Where a holder holds the policy; for an invitation, where it will be bound.
+        ///
+        /// - Remark: Generated from `#/components/schemas/PolicyHolderNode`.
+        public struct PolicyHolderNode: Codable, Hashable, Sendable {
+            /// The organization's, project's, location's or charger's id.
+            ///
+            /// - Remark: Generated from `#/components/schemas/PolicyHolderNode/id`.
+            public var id: Swift.String
+            /// - Remark: Generated from `#/components/schemas/PolicyHolderNode/kind`.
+            public var kind: Components.Schemas.BindingNodeKind
+            /// Creates a new `PolicyHolderNode`.
+            ///
+            /// - Parameters:
+            ///   - id: The organization's, project's, location's or charger's id.
+            ///   - kind:
+            public init(
+                id: Swift.String,
+                kind: Components.Schemas.BindingNodeKind
+            ) {
+                self.id = id
+                self.kind = kind
+            }
+            public enum CodingKeys: String, CodingKey {
+                case id
+                case kind
+            }
+        }
         /// - Remark: Generated from `#/components/schemas/PolicyMode`.
         public typealias PolicyMode = FlowionPolicyMode
         /// - Remark: Generated from `#/components/schemas/PolicyStatement`.
@@ -20758,6 +28716,31 @@ extension Components {
                 ])
             }
         }
+        /// - Remark: Generated from `#/components/schemas/PreviewResidentsRequest`.
+        public struct PreviewResidentsRequest: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/PreviewResidentsRequest/people`.
+            public var people: [Components.Schemas.ResidentImportPerson]
+            /// Creates a new `PreviewResidentsRequest`.
+            ///
+            /// - Parameters:
+            ///   - people:
+            public init(people: [Components.Schemas.ResidentImportPerson]) {
+                self.people = people
+            }
+            public enum CodingKeys: String, CodingKey {
+                case people
+            }
+            public init(from decoder: any Swift.Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                self.people = try container.decode(
+                    [Components.Schemas.ResidentImportPerson].self,
+                    forKey: .people
+                )
+                try decoder.ensureNoAdditionalProperties(knownKeys: [
+                    "people"
+                ])
+            }
+        }
         /// A price, mirroring OCPP's `PriceType`/`TotalPriceType`.
         ///
         /// At least one of `exclTax`/`inclTax` is always present.
@@ -20851,10 +28834,102 @@ extension Components {
                 case unit
             }
         }
+        /// How cheap a quarter's MARKET price is against what the same hour of the
+        /// day cost over the last 30 days in the same bidding zone (spec 156).
+        ///
+        /// - Remark: Generated from `#/components/schemas/PriceLevel`.
+        public typealias PriceLevel = FlowionPriceLevel
+        /// The price of the current quarter and what it is made of. The parts add up
+        /// to `pricePerKwh` exactly.
+        ///
+        /// - Remark: Generated from `#/components/schemas/PriceNow`.
+        public struct PriceNow: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/PriceNow/parts`.
+            public var parts: [Components.Schemas.PricePart]
+            /// - Remark: Generated from `#/components/schemas/PriceNow/pricePerKwh`.
+            public var pricePerKwh: Swift.String
+            /// Creates a new `PriceNow`.
+            ///
+            /// - Parameters:
+            ///   - parts:
+            ///   - pricePerKwh:
+            public init(
+                parts: [Components.Schemas.PricePart],
+                pricePerKwh: Swift.String
+            ) {
+                self.parts = parts
+                self.pricePerKwh = pricePerKwh
+            }
+            public enum CodingKeys: String, CodingKey {
+                case parts
+                case pricePerKwh
+            }
+        }
+        /// Why the quarters are known, or why they are not.
+        ///
+        /// - Remark: Generated from `#/components/schemas/PriceOutcome`.
+        public typealias PriceOutcome = FlowionPriceOutcome
+        /// One component of the price now.
+        ///
+        /// - Remark: Generated from `#/components/schemas/PricePart`.
+        public struct PricePart: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/PricePart/kind`.
+            public var kind: Components.Schemas.PricePartKind
+            /// The operator's own name, for `part`.
+            ///
+            /// - Remark: Generated from `#/components/schemas/PricePart/name`.
+            public var name: Swift.String?
+            /// Decimal string per kWh; may be negative.
+            ///
+            /// - Remark: Generated from `#/components/schemas/PricePart/pricePerKwh`.
+            public var pricePerKwh: Swift.String
+            /// Creates a new `PricePart`.
+            ///
+            /// - Parameters:
+            ///   - kind:
+            ///   - name: The operator's own name, for `part`.
+            ///   - pricePerKwh: Decimal string per kWh; may be negative.
+            public init(
+                kind: Components.Schemas.PricePartKind,
+                name: Swift.String? = nil,
+                pricePerKwh: Swift.String
+            ) {
+                self.kind = kind
+                self.name = name
+                self.pricePerKwh = pricePerKwh
+            }
+            public enum CodingKeys: String, CodingKey {
+                case kind
+                case name
+                case pricePerKwh
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/PricePartKind`.
+        public typealias PricePartKind = FlowionPricePartKind
         /// - Remark: Generated from `#/components/schemas/PricePoint`.
         public struct PricePoint: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/PricePoint/currency`.
             public var currency: Swift.String
+            /// - Remark: Generated from `#/components/schemas/PricePoint/display`.
+            public struct DisplayPayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/PricePoint/display/value1`.
+                public var value1: Components.Schemas.DisplayConversion
+                /// Creates a new `DisplayPayload`.
+                ///
+                /// - Parameters:
+                ///   - value1:
+                public init(value1: Components.Schemas.DisplayConversion) {
+                    self.value1 = value1
+                }
+                public init(from decoder: any Swift.Decoder) throws {
+                    self.value1 = try .init(from: decoder)
+                }
+                public func encode(to encoder: any Swift.Encoder) throws {
+                    try self.value1.encode(to: encoder)
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/PricePoint/display`.
+            public var display: Components.Schemas.PricePoint.DisplayPayload?
             /// - Remark: Generated from `#/components/schemas/PricePoint/periodStart`.
             public var periodStart: Foundation.Date
             /// A decimal string (e.g. `"42.17"`, `"-5.32"` — day-ahead prices can
@@ -20869,27 +28944,95 @@ extension Components {
             ///
             /// - Parameters:
             ///   - currency:
+            ///   - display:
             ///   - periodStart:
             ///   - priceAmount: A decimal string (e.g. `"42.17"`, `"-5.32"` — day-ahead prices can
             ///   - resolutionMinutes:
             public init(
                 currency: Swift.String,
+                display: Components.Schemas.PricePoint.DisplayPayload? = nil,
                 periodStart: Foundation.Date,
                 priceAmount: Swift.String,
                 resolutionMinutes: Swift.Int32
             ) {
                 self.currency = currency
+                self.display = display
                 self.periodStart = periodStart
                 self.priceAmount = priceAmount
                 self.resolutionMinutes = resolutionMinutes
             }
             public enum CodingKeys: String, CodingKey {
                 case currency
+                case display
                 case periodStart
                 case priceAmount
                 case resolutionMinutes
             }
         }
+        /// One quarter of an hour, in UTC.
+        ///
+        /// - Remark: Generated from `#/components/schemas/PriceQuarter`.
+        public struct PriceQuarter: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/PriceQuarter/level`.
+            public struct LevelPayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/PriceQuarter/level/value1`.
+                public var value1: Components.Schemas.PriceLevel
+                /// Creates a new `LevelPayload`.
+                ///
+                /// - Parameters:
+                ///   - value1:
+                public init(value1: Components.Schemas.PriceLevel) {
+                    self.value1 = value1
+                }
+                public init(from decoder: any Swift.Decoder) throws {
+                    self.value1 = try decoder.decodeFromSingleValueContainer()
+                }
+                public func encode(to encoder: any Swift.Encoder) throws {
+                    try encoder.encodeToSingleValueContainer(self.value1)
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/PriceQuarter/level`.
+            public var level: Components.Schemas.PriceQuarter.LevelPayload?
+            /// Decimal string per kWh, tax included. Absent: not known (never zero).
+            ///
+            /// - Remark: Generated from `#/components/schemas/PriceQuarter/pricePerKwh`.
+            public var pricePerKwh: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/PriceQuarter/start`.
+            public var start: Foundation.Date
+            /// `round((market price / usual - 1) * 100)`: negative is cheaper than
+            /// usual. Present exactly when `level` is.
+            ///
+            /// - Remark: Generated from `#/components/schemas/PriceQuarter/vsUsualPct`.
+            public var vsUsualPct: Swift.Int32?
+            /// Creates a new `PriceQuarter`.
+            ///
+            /// - Parameters:
+            ///   - level:
+            ///   - pricePerKwh: Decimal string per kWh, tax included. Absent: not known (never zero).
+            ///   - start:
+            ///   - vsUsualPct: `round((market price / usual - 1) * 100)`: negative is cheaper than
+            public init(
+                level: Components.Schemas.PriceQuarter.LevelPayload? = nil,
+                pricePerKwh: Swift.String? = nil,
+                start: Foundation.Date,
+                vsUsualPct: Swift.Int32? = nil
+            ) {
+                self.level = level
+                self.pricePerKwh = pricePerKwh
+                self.start = start
+                self.vsUsualPct = vsUsualPct
+            }
+            public enum CodingKeys: String, CodingKey {
+                case level
+                case pricePerKwh
+                case start
+                case vsUsualPct
+            }
+        }
+        /// What the price at a charger is, in one word.
+        ///
+        /// - Remark: Generated from `#/components/schemas/PriceStory`.
+        public typealias PriceStory = FlowionPriceStory
         /// The only unit v1 quotes prices in.
         ///
         /// - Remark: Generated from `#/components/schemas/PriceUnit`.
@@ -21174,6 +29317,19 @@ extension Components {
         ///
         /// - Remark: Generated from `#/components/schemas/ProjectAuthorizationSettingsView`.
         public struct ProjectAuthorizationSettingsView: Codable, Hashable, Sendable {
+            /// Set while a project that existed before the switch is inside its
+            /// visible window: credentials keep working although `credentialsMode` is
+            /// `off`, until this instant. Absent once the window has closed or when
+            /// none was ever opened.
+            ///
+            /// - Remark: Generated from `#/components/schemas/ProjectAuthorizationSettingsView/credentialsLegacyUntil`.
+            public var credentialsLegacyUntil: Foundation.Date?
+            /// Whether an id-token credential (an enrolled card or a person's own
+            /// card) may start a charge in this project: `on` or `off`. A location can
+            /// override it (`PUT .../locations/{locationId}/credentials-policy`).
+            ///
+            /// - Remark: Generated from `#/components/schemas/ProjectAuthorizationSettingsView/credentialsMode`.
+            public var credentialsMode: Swift.String
             /// This project's people may see their places in Flowion Home, found by
             /// the email on their principal (ADR-0149). Off by default; leave it
             /// off when your people live in your own user system.
@@ -21189,22 +29345,30 @@ extension Components {
             /// Creates a new `ProjectAuthorizationSettingsView`.
             ///
             /// - Parameters:
+            ///   - credentialsLegacyUntil: Set while a project that existed before the switch is inside its
+            ///   - credentialsMode: Whether an id-token credential (an enrolled card or a person's own
             ///   - homeLinkable: This project's people may see their places in Flowion Home, found by
             ///   - masterPassGroupKey:
             ///   - rateLimitAttempts:
             ///   - rateLimitWindowSeconds:
             public init(
+                credentialsLegacyUntil: Foundation.Date? = nil,
+                credentialsMode: Swift.String,
                 homeLinkable: Swift.Bool,
                 masterPassGroupKey: Swift.String? = nil,
                 rateLimitAttempts: Swift.Int32,
                 rateLimitWindowSeconds: Swift.Int32
             ) {
+                self.credentialsLegacyUntil = credentialsLegacyUntil
+                self.credentialsMode = credentialsMode
                 self.homeLinkable = homeLinkable
                 self.masterPassGroupKey = masterPassGroupKey
                 self.rateLimitAttempts = rateLimitAttempts
                 self.rateLimitWindowSeconds = rateLimitWindowSeconds
             }
             public enum CodingKeys: String, CodingKey {
+                case credentialsLegacyUntil
+                case credentialsMode
                 case homeLinkable
                 case masterPassGroupKey
                 case rateLimitAttempts
@@ -21462,14 +29626,30 @@ extension Components {
                 case locations
             }
         }
+        /// What a project is for. Fixed when the project is created: no request
+        /// changes it, so a wrong kind means a replacement project.
+        ///
+        /// - Remark: Generated from `#/components/schemas/ProjectKind`.
+        public typealias ProjectKind = FlowionProjectKind
+        /// How an `operations` project presents itself in the console and the apps:
+        /// what it opens on and how its navigation is ordered. It never changes what
+        /// the project can do, who may do it, or which pages exist.
+        ///
+        /// - Remark: Generated from `#/components/schemas/ProjectPreset`.
+        public typealias ProjectPreset = FlowionProjectPreset
         /// - Remark: Generated from `#/components/schemas/ProjectSummary`.
         public struct ProjectSummary: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/ProjectSummary/createdAt`.
             public var createdAt: Foundation.Date
             /// - Remark: Generated from `#/components/schemas/ProjectSummary/id`.
             public var id: Swift.String
+            /// Deprecated: projects no longer have a default, so this is `false` for every project. It stays until its sunset so a client that reads it keeps working; do not branch on it.
+            ///
             /// - Remark: Generated from `#/components/schemas/ProjectSummary/isDefault`.
+            @available(*, deprecated)
             public var isDefault: Swift.Bool
+            /// - Remark: Generated from `#/components/schemas/ProjectSummary/kind`.
+            public var kind: Components.Schemas.ProjectKind
             /// Whether this project bills the people who charge in it by the month
             /// (spec 131's resident statements). `false` unless an Owner or Admin
             /// switched it on. The console shows its Statements tab only when this
@@ -21479,6 +29659,26 @@ extension Components {
             public var monthlyStatements: Swift.Bool
             /// - Remark: Generated from `#/components/schemas/ProjectSummary/name`.
             public var name: Swift.String
+            /// - Remark: Generated from `#/components/schemas/ProjectSummary/preset`.
+            public struct PresetPayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/ProjectSummary/preset/value1`.
+                public var value1: Components.Schemas.ProjectPreset
+                /// Creates a new `PresetPayload`.
+                ///
+                /// - Parameters:
+                ///   - value1:
+                public init(value1: Components.Schemas.ProjectPreset) {
+                    self.value1 = value1
+                }
+                public init(from decoder: any Swift.Decoder) throws {
+                    self.value1 = try decoder.decodeFromSingleValueContainer()
+                }
+                public func encode(to encoder: any Swift.Encoder) throws {
+                    try encoder.encodeToSingleValueContainer(self.value1)
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/ProjectSummary/preset`.
+            public var preset: Components.Schemas.ProjectSummary.PresetPayload?
             /// - Remark: Generated from `#/components/schemas/ProjectSummary/slug`.
             public var slug: Swift.String
             /// The IANA time zone (e.g. `Europe/Stockholm`) an operator reads this
@@ -21493,9 +29693,11 @@ extension Components {
             /// - Parameters:
             ///   - createdAt:
             ///   - id:
-            ///   - isDefault:
+            ///   - isDefault: Deprecated: projects no longer have a default, so this is `false` for every project. It stays until its sunset so a client that reads it keeps working; do not branch on it.
+            ///   - kind:
             ///   - monthlyStatements: Whether this project bills the people who charge in it by the month
             ///   - name:
+            ///   - preset:
             ///   - slug:
             ///   - timeZone: The IANA time zone (e.g. `Europe/Stockholm`) an operator reads this
             ///   - updatedAt:
@@ -21503,8 +29705,10 @@ extension Components {
                 createdAt: Foundation.Date,
                 id: Swift.String,
                 isDefault: Swift.Bool,
+                kind: Components.Schemas.ProjectKind,
                 monthlyStatements: Swift.Bool,
                 name: Swift.String,
+                preset: Components.Schemas.ProjectSummary.PresetPayload? = nil,
                 slug: Swift.String,
                 timeZone: Swift.String? = nil,
                 updatedAt: Foundation.Date
@@ -21512,8 +29716,10 @@ extension Components {
                 self.createdAt = createdAt
                 self.id = id
                 self.isDefault = isDefault
+                self.kind = kind
                 self.monthlyStatements = monthlyStatements
                 self.name = name
+                self.preset = preset
                 self.slug = slug
                 self.timeZone = timeZone
                 self.updatedAt = updatedAt
@@ -21522,8 +29728,10 @@ extension Components {
                 case createdAt
                 case id
                 case isDefault
+                case kind
                 case monthlyStatements
                 case name
+                case preset
                 case slug
                 case timeZone
                 case updatedAt
@@ -21620,15 +29828,16 @@ extension Components {
         }
         /// - Remark: Generated from `#/components/schemas/ProposedPlanView`.
         public struct ProposedPlanView: Codable, Hashable, Sendable {
-            /// R10: the licensed quantity the receiving organization's next
-            /// subscription needs to cover, including chargers it already has.
+            /// Always `0`. There are no plans to cover a charger (ADR-0174): a
+            /// handed-over charger is in service unless the organization's billing
+            /// account is suspended.
             ///
             /// - Remark: Generated from `#/components/schemas/ProposedPlanView/chargersNeedingCoverage`.
             public var chargersNeedingCoverage: Swift.Int32
             /// Creates a new `ProposedPlanView`.
             ///
             /// - Parameters:
-            ///   - chargersNeedingCoverage: R10: the licensed quantity the receiving organization's next
+            ///   - chargersNeedingCoverage: Always `0`. There are no plans to cover a charger (ADR-0174): a
             public init(chargersNeedingCoverage: Swift.Int32) {
                 self.chargersNeedingCoverage = chargersNeedingCoverage
             }
@@ -21640,6 +29849,120 @@ extension Components {
         ///
         /// - Remark: Generated from `#/components/schemas/ProtocolChoiceReasonView`.
         public typealias ProtocolChoiceReasonView = FlowionProtocolChoiceReasonView
+        /// One charger in the project.
+        ///
+        /// - Remark: Generated from `#/components/schemas/ProviderCharger`.
+        public struct ProviderCharger: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/ProviderCharger/id`.
+            public var id: Swift.String
+            /// When the charger last made contact. Absent when it never has.
+            ///
+            /// - Remark: Generated from `#/components/schemas/ProviderCharger/lastSeenAt`.
+            public var lastSeenAt: Foundation.Date?
+            /// The name its owner gave it; "Charger" when nobody has named it. The
+            /// charger's own identity is never used as a name, as it can be a
+            /// serial number.
+            ///
+            /// - Remark: Generated from `#/components/schemas/ProviderCharger/name`.
+            public var name: Swift.String
+            /// - Remark: Generated from `#/components/schemas/ProviderCharger/session`.
+            public struct SessionPayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/ProviderCharger/session/value1`.
+                public var value1: Components.Schemas.ProviderChargerSession
+                /// Creates a new `SessionPayload`.
+                ///
+                /// - Parameters:
+                ///   - value1:
+                public init(value1: Components.Schemas.ProviderChargerSession) {
+                    self.value1 = value1
+                }
+                public init(from decoder: any Swift.Decoder) throws {
+                    self.value1 = try .init(from: decoder)
+                }
+                public func encode(to encoder: any Swift.Encoder) throws {
+                    try self.value1.encode(to: encoder)
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/ProviderCharger/session`.
+            public var session: Components.Schemas.ProviderCharger.SessionPayload?
+            /// - Remark: Generated from `#/components/schemas/ProviderCharger/state`.
+            public var state: Components.Schemas.ProviderChargerState
+            /// Creates a new `ProviderCharger`.
+            ///
+            /// - Parameters:
+            ///   - id:
+            ///   - lastSeenAt: When the charger last made contact. Absent when it never has.
+            ///   - name: The name its owner gave it; "Charger" when nobody has named it. The
+            ///   - session:
+            ///   - state:
+            public init(
+                id: Swift.String,
+                lastSeenAt: Foundation.Date? = nil,
+                name: Swift.String,
+                session: Components.Schemas.ProviderCharger.SessionPayload? = nil,
+                state: Components.Schemas.ProviderChargerState
+            ) {
+                self.id = id
+                self.lastSeenAt = lastSeenAt
+                self.name = name
+                self.session = session
+                self.state = state
+            }
+            public enum CodingKeys: String, CodingKey {
+                case id
+                case lastSeenAt
+                case name
+                case session
+                case state
+            }
+        }
+        /// The session running on a charger. Never says whose.
+        ///
+        /// - Remark: Generated from `#/components/schemas/ProviderChargerSession`.
+        public struct ProviderChargerSession: Codable, Hashable, Sendable {
+            /// Energy delivered so far, in Wh. Absent when the session service has
+            /// no figure yet, never zero.
+            ///
+            /// - Remark: Generated from `#/components/schemas/ProviderChargerSession/energyWh`.
+            public var energyWh: Swift.Double?
+            /// - Remark: Generated from `#/components/schemas/ProviderChargerSession/startedAt`.
+            public var startedAt: Foundation.Date
+            /// Creates a new `ProviderChargerSession`.
+            ///
+            /// - Parameters:
+            ///   - energyWh: Energy delivered so far, in Wh. Absent when the session service has
+            ///   - startedAt:
+            public init(
+                energyWh: Swift.Double? = nil,
+                startedAt: Foundation.Date
+            ) {
+                self.energyWh = energyWh
+                self.startedAt = startedAt
+            }
+            public enum CodingKeys: String, CodingKey {
+                case energyWh
+                case startedAt
+            }
+        }
+        /// What a person needs to know about a charger at a glance.
+        ///
+        /// - Remark: Generated from `#/components/schemas/ProviderChargerState`.
+        public typealias ProviderChargerState = FlowionProviderChargerState
+        /// - Remark: Generated from `#/components/schemas/ProviderChargersResponse`.
+        public struct ProviderChargersResponse: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/ProviderChargersResponse/data`.
+            public var data: [Components.Schemas.ProviderCharger]
+            /// Creates a new `ProviderChargersResponse`.
+            ///
+            /// - Parameters:
+            ///   - data:
+            public init(data: [Components.Schemas.ProviderCharger]) {
+                self.data = data
+            }
+            public enum CodingKeys: String, CodingKey {
+                case data
+            }
+        }
         /// - Remark: Generated from `#/components/schemas/ProviderConfigurationResponse`.
         public struct ProviderConfigurationResponse: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/ProviderConfigurationResponse/revision`.
@@ -21705,6 +30028,183 @@ extension Components {
                 case values
             }
         }
+        /// The price in the quarter that is current now.
+        ///
+        /// - Remark: Generated from `#/components/schemas/ProviderPriceNow`.
+        public struct ProviderPriceNow: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/ProviderPriceNow/level`.
+            public struct LevelPayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/ProviderPriceNow/level/value1`.
+                public var value1: Components.Schemas.PriceLevel
+                /// Creates a new `LevelPayload`.
+                ///
+                /// - Parameters:
+                ///   - value1:
+                public init(value1: Components.Schemas.PriceLevel) {
+                    self.value1 = value1
+                }
+                public init(from decoder: any Swift.Decoder) throws {
+                    self.value1 = try decoder.decodeFromSingleValueContainer()
+                }
+                public func encode(to encoder: any Swift.Encoder) throws {
+                    try encoder.encodeToSingleValueContainer(self.value1)
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/ProviderPriceNow/level`.
+            public var level: Components.Schemas.ProviderPriceNow.LevelPayload?
+            /// Decimal string per kWh, tax included.
+            ///
+            /// - Remark: Generated from `#/components/schemas/ProviderPriceNow/pricePerKwh`.
+            public var pricePerKwh: Swift.String
+            /// Creates a new `ProviderPriceNow`.
+            ///
+            /// - Parameters:
+            ///   - level:
+            ///   - pricePerKwh: Decimal string per kWh, tax included.
+            public init(
+                level: Components.Schemas.ProviderPriceNow.LevelPayload? = nil,
+                pricePerKwh: Swift.String
+            ) {
+                self.level = level
+                self.pricePerKwh = pricePerKwh
+            }
+            public enum CodingKeys: String, CodingKey {
+                case level
+                case pricePerKwh
+            }
+        }
+        /// One quarter of an hour.
+        ///
+        /// - Remark: Generated from `#/components/schemas/ProviderPriceQuarter`.
+        public struct ProviderPriceQuarter: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/ProviderPriceQuarter/level`.
+            public struct LevelPayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/ProviderPriceQuarter/level/value1`.
+                public var value1: Components.Schemas.PriceLevel
+                /// Creates a new `LevelPayload`.
+                ///
+                /// - Parameters:
+                ///   - value1:
+                public init(value1: Components.Schemas.PriceLevel) {
+                    self.value1 = value1
+                }
+                public init(from decoder: any Swift.Decoder) throws {
+                    self.value1 = try decoder.decodeFromSingleValueContainer()
+                }
+                public func encode(to encoder: any Swift.Encoder) throws {
+                    try encoder.encodeToSingleValueContainer(self.value1)
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/ProviderPriceQuarter/level`.
+            public var level: Components.Schemas.ProviderPriceQuarter.LevelPayload?
+            /// Decimal string per kWh, tax included. Absent when not known, never
+            /// zero.
+            ///
+            /// - Remark: Generated from `#/components/schemas/ProviderPriceQuarter/pricePerKwh`.
+            public var pricePerKwh: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/ProviderPriceQuarter/start`.
+            public var start: Foundation.Date
+            /// Creates a new `ProviderPriceQuarter`.
+            ///
+            /// - Parameters:
+            ///   - level:
+            ///   - pricePerKwh: Decimal string per kWh, tax included. Absent when not known, never
+            ///   - start:
+            public init(
+                level: Components.Schemas.ProviderPriceQuarter.LevelPayload? = nil,
+                pricePerKwh: Swift.String? = nil,
+                start: Foundation.Date
+            ) {
+                self.level = level
+                self.pricePerKwh = pricePerKwh
+                self.start = start
+            }
+            public enum CodingKeys: String, CodingKey {
+                case level
+                case pricePerKwh
+                case start
+            }
+        }
+        /// What electricity costs at the project: the home's own price, one per
+        /// project.
+        ///
+        /// - Remark: Generated from `#/components/schemas/ProviderPriceResponse`.
+        public struct ProviderPriceResponse: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/ProviderPriceResponse/currency`.
+            public var currency: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/ProviderPriceResponse/currentQuarterStart`.
+            public var currentQuarterStart: Foundation.Date
+            /// - Remark: Generated from `#/components/schemas/ProviderPriceResponse/knownUntil`.
+            public var knownUntil: Foundation.Date?
+            /// - Remark: Generated from `#/components/schemas/ProviderPriceResponse/now`.
+            public struct NowPayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/ProviderPriceResponse/now/value1`.
+                public var value1: Components.Schemas.ProviderPriceNow
+                /// Creates a new `NowPayload`.
+                ///
+                /// - Parameters:
+                ///   - value1:
+                public init(value1: Components.Schemas.ProviderPriceNow) {
+                    self.value1 = value1
+                }
+                public init(from decoder: any Swift.Decoder) throws {
+                    self.value1 = try .init(from: decoder)
+                }
+                public func encode(to encoder: any Swift.Encoder) throws {
+                    try self.value1.encode(to: encoder)
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/ProviderPriceResponse/now`.
+            public var now: Components.Schemas.ProviderPriceResponse.NowPayload?
+            /// - Remark: Generated from `#/components/schemas/ProviderPriceResponse/outcome`.
+            public var outcome: Components.Schemas.PriceOutcome
+            /// - Remark: Generated from `#/components/schemas/ProviderPriceResponse/quarters`.
+            public var quarters: [Components.Schemas.ProviderPriceQuarter]?
+            /// - Remark: Generated from `#/components/schemas/ProviderPriceResponse/story`.
+            public var story: Components.Schemas.PriceStory
+            /// - Remark: Generated from `#/components/schemas/ProviderPriceResponse/timeZone`.
+            public var timeZone: Swift.String?
+            /// Creates a new `ProviderPriceResponse`.
+            ///
+            /// - Parameters:
+            ///   - currency:
+            ///   - currentQuarterStart:
+            ///   - knownUntil:
+            ///   - now:
+            ///   - outcome:
+            ///   - quarters:
+            ///   - story:
+            ///   - timeZone:
+            public init(
+                currency: Swift.String? = nil,
+                currentQuarterStart: Foundation.Date,
+                knownUntil: Foundation.Date? = nil,
+                now: Components.Schemas.ProviderPriceResponse.NowPayload? = nil,
+                outcome: Components.Schemas.PriceOutcome,
+                quarters: [Components.Schemas.ProviderPriceQuarter]? = nil,
+                story: Components.Schemas.PriceStory,
+                timeZone: Swift.String? = nil
+            ) {
+                self.currency = currency
+                self.currentQuarterStart = currentQuarterStart
+                self.knownUntil = knownUntil
+                self.now = now
+                self.outcome = outcome
+                self.quarters = quarters
+                self.story = story
+                self.timeZone = timeZone
+            }
+            public enum CodingKeys: String, CodingKey {
+                case currency
+                case currentQuarterStart
+                case knownUntil
+                case now
+                case outcome
+                case quarters
+                case story
+                case timeZone
+            }
+        }
         /// - Remark: Generated from `#/components/schemas/ProviderProject`.
         public struct ProviderProject: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/ProviderProject/id`.
@@ -21751,6 +30251,203 @@ extension Components {
                 case nextCursor
             }
         }
+        /// One charging session. Nothing here identifies a person: no token label or
+        /// type, no remote-start id, no transaction numbers, no vehicle.
+        ///
+        /// - Remark: Generated from `#/components/schemas/ProviderSession`.
+        public struct ProviderSession: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/ProviderSession/chargerId`.
+            public var chargerId: Swift.String
+            /// Absent while the session is running.
+            ///
+            /// - Remark: Generated from `#/components/schemas/ProviderSession/endedAt`.
+            public var endedAt: Foundation.Date?
+            /// Energy delivered, in Wh. Absent, never zero, when it cannot be known.
+            ///
+            /// - Remark: Generated from `#/components/schemas/ProviderSession/energyWh`.
+            public var energyWh: Swift.Double?
+            /// - Remark: Generated from `#/components/schemas/ProviderSession/id`.
+            public var id: Swift.String
+            /// - Remark: Generated from `#/components/schemas/ProviderSession/startedAt`.
+            public var startedAt: Foundation.Date
+            /// - Remark: Generated from `#/components/schemas/ProviderSession/stopCategory`.
+            public var stopCategory: Components.Schemas.StopCategory
+            /// Creates a new `ProviderSession`.
+            ///
+            /// - Parameters:
+            ///   - chargerId:
+            ///   - endedAt: Absent while the session is running.
+            ///   - energyWh: Energy delivered, in Wh. Absent, never zero, when it cannot be known.
+            ///   - id:
+            ///   - startedAt:
+            ///   - stopCategory:
+            public init(
+                chargerId: Swift.String,
+                endedAt: Foundation.Date? = nil,
+                energyWh: Swift.Double? = nil,
+                id: Swift.String,
+                startedAt: Foundation.Date,
+                stopCategory: Components.Schemas.StopCategory
+            ) {
+                self.chargerId = chargerId
+                self.endedAt = endedAt
+                self.energyWh = energyWh
+                self.id = id
+                self.startedAt = startedAt
+                self.stopCategory = stopCategory
+            }
+            public enum CodingKeys: String, CodingKey {
+                case chargerId
+                case endedAt
+                case energyWh
+                case id
+                case startedAt
+                case stopCategory
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/ProviderSessionsResponse`.
+        public struct ProviderSessionsResponse: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/ProviderSessionsResponse/data`.
+            public var data: [Components.Schemas.ProviderSession]
+            /// Pass as `cursor` for the next page. `null` on the last page.
+            ///
+            /// - Remark: Generated from `#/components/schemas/ProviderSessionsResponse/nextCursor`.
+            public var nextCursor: Swift.String?
+            /// Creates a new `ProviderSessionsResponse`.
+            ///
+            /// - Parameters:
+            ///   - data:
+            ///   - nextCursor: Pass as `cursor` for the next page. `null` on the last page.
+            public init(
+                data: [Components.Schemas.ProviderSession],
+                nextCursor: Swift.String? = nil
+            ) {
+                self.data = data
+                self.nextCursor = nextCursor
+            }
+            public enum CodingKeys: String, CodingKey {
+                case data
+                case nextCursor
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/PublicChargingLocation`.
+        public struct PublicChargingLocation: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/PublicChargingLocation/address`.
+            public var address: Swift.String
+            /// This API offers directions only. It does not grant access, start or payment.
+            ///
+            /// - Remark: Generated from `#/components/schemas/PublicChargingLocation/capability`.
+            public var capability: Swift.String
+            /// - Remark: Generated from `#/components/schemas/PublicChargingLocation/connectors`.
+            public var connectors: [Components.Schemas.CatalogueConnector]
+            /// - Remark: Generated from `#/components/schemas/PublicChargingLocation/coordinates`.
+            public var coordinates: Components.Schemas.CatalogueCoordinates
+            /// Catalogue ID, scoped to NOBIL. Never a Flowion charging-station ID.
+            ///
+            /// - Remark: Generated from `#/components/schemas/PublicChargingLocation/id`.
+            public var id: Swift.String
+            /// - Remark: Generated from `#/components/schemas/PublicChargingLocation/licence`.
+            public var licence: Swift.String
+            /// - Remark: Generated from `#/components/schemas/PublicChargingLocation/name`.
+            public var name: Swift.String
+            /// Only a source field explicitly naming an operator, never the owner.
+            ///
+            /// - Remark: Generated from `#/components/schemas/PublicChargingLocation/operator`.
+            public var _operator: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/PublicChargingLocation/owner`.
+            public var owner: Swift.String?
+            /// Gateway receipt time (RFC 3339), not the time the station was surveyed.
+            ///
+            /// - Remark: Generated from `#/components/schemas/PublicChargingLocation/retrievedAt`.
+            public var retrievedAt: Swift.String
+            /// - Remark: Generated from `#/components/schemas/PublicChargingLocation/source`.
+            public var source: Swift.String
+            /// - Remark: Generated from `#/components/schemas/PublicChargingLocation/sourceUrl`.
+            public var sourceUrl: Swift.String
+            /// Creates a new `PublicChargingLocation`.
+            ///
+            /// - Parameters:
+            ///   - address:
+            ///   - capability: This API offers directions only. It does not grant access, start or payment.
+            ///   - connectors:
+            ///   - coordinates:
+            ///   - id: Catalogue ID, scoped to NOBIL. Never a Flowion charging-station ID.
+            ///   - licence:
+            ///   - name:
+            ///   - _operator: Only a source field explicitly naming an operator, never the owner.
+            ///   - owner:
+            ///   - retrievedAt: Gateway receipt time (RFC 3339), not the time the station was surveyed.
+            ///   - source:
+            ///   - sourceUrl:
+            public init(
+                address: Swift.String,
+                capability: Swift.String,
+                connectors: [Components.Schemas.CatalogueConnector],
+                coordinates: Components.Schemas.CatalogueCoordinates,
+                id: Swift.String,
+                licence: Swift.String,
+                name: Swift.String,
+                _operator: Swift.String? = nil,
+                owner: Swift.String? = nil,
+                retrievedAt: Swift.String,
+                source: Swift.String,
+                sourceUrl: Swift.String
+            ) {
+                self.address = address
+                self.capability = capability
+                self.connectors = connectors
+                self.coordinates = coordinates
+                self.id = id
+                self.licence = licence
+                self.name = name
+                self._operator = _operator
+                self.owner = owner
+                self.retrievedAt = retrievedAt
+                self.source = source
+                self.sourceUrl = sourceUrl
+            }
+            public enum CodingKeys: String, CodingKey {
+                case address
+                case capability
+                case connectors
+                case coordinates
+                case id
+                case licence
+                case name
+                case _operator = "operator"
+                case owner
+                case retrievedAt
+                case source
+                case sourceUrl
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/PublicChargingLocations`.
+        public struct PublicChargingLocations: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/PublicChargingLocations/data`.
+            public var data: [Components.Schemas.PublicChargingLocation]
+            /// - Remark: Generated from `#/components/schemas/PublicChargingLocations/nextCursor`.
+            public var nextCursor: Swift.String?
+            /// Creates a new `PublicChargingLocations`.
+            ///
+            /// - Parameters:
+            ///   - data:
+            ///   - nextCursor:
+            public init(
+                data: [Components.Schemas.PublicChargingLocation],
+                nextCursor: Swift.String? = nil
+            ) {
+                self.data = data
+                self.nextCursor = nextCursor
+            }
+            public enum CodingKeys: String, CodingKey {
+                case data
+                case nextCursor
+            }
+        }
+        /// What anyone is told about a label.
+        ///
+        /// - Remark: Generated from `#/components/schemas/PublicLabelAnswer`.
+        public typealias PublicLabelAnswer = FlowionPublicLabelAnswer
         /// - Remark: Generated from `#/components/schemas/PutStatementDestinationRequest`.
         public struct PutStatementDestinationRequest: Codable, Hashable, Sendable {
             /// A connection of this organization that holds `statements:read` with
@@ -21818,6 +30515,104 @@ extension Components {
         ///
         /// - Remark: Generated from `#/components/schemas/ReadingContext`.
         public typealias ReadingContext = FlowionReadingContext
+        /// A person's Ready by, and what Flowion has decided about it.
+        ///
+        /// - Remark: Generated from `#/components/schemas/ReadyBy`.
+        public struct ReadyBy: Codable, Hashable, Sendable {
+            /// The session total at the meter, kWh, as a decimal string. Absent for a
+            /// plain deadline an operator set without an energy goal.
+            ///
+            /// - Remark: Generated from `#/components/schemas/ReadyBy/energyKwh`.
+            public var energyKwh: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/ReadyBy/plan`.
+            public var plan: Components.Schemas.ReadyByPlan
+            /// - Remark: Generated from `#/components/schemas/ReadyBy/readyBy`.
+            public var readyBy: Foundation.Date
+            /// Creates a new `ReadyBy`.
+            ///
+            /// - Parameters:
+            ///   - energyKwh: The session total at the meter, kWh, as a decimal string. Absent for a
+            ///   - plan:
+            ///   - readyBy:
+            public init(
+                energyKwh: Swift.String? = nil,
+                plan: Components.Schemas.ReadyByPlan,
+                readyBy: Foundation.Date
+            ) {
+                self.energyKwh = energyKwh
+                self.plan = plan
+                self.readyBy = readyBy
+            }
+            public enum CodingKeys: String, CodingKey {
+                case energyKwh
+                case plan
+                case readyBy
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/ReadyByPlan`.
+        public struct ReadyByPlan: Codable, Hashable, Sendable {
+            /// While `waiting`: the start of the first quarter it will charge in.
+            ///
+            /// - Remark: Generated from `#/components/schemas/ReadyByPlan/resumesAt`.
+            public var resumesAt: Foundation.Date?
+            /// When the state last changed.
+            ///
+            /// - Remark: Generated from `#/components/schemas/ReadyByPlan/since`.
+            public var since: Foundation.Date?
+            /// - Remark: Generated from `#/components/schemas/ReadyByPlan/state`.
+            public var state: Components.Schemas.PlanState
+            /// Creates a new `ReadyByPlan`.
+            ///
+            /// - Parameters:
+            ///   - resumesAt: While `waiting`: the start of the first quarter it will charge in.
+            ///   - since: When the state last changed.
+            ///   - state:
+            public init(
+                resumesAt: Foundation.Date? = nil,
+                since: Foundation.Date? = nil,
+                state: Components.Schemas.PlanState
+            ) {
+                self.resumesAt = resumesAt
+                self.since = since
+                self.state = state
+            }
+            public enum CodingKeys: String, CodingKey {
+                case resumesAt
+                case since
+                case state
+            }
+        }
+        /// What the person asks Flowion to have ready by when.
+        ///
+        /// - Remark: Generated from `#/components/schemas/ReadyByRequest`.
+        public struct ReadyByRequest: Codable, Hashable, Sendable {
+            /// The session's **total** energy at the meter, in kWh, as a decimal
+            /// string: what is already delivered plus what is still wanted.
+            ///
+            /// - Remark: Generated from `#/components/schemas/ReadyByRequest/energyKwh`.
+            public var energyKwh: Swift.String
+            /// When charging should be finished, RFC 3339. Beyond how far ahead a
+            /// price forecast reaches is `422`.
+            ///
+            /// - Remark: Generated from `#/components/schemas/ReadyByRequest/readyBy`.
+            public var readyBy: Foundation.Date
+            /// Creates a new `ReadyByRequest`.
+            ///
+            /// - Parameters:
+            ///   - energyKwh: The session's **total** energy at the meter, in kWh, as a decimal
+            ///   - readyBy: When charging should be finished, RFC 3339. Beyond how far ahead a
+            public init(
+                energyKwh: Swift.String,
+                readyBy: Foundation.Date
+            ) {
+                self.energyKwh = energyKwh
+                self.readyBy = readyBy
+            }
+            public enum CodingKeys: String, CodingKey {
+                case energyKwh
+                case readyBy
+            }
+        }
         /// One of the charger's recent sessions, as `session` recorded it. Nothing
         /// here is a judgement: `stopCategory` is `session`'s own.
         ///
@@ -21922,6 +30717,70 @@ extension Components {
                 case chargersAwaitingRemovalConfirmation
                 case chargersRemoved
                 case unrepresentableCircuits
+            }
+        }
+        /// What the customer may choose to prepare: a closed list with no electrical
+        /// member.
+        ///
+        /// - Remark: Generated from `#/components/schemas/RecordLinkedJobIntentionKind`.
+        @frozen public enum RecordLinkedJobIntentionKind: String, Codable, Hashable, Sendable, CaseIterable {
+            case assignTariff = "assignTariff"
+            case setSiteAccess = "setSiteAccess"
+            case setDeviceSetting = "setDeviceSetting"
+        }
+        /// A choice to record.
+        ///
+        /// - Remark: Generated from `#/components/schemas/RecordLinkedJobIntentionRequest`.
+        public struct RecordLinkedJobIntentionRequest: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/RecordLinkedJobIntentionRequest/kind`.
+            public var kind: Components.Schemas.RecordLinkedJobIntentionKind
+            /// The organization's own item: a tariff id, `open`, `private` or `paid`, or a setting name.
+            ///
+            /// - Remark: Generated from `#/components/schemas/RecordLinkedJobIntentionRequest/ref`.
+            public var ref: Swift.String
+            /// The value of a device setting. Required for `setDeviceSetting`, refused for the others.
+            ///
+            /// - Remark: Generated from `#/components/schemas/RecordLinkedJobIntentionRequest/value`.
+            public var value: Swift.String?
+            /// Creates a new `RecordLinkedJobIntentionRequest`.
+            ///
+            /// - Parameters:
+            ///   - kind:
+            ///   - ref: The organization's own item: a tariff id, `open`, `private` or `paid`, or a setting name.
+            ///   - value: The value of a device setting. Required for `setDeviceSetting`, refused for the others.
+            public init(
+                kind: Components.Schemas.RecordLinkedJobIntentionKind,
+                ref: Swift.String,
+                value: Swift.String? = nil
+            ) {
+                self.kind = kind
+                self.ref = ref
+                self.value = value
+            }
+            public enum CodingKeys: String, CodingKey {
+                case kind
+                case ref
+                case value
+            }
+            public init(from decoder: any Swift.Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                self.kind = try container.decode(
+                    Components.Schemas.RecordLinkedJobIntentionKind.self,
+                    forKey: .kind
+                )
+                self.ref = try container.decode(
+                    Swift.String.self,
+                    forKey: .ref
+                )
+                self.value = try container.decodeIfPresent(
+                    Swift.String.self,
+                    forKey: .value
+                )
+                try decoder.ensureNoAdditionalProperties(knownKeys: [
+                    "kind",
+                    "ref",
+                    "value"
+                ])
             }
         }
         /// How a charging limit repeats.
@@ -22039,6 +30898,64 @@ extension Components {
                 case tokenEndpointAuthMethod = "token_endpoint_auth_method"
             }
         }
+        /// A card the phone read, twice.
+        ///
+        /// - Remark: Generated from `#/components/schemas/RegisterCardRequest`.
+        public struct RegisterCardRequest: Codable, Hashable, Sendable {
+            /// Must be `true`: the phone read the card twice and got the same UID.
+            ///
+            /// - Remark: Generated from `#/components/schemas/RegisterCardRequest/readTwice`.
+            public var readTwice: Swift.Bool
+            /// The UID bytes as the phone read them, forward, in hex. A card's value:
+            /// never logged and never returned.
+            ///
+            /// - Remark: Generated from `#/components/schemas/RegisterCardRequest/uidHex`.
+            public var uidHex: Swift.String
+            /// 4 or 7.
+            ///
+            /// - Remark: Generated from `#/components/schemas/RegisterCardRequest/uidLength`.
+            public var uidLength: Swift.Int32
+            /// Creates a new `RegisterCardRequest`.
+            ///
+            /// - Parameters:
+            ///   - readTwice: Must be `true`: the phone read the card twice and got the same UID.
+            ///   - uidHex: The UID bytes as the phone read them, forward, in hex. A card's value:
+            ///   - uidLength: 4 or 7.
+            public init(
+                readTwice: Swift.Bool,
+                uidHex: Swift.String,
+                uidLength: Swift.Int32
+            ) {
+                self.readTwice = readTwice
+                self.uidHex = uidHex
+                self.uidLength = uidLength
+            }
+            public enum CodingKeys: String, CodingKey {
+                case readTwice
+                case uidHex
+                case uidLength
+            }
+            public init(from decoder: any Swift.Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                self.readTwice = try container.decode(
+                    Swift.Bool.self,
+                    forKey: .readTwice
+                )
+                self.uidHex = try container.decode(
+                    Swift.String.self,
+                    forKey: .uidHex
+                )
+                self.uidLength = try container.decode(
+                    Swift.Int32.self,
+                    forKey: .uidLength
+                )
+                try decoder.ensureNoAdditionalProperties(knownKeys: [
+                    "readTwice",
+                    "uidHex",
+                    "uidLength"
+                ])
+            }
+        }
         /// - Remark: Generated from `#/components/schemas/RegisterDelegateEndpointRequest`.
         public struct RegisterDelegateEndpointRequest: Codable, Hashable, Sendable {
             /// One of the ten statuses (contract "Failure"). Defaults to
@@ -22078,6 +30995,44 @@ extension Components {
                 case signingSecret
                 case targetUrl
                 case timeoutMs
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/RegisterJobAdditionRequest`.
+        public struct RegisterJobAdditionRequest: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/RegisterJobAdditionRequest/circuit`.
+            public var circuit: Components.Schemas.JobCircuitInputBody
+            /// Creates a new `RegisterJobAdditionRequest`.
+            ///
+            /// - Parameters:
+            ///   - circuit:
+            public init(circuit: Components.Schemas.JobCircuitInputBody) {
+                self.circuit = circuit
+            }
+            public enum CodingKeys: String, CodingKey {
+                case circuit
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/RegisterJobAdditionResponseView`.
+        public struct RegisterJobAdditionResponseView: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/RegisterJobAdditionResponseView/circuitId`.
+            public var circuitId: Swift.String
+            /// - Remark: Generated from `#/components/schemas/RegisterJobAdditionResponseView/job`.
+            public var job: Components.Schemas.JobView
+            /// Creates a new `RegisterJobAdditionResponseView`.
+            ///
+            /// - Parameters:
+            ///   - circuitId:
+            ///   - job:
+            public init(
+                circuitId: Swift.String,
+                job: Components.Schemas.JobView
+            ) {
+                self.circuitId = circuitId
+                self.job = job
+            }
+            public enum CodingKeys: String, CodingKey {
+                case circuitId
+                case job
             }
         }
         /// - Remark: Generated from `#/components/schemas/RegisterJobChargerRequest`.
@@ -22643,6 +31598,57 @@ extension Components {
         }
         /// - Remark: Generated from `#/components/schemas/RenameVehicleRequest`.
         public typealias RenameVehicleRequest = FlowionRenameVehicleRequest
+        /// - Remark: Generated from `#/components/schemas/ReplaceHomeVehicle`.
+        public struct ReplaceHomeVehicle: Codable, Hashable, Sendable {
+            /// Revision last read. A stale edit returns 409 and changes nothing.
+            ///
+            /// - Remark: Generated from `#/components/schemas/ReplaceHomeVehicle/expectedRevision`.
+            public var expectedRevision: Swift.Int64
+            /// - Remark: Generated from `#/components/schemas/ReplaceHomeVehicle/name`.
+            public var name: Swift.String
+            /// - Remark: Generated from `#/components/schemas/ReplaceHomeVehicle/preferences`.
+            public var preferences: Components.Schemas.VehicleChargingPreferences
+            /// Creates a new `ReplaceHomeVehicle`.
+            ///
+            /// - Parameters:
+            ///   - expectedRevision: Revision last read. A stale edit returns 409 and changes nothing.
+            ///   - name:
+            ///   - preferences:
+            public init(
+                expectedRevision: Swift.Int64,
+                name: Swift.String,
+                preferences: Components.Schemas.VehicleChargingPreferences
+            ) {
+                self.expectedRevision = expectedRevision
+                self.name = name
+                self.preferences = preferences
+            }
+            public enum CodingKeys: String, CodingKey {
+                case expectedRevision
+                case name
+                case preferences
+            }
+            public init(from decoder: any Swift.Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                self.expectedRevision = try container.decode(
+                    Swift.Int64.self,
+                    forKey: .expectedRevision
+                )
+                self.name = try container.decode(
+                    Swift.String.self,
+                    forKey: .name
+                )
+                self.preferences = try container.decode(
+                    Components.Schemas.VehicleChargingPreferences.self,
+                    forKey: .preferences
+                )
+                try decoder.ensureNoAdditionalProperties(knownKeys: [
+                    "expectedRevision",
+                    "name",
+                    "preferences"
+                ])
+            }
+        }
         /// - Remark: Generated from `#/components/schemas/ReplayDeliveryResponse`.
         public struct ReplayDeliveryResponse: Codable, Hashable, Sendable {
             /// `true` only when this call is what moved the delivery back to
@@ -22980,6 +31986,159 @@ extension Components {
         @frozen public enum ResetTag: String, Codable, Hashable, Sendable, CaseIterable {
             case reset = "reset"
         }
+        /// - Remark: Generated from `#/components/schemas/ResidentImportPerson`.
+        public struct ResidentImportPerson: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/ResidentImportPerson/displayName`.
+            public var displayName: Swift.String
+            /// - Remark: Generated from `#/components/schemas/ResidentImportPerson/email`.
+            public var email: Swift.String
+            /// Creates a new `ResidentImportPerson`.
+            ///
+            /// - Parameters:
+            ///   - displayName:
+            ///   - email:
+            public init(
+                displayName: Swift.String,
+                email: Swift.String
+            ) {
+                self.displayName = displayName
+                self.email = email
+            }
+            public enum CodingKeys: String, CodingKey {
+                case displayName
+                case email
+            }
+            public init(from decoder: any Swift.Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                self.displayName = try container.decode(
+                    Swift.String.self,
+                    forKey: .displayName
+                )
+                self.email = try container.decode(
+                    Swift.String.self,
+                    forKey: .email
+                )
+                try decoder.ensureNoAdditionalProperties(knownKeys: [
+                    "displayName",
+                    "email"
+                ])
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/ResidentImportPreview`.
+        public struct ResidentImportPreview: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/ResidentImportPreview/data`.
+            public var data: [Components.Schemas.ResidentPreviewRow]
+            /// Creates a new `ResidentImportPreview`.
+            ///
+            /// - Parameters:
+            ///   - data:
+            public init(data: [Components.Schemas.ResidentPreviewRow]) {
+                self.data = data
+            }
+            public enum CodingKeys: String, CodingKey {
+                case data
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/ResidentInvitationView`.
+        public struct ResidentInvitationView: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/ResidentInvitationView/acceptedAt`.
+            public var acceptedAt: Foundation.Date?
+            /// - Remark: Generated from `#/components/schemas/ResidentInvitationView/chargingTerms`.
+            public var chargingTerms: Swift.String
+            /// - Remark: Generated from `#/components/schemas/ResidentInvitationView/deliveryStatus`.
+            public var deliveryStatus: Swift.String
+            /// - Remark: Generated from `#/components/schemas/ResidentInvitationView/displayName`.
+            public var displayName: Swift.String
+            /// - Remark: Generated from `#/components/schemas/ResidentInvitationView/email`.
+            public var email: Swift.String
+            /// - Remark: Generated from `#/components/schemas/ResidentInvitationView/expiresAt`.
+            public var expiresAt: Foundation.Date
+            /// - Remark: Generated from `#/components/schemas/ResidentInvitationView/id`.
+            public var id: Swift.String
+            /// - Remark: Generated from `#/components/schemas/ResidentInvitationView/organizationName`.
+            public var organizationName: Swift.String
+            /// - Remark: Generated from `#/components/schemas/ResidentInvitationView/principalId`.
+            public var principalId: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/ResidentInvitationView/projectId`.
+            public var projectId: Swift.String
+            /// - Remark: Generated from `#/components/schemas/ResidentInvitationView/status`.
+            public var status: Swift.String
+            /// Creates a new `ResidentInvitationView`.
+            ///
+            /// - Parameters:
+            ///   - acceptedAt:
+            ///   - chargingTerms:
+            ///   - deliveryStatus:
+            ///   - displayName:
+            ///   - email:
+            ///   - expiresAt:
+            ///   - id:
+            ///   - organizationName:
+            ///   - principalId:
+            ///   - projectId:
+            ///   - status:
+            public init(
+                acceptedAt: Foundation.Date? = nil,
+                chargingTerms: Swift.String,
+                deliveryStatus: Swift.String,
+                displayName: Swift.String,
+                email: Swift.String,
+                expiresAt: Foundation.Date,
+                id: Swift.String,
+                organizationName: Swift.String,
+                principalId: Swift.String? = nil,
+                projectId: Swift.String,
+                status: Swift.String
+            ) {
+                self.acceptedAt = acceptedAt
+                self.chargingTerms = chargingTerms
+                self.deliveryStatus = deliveryStatus
+                self.displayName = displayName
+                self.email = email
+                self.expiresAt = expiresAt
+                self.id = id
+                self.organizationName = organizationName
+                self.principalId = principalId
+                self.projectId = projectId
+                self.status = status
+            }
+            public enum CodingKeys: String, CodingKey {
+                case acceptedAt
+                case chargingTerms
+                case deliveryStatus
+                case displayName
+                case email
+                case expiresAt
+                case id
+                case organizationName
+                case principalId
+                case projectId
+                case status
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/ResidentInvitationsPage`.
+        public struct ResidentInvitationsPage: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/ResidentInvitationsPage/data`.
+            public var data: [Components.Schemas.ResidentInvitationView]
+            /// - Remark: Generated from `#/components/schemas/ResidentInvitationsPage/nextCursor`.
+            public var nextCursor: Swift.String?
+            /// Creates a new `ResidentInvitationsPage`.
+            ///
+            /// - Parameters:
+            ///   - data:
+            ///   - nextCursor:
+            public init(
+                data: [Components.Schemas.ResidentInvitationView],
+                nextCursor: Swift.String? = nil
+            ) {
+                self.data = data
+                self.nextCursor = nextCursor
+            }
+            public enum CodingKeys: String, CodingKey {
+                case data
+                case nextCursor
+            }
+        }
         /// One person's month as the board sees it: their totals and the price rule,
         /// and never when they charged. A month of charging times shows when someone
         /// is home, so the times are on the person's own statement and in Flowion
@@ -23067,6 +32226,41 @@ extension Components {
                 case resident
                 case sessions
                 case state
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/ResidentPreviewRow`.
+        public struct ResidentPreviewRow: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/ResidentPreviewRow/displayName`.
+            public var displayName: Swift.String
+            /// - Remark: Generated from `#/components/schemas/ResidentPreviewRow/email`.
+            public var email: Swift.String
+            /// - Remark: Generated from `#/components/schemas/ResidentPreviewRow/outcome`.
+            public var outcome: Swift.String
+            /// - Remark: Generated from `#/components/schemas/ResidentPreviewRow/row`.
+            public var row: Swift.Int32
+            /// Creates a new `ResidentPreviewRow`.
+            ///
+            /// - Parameters:
+            ///   - displayName:
+            ///   - email:
+            ///   - outcome:
+            ///   - row:
+            public init(
+                displayName: Swift.String,
+                email: Swift.String,
+                outcome: Swift.String,
+                row: Swift.Int32
+            ) {
+                self.displayName = displayName
+                self.email = email
+                self.outcome = outcome
+                self.row = row
+            }
+            public enum CodingKeys: String, CodingKey {
+                case displayName
+                case email
+                case outcome
+                case row
             }
         }
         /// One session: of the untagged row on the board's page, and of a person's
@@ -23301,26 +32495,121 @@ extension Components {
                 ])
             }
         }
+        /// - Remark: Generated from `#/components/schemas/ReviewQueueEntry`.
+        public struct ReviewQueueEntry: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/ReviewQueueEntry/app`.
+            public var app: Components.Schemas.ConnectionApp
+            /// - Remark: Generated from `#/components/schemas/ReviewQueueEntry/kind`.
+            public var kind: Components.Schemas.ReviewQueueKind
+            /// - Remark: Generated from `#/components/schemas/ReviewQueueEntry/revision`.
+            public struct RevisionPayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/ReviewQueueEntry/revision/value1`.
+                public var value1: Components.Schemas.ReviewQueueRevision
+                /// Creates a new `RevisionPayload`.
+                ///
+                /// - Parameters:
+                ///   - value1:
+                public init(value1: Components.Schemas.ReviewQueueRevision) {
+                    self.value1 = value1
+                }
+                public init(from decoder: any Swift.Decoder) throws {
+                    self.value1 = try .init(from: decoder)
+                }
+                public func encode(to encoder: any Swift.Encoder) throws {
+                    try self.value1.encode(to: encoder)
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/ReviewQueueEntry/revision`.
+            public var revision: Components.Schemas.ReviewQueueEntry.RevisionPayload?
+            /// - Remark: Generated from `#/components/schemas/ReviewQueueEntry/similarApps`.
+            public var similarApps: [Components.Schemas.SimilarConnectionApp]
+            /// Creates a new `ReviewQueueEntry`.
+            ///
+            /// - Parameters:
+            ///   - app:
+            ///   - kind:
+            ///   - revision:
+            ///   - similarApps:
+            public init(
+                app: Components.Schemas.ConnectionApp,
+                kind: Components.Schemas.ReviewQueueKind,
+                revision: Components.Schemas.ReviewQueueEntry.RevisionPayload? = nil,
+                similarApps: [Components.Schemas.SimilarConnectionApp]
+            ) {
+                self.app = app
+                self.kind = kind
+                self.revision = revision
+                self.similarApps = similarApps
+            }
+            public enum CodingKeys: String, CodingKey {
+                case app
+                case kind
+                case revision
+                case similarApps
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/ReviewQueueKind`.
+        public typealias ReviewQueueKind = FlowionReviewQueueKind
+        /// - Remark: Generated from `#/components/schemas/ReviewQueueRevision`.
+        public struct ReviewQueueRevision: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/ReviewQueueRevision/proposed`.
+            public var proposed: Components.Schemas.ConnectionApp
+            /// - Remark: Generated from `#/components/schemas/ReviewQueueRevision/revisionId`.
+            public var revisionId: Swift.String
+            /// - Remark: Generated from `#/components/schemas/ReviewQueueRevision/state`.
+            public var state: Components.Schemas.AppRevisionState
+            /// Creates a new `ReviewQueueRevision`.
+            ///
+            /// - Parameters:
+            ///   - proposed:
+            ///   - revisionId:
+            ///   - state:
+            public init(
+                proposed: Components.Schemas.ConnectionApp,
+                revisionId: Swift.String,
+                state: Components.Schemas.AppRevisionState
+            ) {
+                self.proposed = proposed
+                self.revisionId = revisionId
+                self.state = state
+            }
+            public enum CodingKeys: String, CodingKey {
+                case proposed
+                case revisionId
+                case state
+            }
+        }
         /// - Remark: Generated from `#/components/schemas/ReviewableConnectionAppsResponse`.
         public struct ReviewableConnectionAppsResponse: Codable, Hashable, Sendable {
+            /// The submitted apps only, as before. `items` is the whole queue.
+            ///
             /// - Remark: Generated from `#/components/schemas/ReviewableConnectionAppsResponse/data`.
             public var data: [Components.Schemas.ConnectionApp]
+            /// Every submitted app and every pending revision of a published app,
+            /// each with the apps a reviewer should compare it with.
+            ///
+            /// - Remark: Generated from `#/components/schemas/ReviewableConnectionAppsResponse/items`.
+            public var items: [Components.Schemas.ReviewQueueEntry]
             /// - Remark: Generated from `#/components/schemas/ReviewableConnectionAppsResponse/nextCursor`.
             public var nextCursor: Swift.String?
             /// Creates a new `ReviewableConnectionAppsResponse`.
             ///
             /// - Parameters:
-            ///   - data:
+            ///   - data: The submitted apps only, as before. `items` is the whole queue.
+            ///   - items: Every submitted app and every pending revision of a published app,
             ///   - nextCursor:
             public init(
                 data: [Components.Schemas.ConnectionApp],
+                items: [Components.Schemas.ReviewQueueEntry],
                 nextCursor: Swift.String? = nil
             ) {
                 self.data = data
+                self.items = items
                 self.nextCursor = nextCursor
             }
             public enum CodingKeys: String, CodingKey {
                 case data
+                case items
                 case nextCursor
             }
         }
@@ -23652,6 +32941,24 @@ extension Components {
         }
         /// - Remark: Generated from `#/components/schemas/SecurityProfileApi`.
         public typealias SecurityProfileApi = FlowionSecurityProfileApi
+        /// - Remark: Generated from `#/components/schemas/SelfRunInput`.
+        public struct SelfRunInput: Codable, Hashable, Sendable {
+            /// The project that receives the location. Must be an `operations` project
+            /// of this organization, and the caller must be able to manage it.
+            ///
+            /// - Remark: Generated from `#/components/schemas/SelfRunInput/projectId`.
+            public var projectId: Swift.String
+            /// Creates a new `SelfRunInput`.
+            ///
+            /// - Parameters:
+            ///   - projectId: The project that receives the location. Must be an `operations` project
+            public init(projectId: Swift.String) {
+                self.projectId = projectId
+            }
+            public enum CodingKeys: String, CodingKey {
+                case projectId
+            }
+        }
         /// - Remark: Generated from `#/components/schemas/SendAssistantMessageRequest`.
         public struct SendAssistantMessageRequest: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/SendAssistantMessageRequest/choice`.
@@ -23703,6 +33010,130 @@ extension Components {
                 case choice
                 case projectId
                 case text
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/SendInstallerAssistantMessageRequest`.
+        public struct SendInstallerAssistantMessageRequest: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/SendInstallerAssistantMessageRequest/image`.
+            public struct ImagePayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/SendInstallerAssistantMessageRequest/image/value1`.
+                public var value1: Components.Schemas.InstallerAssistantImage
+                /// Creates a new `ImagePayload`.
+                ///
+                /// - Parameters:
+                ///   - value1:
+                public init(value1: Components.Schemas.InstallerAssistantImage) {
+                    self.value1 = value1
+                }
+                public init(from decoder: any Swift.Decoder) throws {
+                    self.value1 = try .init(from: decoder)
+                }
+                public func encode(to encoder: any Swift.Encoder) throws {
+                    try self.value1.encode(to: encoder)
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/SendInstallerAssistantMessageRequest/image`.
+            public var image: Components.Schemas.SendInstallerAssistantMessageRequest.ImagePayload?
+            /// Optional selected job. Fixed for this conversation once supplied.
+            ///
+            /// - Remark: Generated from `#/components/schemas/SendInstallerAssistantMessageRequest/jobId`.
+            public var jobId: Swift.String?
+            /// Source app installation for this reply alert. Missing means inbox only.
+            ///
+            /// - Remark: Generated from `#/components/schemas/SendInstallerAssistantMessageRequest/sourceInstallationId`.
+            public var sourceInstallationId: Swift.String?
+            /// Up to 2 000 characters; may be empty when an image is attached.
+            ///
+            /// - Remark: Generated from `#/components/schemas/SendInstallerAssistantMessageRequest/text`.
+            public var text: Swift.String
+            /// Creates a new `SendInstallerAssistantMessageRequest`.
+            ///
+            /// - Parameters:
+            ///   - image:
+            ///   - jobId: Optional selected job. Fixed for this conversation once supplied.
+            ///   - sourceInstallationId: Source app installation for this reply alert. Missing means inbox only.
+            ///   - text: Up to 2 000 characters; may be empty when an image is attached.
+            public init(
+                image: Components.Schemas.SendInstallerAssistantMessageRequest.ImagePayload? = nil,
+                jobId: Swift.String? = nil,
+                sourceInstallationId: Swift.String? = nil,
+                text: Swift.String
+            ) {
+                self.image = image
+                self.jobId = jobId
+                self.sourceInstallationId = sourceInstallationId
+                self.text = text
+            }
+            public enum CodingKeys: String, CodingKey {
+                case image
+                case jobId
+                case sourceInstallationId
+                case text
+            }
+        }
+        /// A separate route makes older gateway replicas refuse instead of silently
+        /// discarding an unknown image field. Text is optional in meaning, not shape.
+        ///
+        /// - Remark: Generated from `#/components/schemas/SendInstallerAssistantPhotoRequest`.
+        public struct SendInstallerAssistantPhotoRequest: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/SendInstallerAssistantPhotoRequest/image`.
+            public var image: Components.Schemas.InstallerAssistantImage
+            /// - Remark: Generated from `#/components/schemas/SendInstallerAssistantPhotoRequest/jobId`.
+            public var jobId: Swift.String?
+            /// Source app installation for this reply alert. Missing means inbox only.
+            ///
+            /// - Remark: Generated from `#/components/schemas/SendInstallerAssistantPhotoRequest/sourceInstallationId`.
+            public var sourceInstallationId: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/SendInstallerAssistantPhotoRequest/text`.
+            public var text: Swift.String
+            /// Creates a new `SendInstallerAssistantPhotoRequest`.
+            ///
+            /// - Parameters:
+            ///   - image:
+            ///   - jobId:
+            ///   - sourceInstallationId: Source app installation for this reply alert. Missing means inbox only.
+            ///   - text:
+            public init(
+                image: Components.Schemas.InstallerAssistantImage,
+                jobId: Swift.String? = nil,
+                sourceInstallationId: Swift.String? = nil,
+                text: Swift.String
+            ) {
+                self.image = image
+                self.jobId = jobId
+                self.sourceInstallationId = sourceInstallationId
+                self.text = text
+            }
+            public enum CodingKeys: String, CodingKey {
+                case image
+                case jobId
+                case sourceInstallationId
+                case text
+            }
+            public init(from decoder: any Swift.Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                self.image = try container.decode(
+                    Components.Schemas.InstallerAssistantImage.self,
+                    forKey: .image
+                )
+                self.jobId = try container.decodeIfPresent(
+                    Swift.String.self,
+                    forKey: .jobId
+                )
+                self.sourceInstallationId = try container.decodeIfPresent(
+                    Swift.String.self,
+                    forKey: .sourceInstallationId
+                )
+                self.text = try container.decode(
+                    Swift.String.self,
+                    forKey: .text
+                )
+                try decoder.ensureNoAdditionalProperties(knownKeys: [
+                    "image",
+                    "jobId",
+                    "sourceInstallationId",
+                    "text"
+                ])
             }
         }
         /// - Remark: Generated from `#/components/schemas/SendTestDeliveryResponse`.
@@ -24206,6 +33637,37 @@ extension Components {
                 case stationsWithOverride
             }
         }
+        /// The body of `PUT /me/vehicles/{vehicleId}/autocharge-for`.
+        ///
+        /// - Remark: Generated from `#/components/schemas/SetAutochargeForRequest`.
+        public struct SetAutochargeForRequest: Codable, Hashable, Sendable {
+            /// The person to start charging for: a current holder of this car.
+            /// `null` clears it. A body without `personId` is refused rather than read
+            /// as "clear".
+            ///
+            /// - Remark: Generated from `#/components/schemas/SetAutochargeForRequest/personId`.
+            public var personId: Swift.String?
+            /// Creates a new `SetAutochargeForRequest`.
+            ///
+            /// - Parameters:
+            ///   - personId: The person to start charging for: a current holder of this car.
+            public init(personId: Swift.String? = nil) {
+                self.personId = personId
+            }
+            public enum CodingKeys: String, CodingKey {
+                case personId
+            }
+            public init(from decoder: any Swift.Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                self.personId = try container.decodeIfPresent(
+                    Swift.String.self,
+                    forKey: .personId
+                )
+                try decoder.ensureNoAdditionalProperties(knownKeys: [
+                    "personId"
+                ])
+            }
+        }
         /// - Remark: Generated from `#/components/schemas/SetChargerNameRequest`.
         public struct SetChargerNameRequest: Codable, Hashable, Sendable {
             /// What to call the charging station. Trimmed, and at most 100
@@ -24468,6 +33930,121 @@ extension Components {
                 case ignore
             }
         }
+        /// The body of both turning routes.
+        ///
+        /// - Remark: Generated from `#/components/schemas/SetInstallerModeRequest`.
+        public struct SetInstallerModeRequest: Codable, Hashable, Sendable {
+            /// `true` turns the mode on, `false` ends it.
+            ///
+            /// - Remark: Generated from `#/components/schemas/SetInstallerModeRequest/on`.
+            public var on: Swift.Bool
+            /// Creates a new `SetInstallerModeRequest`.
+            ///
+            /// - Parameters:
+            ///   - on: `true` turns the mode on, `false` ends it.
+            public init(on: Swift.Bool) {
+                self.on = on
+            }
+            public enum CodingKeys: String, CodingKey {
+                case on
+            }
+            public init(from decoder: any Swift.Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                self.on = try container.decode(
+                    Swift.Bool.self,
+                    forKey: .on
+                )
+                try decoder.ensureNoAdditionalProperties(knownKeys: [
+                    "on"
+                ])
+            }
+        }
+        /// The body of the step route.
+        ///
+        /// - Remark: Generated from `#/components/schemas/SetInstallerModeStepRequest`.
+        public struct SetInstallerModeStepRequest: Codable, Hashable, Sendable {
+            /// A note for the record; at most 500 characters.
+            ///
+            /// - Remark: Generated from `#/components/schemas/SetInstallerModeStepRequest/note`.
+            public var note: Swift.String?
+            /// Why the step was skipped. Required when `state` is `skipped`; at most 500
+            /// characters.
+            ///
+            /// - Remark: Generated from `#/components/schemas/SetInstallerModeStepRequest/skipReason`.
+            public var skipReason: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/SetInstallerModeStepRequest/state`.
+            public var state: Components.Schemas.InstallerModeSettableStepState
+            /// Creates a new `SetInstallerModeStepRequest`.
+            ///
+            /// - Parameters:
+            ///   - note: A note for the record; at most 500 characters.
+            ///   - skipReason: Why the step was skipped. Required when `state` is `skipped`; at most 500
+            ///   - state:
+            public init(
+                note: Swift.String? = nil,
+                skipReason: Swift.String? = nil,
+                state: Components.Schemas.InstallerModeSettableStepState
+            ) {
+                self.note = note
+                self.skipReason = skipReason
+                self.state = state
+            }
+            public enum CodingKeys: String, CodingKey {
+                case note
+                case skipReason
+                case state
+            }
+            public init(from decoder: any Swift.Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                self.note = try container.decodeIfPresent(
+                    Swift.String.self,
+                    forKey: .note
+                )
+                self.skipReason = try container.decodeIfPresent(
+                    Swift.String.self,
+                    forKey: .skipReason
+                )
+                self.state = try container.decode(
+                    Components.Schemas.InstallerModeSettableStepState.self,
+                    forKey: .state
+                )
+                try decoder.ensureNoAdditionalProperties(knownKeys: [
+                    "note",
+                    "skipReason",
+                    "state"
+                ])
+            }
+        }
+        /// The body of `PUT .../autocharge`.
+        ///
+        /// - Remark: Generated from `#/components/schemas/SetLocationAutochargeRequest`.
+        public struct SetLocationAutochargeRequest: Codable, Hashable, Sendable {
+            /// `true` or `false` to choose, `null` to return to the default. A body
+            /// without `enabled` is refused.
+            ///
+            /// - Remark: Generated from `#/components/schemas/SetLocationAutochargeRequest/enabled`.
+            public var enabled: Swift.Bool?
+            /// Creates a new `SetLocationAutochargeRequest`.
+            ///
+            /// - Parameters:
+            ///   - enabled: `true` or `false` to choose, `null` to return to the default. A body
+            public init(enabled: Swift.Bool? = nil) {
+                self.enabled = enabled
+            }
+            public enum CodingKeys: String, CodingKey {
+                case enabled
+            }
+            public init(from decoder: any Swift.Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                self.enabled = try container.decodeIfPresent(
+                    Swift.Bool.self,
+                    forKey: .enabled
+                )
+                try decoder.ensureNoAdditionalProperties(knownKeys: [
+                    "enabled"
+                ])
+            }
+        }
         /// - Remark: Generated from `#/components/schemas/SetMonitorDisabledRequest`.
         public struct SetMonitorDisabledRequest: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/SetMonitorDisabledRequest/disabled`.
@@ -24506,6 +34083,36 @@ extension Components {
                 ])
             }
         }
+        /// The body of `PUT /me/autocharge`.
+        ///
+        /// - Remark: Generated from `#/components/schemas/SetMyAutochargeRequest`.
+        public struct SetMyAutochargeRequest: Codable, Hashable, Sendable {
+            /// `true` to turn the switch on (needs the location step), `false` to
+            /// turn it off.
+            ///
+            /// - Remark: Generated from `#/components/schemas/SetMyAutochargeRequest/enabled`.
+            public var enabled: Swift.Bool
+            /// Creates a new `SetMyAutochargeRequest`.
+            ///
+            /// - Parameters:
+            ///   - enabled: `true` to turn the switch on (needs the location step), `false` to
+            public init(enabled: Swift.Bool) {
+                self.enabled = enabled
+            }
+            public enum CodingKeys: String, CodingKey {
+                case enabled
+            }
+            public init(from decoder: any Swift.Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                self.enabled = try container.decode(
+                    Swift.Bool.self,
+                    forKey: .enabled
+                )
+                try decoder.ensureNoAdditionalProperties(knownKeys: [
+                    "enabled"
+                ])
+            }
+        }
         /// - Remark: Generated from `#/components/schemas/SetNotificationLanguageRequest`.
         public struct SetNotificationLanguageRequest: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/SetNotificationLanguageRequest/language`.
@@ -24536,6 +34143,23 @@ extension Components {
             }
             public enum CodingKeys: String, CodingKey {
                 case enabled
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/SetServingProjectRequest`.
+        public struct SetServingProjectRequest: Codable, Hashable, Sendable {
+            /// An `installations` project of this installer organization.
+            ///
+            /// - Remark: Generated from `#/components/schemas/SetServingProjectRequest/projectId`.
+            public var projectId: Swift.String
+            /// Creates a new `SetServingProjectRequest`.
+            ///
+            /// - Parameters:
+            ///   - projectId: An `installations` project of this installer organization.
+            public init(projectId: Swift.String) {
+                self.projectId = projectId
+            }
+            public enum CodingKeys: String, CodingKey {
+                case projectId
             }
         }
         /// - Remark: Generated from `#/components/schemas/SetTaxIdRequest`.
@@ -24831,6 +34455,78 @@ extension Components {
                 case publishableKey
             }
         }
+        /// - Remark: Generated from `#/components/schemas/SharedHomeVehicle`.
+        public struct SharedHomeVehicle: Codable, Hashable, Sendable {
+            /// Home-scoped identity. Never a physical vehicle or another person's access id.
+            ///
+            /// - Remark: Generated from `#/components/schemas/SharedHomeVehicle/id`.
+            public var id: Swift.String
+            /// - Remark: Generated from `#/components/schemas/SharedHomeVehicle/locationId`.
+            public var locationId: Swift.String
+            /// - Remark: Generated from `#/components/schemas/SharedHomeVehicle/name`.
+            public var name: Swift.String
+            /// Confirm settings after conflicting physical-car records were joined.
+            ///
+            /// - Remark: Generated from `#/components/schemas/SharedHomeVehicle/needsReview`.
+            public var needsReview: Swift.Bool
+            /// - Remark: Generated from `#/components/schemas/SharedHomeVehicle/preferences`.
+            public var preferences: Components.Schemas.VehicleChargingPreferences
+            /// - Remark: Generated from `#/components/schemas/SharedHomeVehicle/revision`.
+            public var revision: Swift.Int64
+            /// - Remark: Generated from `#/components/schemas/SharedHomeVehicle/updatedAt`.
+            public var updatedAt: Foundation.Date
+            /// Creates a new `SharedHomeVehicle`.
+            ///
+            /// - Parameters:
+            ///   - id: Home-scoped identity. Never a physical vehicle or another person's access id.
+            ///   - locationId:
+            ///   - name:
+            ///   - needsReview: Confirm settings after conflicting physical-car records were joined.
+            ///   - preferences:
+            ///   - revision:
+            ///   - updatedAt:
+            public init(
+                id: Swift.String,
+                locationId: Swift.String,
+                name: Swift.String,
+                needsReview: Swift.Bool,
+                preferences: Components.Schemas.VehicleChargingPreferences,
+                revision: Swift.Int64,
+                updatedAt: Foundation.Date
+            ) {
+                self.id = id
+                self.locationId = locationId
+                self.name = name
+                self.needsReview = needsReview
+                self.preferences = preferences
+                self.revision = revision
+                self.updatedAt = updatedAt
+            }
+            public enum CodingKeys: String, CodingKey {
+                case id
+                case locationId
+                case name
+                case needsReview
+                case preferences
+                case revision
+                case updatedAt
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/SharedHomeVehicles`.
+        public struct SharedHomeVehicles: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/SharedHomeVehicles/data`.
+            public var data: [Components.Schemas.SharedHomeVehicle]
+            /// Creates a new `SharedHomeVehicles`.
+            ///
+            /// - Parameters:
+            ///   - data:
+            public init(data: [Components.Schemas.SharedHomeVehicle]) {
+                self.data = data
+            }
+            public enum CodingKeys: String, CodingKey {
+                case data
+            }
+        }
         /// A signal reading, and when the station measured it.
         ///
         /// **dBm, with no band, percentage or bar count.** The number is comparable
@@ -24870,6 +34566,29 @@ extension Components {
             public enum CodingKeys: String, CodingKey {
                 case dbm
                 case reportedAt
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/SimilarConnectionApp`.
+        public struct SimilarConnectionApp: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/SimilarConnectionApp/displayName`.
+            public var displayName: Swift.String
+            /// - Remark: Generated from `#/components/schemas/SimilarConnectionApp/id`.
+            public var id: Swift.String
+            /// Creates a new `SimilarConnectionApp`.
+            ///
+            /// - Parameters:
+            ///   - displayName:
+            ///   - id:
+            public init(
+                displayName: Swift.String,
+                id: Swift.String
+            ) {
+                self.displayName = displayName
+                self.id = id
+            }
+            public enum CodingKeys: String, CodingKey {
+                case displayName
+                case id
             }
         }
         /// - Remark: Generated from `#/components/schemas/SimulateRequest`.
@@ -24918,6 +34637,14 @@ extension Components {
             ///
             /// - Remark: Generated from `#/components/schemas/SimulateRequest/removeBindingIds`.
             public var removeBindingIds: [Swift.String]?
+            /// Draft documents to imagine in place of stored ones: for every binding of
+            /// the target (after `add` and `removeBindingIds`) that names the policy,
+            /// the draft is evaluated instead of the stored document. Each policy must
+            /// be one of the organization's own. The draft is validated as a write
+            /// would be and nothing is stored.
+            ///
+            /// - Remark: Generated from `#/components/schemas/SimulateRequest/replace`.
+            public var replace: [Components.Schemas.SimulatedReplacement]?
             /// Creates a new `SimulateRequest`.
             ///
             /// - Parameters:
@@ -24927,13 +34654,15 @@ extension Components {
             ///   - principalId: The principal the change is for instead of a member: an API key's
             ///   - projectId: Evaluate at this project. Absent evaluates at the organization.
             ///   - removeBindingIds: Binding ids of the member to imagine detaching (`GET …/members/{memberId}/bindings`).
+            ///   - replace: Draft documents to imagine in place of stored ones: for every binding of
             public init(
                 add: [Components.Schemas.SimulatedBindingInput]? = nil,
                 memberId: Swift.String? = nil,
                 mode: Components.Schemas.SimulateRequest.ModePayload? = nil,
                 principalId: Swift.String? = nil,
                 projectId: Swift.String? = nil,
-                removeBindingIds: [Swift.String]? = nil
+                removeBindingIds: [Swift.String]? = nil,
+                replace: [Components.Schemas.SimulatedReplacement]? = nil
             ) {
                 self.add = add
                 self.memberId = memberId
@@ -24941,6 +34670,7 @@ extension Components {
                 self.principalId = principalId
                 self.projectId = projectId
                 self.removeBindingIds = removeBindingIds
+                self.replace = replace
             }
             public enum CodingKeys: String, CodingKey {
                 case add
@@ -24949,6 +34679,7 @@ extension Components {
                 case principalId
                 case projectId
                 case removeBindingIds
+                case replace
             }
             public init(from decoder: any Swift.Decoder) throws {
                 let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -24976,13 +34707,18 @@ extension Components {
                     [Swift.String].self,
                     forKey: .removeBindingIds
                 )
+                self.replace = try container.decodeIfPresent(
+                    [Components.Schemas.SimulatedReplacement].self,
+                    forKey: .replace
+                )
                 try decoder.ensureNoAdditionalProperties(knownKeys: [
                     "add",
                     "memberId",
                     "mode",
                     "principalId",
                     "projectId",
-                    "removeBindingIds"
+                    "removeBindingIds",
+                    "replace"
                 ])
             }
         }
@@ -25084,6 +34820,73 @@ extension Components {
                     "policyId",
                     "projectId"
                 ])
+            }
+        }
+        /// A draft document to evaluate in place of a policy's stored one.
+        ///
+        /// - Remark: Generated from `#/components/schemas/SimulatedReplacement`.
+        public struct SimulatedReplacement: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/SimulatedReplacement/document`.
+            public var document: Components.Schemas.PolicyDocument
+            /// One of the organization's own policies.
+            ///
+            /// - Remark: Generated from `#/components/schemas/SimulatedReplacement/policyId`.
+            public var policyId: Swift.String
+            /// Creates a new `SimulatedReplacement`.
+            ///
+            /// - Parameters:
+            ///   - document:
+            ///   - policyId: One of the organization's own policies.
+            public init(
+                document: Components.Schemas.PolicyDocument,
+                policyId: Swift.String
+            ) {
+                self.document = document
+                self.policyId = policyId
+            }
+            public enum CodingKeys: String, CodingKey {
+                case document
+                case policyId
+            }
+            public init(from decoder: any Swift.Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                self.document = try container.decode(
+                    Components.Schemas.PolicyDocument.self,
+                    forKey: .document
+                )
+                self.policyId = try container.decode(
+                    Swift.String.self,
+                    forKey: .policyId
+                )
+                try decoder.ensureNoAdditionalProperties(knownKeys: [
+                    "document",
+                    "policyId"
+                ])
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/SolarForecastSeries`.
+        public struct SolarForecastSeries: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/SolarForecastSeries/points`.
+            public var points: [Components.Schemas.MetricPoint]
+            /// Mean gross generation in watts, not watt-hours or net surplus.
+            ///
+            /// - Remark: Generated from `#/components/schemas/SolarForecastSeries/unit`.
+            public var unit: Swift.String
+            /// Creates a new `SolarForecastSeries`.
+            ///
+            /// - Parameters:
+            ///   - points:
+            ///   - unit: Mean gross generation in watts, not watt-hours or net surplus.
+            public init(
+                points: [Components.Schemas.MetricPoint],
+                unit: Swift.String
+            ) {
+                self.points = points
+                self.unit = unit
+            }
+            public enum CodingKeys: String, CodingKey {
+                case points
+                case unit
             }
         }
         /// `POST /projects/{projectId}/virtual-chargers`'s body.
@@ -27314,6 +37117,249 @@ extension Components {
         @frozen public enum SwiftJobSubstatusViewVariant6Kind: String, Codable, Hashable, Sendable, CaseIterable {
             case handoverInProgress = "handoverInProgress"
         }
+        /// The label names an outlet at one of the caller's places.
+        ///
+        /// - Remark: Generated from `#/components/schemas/SwiftLabelResolutionVariant1`.
+        public struct SwiftLabelResolutionVariant1: Codable, Hashable, Sendable {
+            /// The charger to open.
+            ///
+            /// - Remark: Generated from `#/components/schemas/SwiftLabelResolutionVariant1/chargingStationId`.
+            public var chargingStationId: Swift.String
+            /// The outlet the label is on.
+            ///
+            /// - Remark: Generated from `#/components/schemas/SwiftLabelResolutionVariant1/evseId`.
+            public var evseId: Swift.String
+            /// - Remark: Generated from `#/components/schemas/SwiftLabelResolutionVariant1/kind`.
+            public var kind: Components.Schemas.SwiftLabelResolutionVariant1Kind
+            /// Creates a new `SwiftLabelResolutionVariant1`.
+            ///
+            /// - Parameters:
+            ///   - chargingStationId: The charger to open.
+            ///   - evseId: The outlet the label is on.
+            ///   - kind:
+            public init(
+                chargingStationId: Swift.String,
+                evseId: Swift.String,
+                kind: Components.Schemas.SwiftLabelResolutionVariant1Kind
+            ) {
+                self.chargingStationId = chargingStationId
+                self.evseId = evseId
+                self.kind = kind
+            }
+            public enum CodingKeys: String, CodingKey {
+                case chargingStationId
+                case evseId
+                case kind
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/SwiftLabelResolutionVariant1Kind`.
+        @frozen public enum SwiftLabelResolutionVariant1Kind: String, Codable, Hashable, Sendable, CaseIterable {
+            case yours = "yours"
+        }
+        /// A live outlet the caller cannot charge at (yet). Only its name.
+        ///
+        /// - Remark: Generated from `#/components/schemas/SwiftLabelResolutionVariant2`.
+        public struct SwiftLabelResolutionVariant2: Codable, Hashable, Sendable {
+            /// What the charger is called, as on the bay; its label's printed ID
+            /// when nobody named it.
+            ///
+            /// - Remark: Generated from `#/components/schemas/SwiftLabelResolutionVariant2/chargerName`.
+            public var chargerName: Swift.String
+            /// The outlet's number on that charger.
+            ///
+            /// - Remark: Generated from `#/components/schemas/SwiftLabelResolutionVariant2/evseNumber`.
+            public var evseNumber: Swift.Int32
+            /// - Remark: Generated from `#/components/schemas/SwiftLabelResolutionVariant2/kind`.
+            public var kind: Components.Schemas.SwiftLabelResolutionVariant2Kind
+            /// Creates a new `SwiftLabelResolutionVariant2`.
+            ///
+            /// - Parameters:
+            ///   - chargerName: What the charger is called, as on the bay; its label's printed ID
+            ///   - evseNumber: The outlet's number on that charger.
+            ///   - kind:
+            public init(
+                chargerName: Swift.String,
+                evseNumber: Swift.Int32,
+                kind: Components.Schemas.SwiftLabelResolutionVariant2Kind
+            ) {
+                self.chargerName = chargerName
+                self.evseNumber = evseNumber
+                self.kind = kind
+            }
+            public enum CodingKeys: String, CodingKey {
+                case chargerName
+                case evseNumber
+                case kind
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/SwiftLabelResolutionVariant2Kind`.
+        @frozen public enum SwiftLabelResolutionVariant2Kind: String, Codable, Hashable, Sendable, CaseIterable {
+            case notYours = "notYours"
+        }
+        /// The label is not on a bay that takes charging yet.
+        ///
+        /// - Remark: Generated from `#/components/schemas/SwiftLabelResolutionVariant3`.
+        public struct SwiftLabelResolutionVariant3: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/SwiftLabelResolutionVariant3/kind`.
+            public var kind: Components.Schemas.SwiftLabelResolutionVariant3Kind
+            /// Creates a new `SwiftLabelResolutionVariant3`.
+            ///
+            /// - Parameters:
+            ///   - kind:
+            public init(kind: Components.Schemas.SwiftLabelResolutionVariant3Kind) {
+                self.kind = kind
+            }
+            public enum CodingKeys: String, CodingKey {
+                case kind
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/SwiftLabelResolutionVariant3Kind`.
+        @frozen public enum SwiftLabelResolutionVariant3Kind: String, Codable, Hashable, Sendable, CaseIterable {
+            case notSetUp = "notSetUp"
+        }
+        /// The label is out of use for good.
+        ///
+        /// - Remark: Generated from `#/components/schemas/SwiftLabelResolutionVariant4`.
+        public struct SwiftLabelResolutionVariant4: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/SwiftLabelResolutionVariant4/kind`.
+            public var kind: Components.Schemas.SwiftLabelResolutionVariant4Kind
+            /// Creates a new `SwiftLabelResolutionVariant4`.
+            ///
+            /// - Parameters:
+            ///   - kind:
+            public init(kind: Components.Schemas.SwiftLabelResolutionVariant4Kind) {
+                self.kind = kind
+            }
+            public enum CodingKeys: String, CodingKey {
+                case kind
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/SwiftLabelResolutionVariant4Kind`.
+        @frozen public enum SwiftLabelResolutionVariant4Kind: String, Codable, Hashable, Sendable, CaseIterable {
+            case retired = "retired"
+        }
+        /// No label has this ID. (Not `unknown`: every SDK reserves that variant
+        /// name for a `kind` it has not seen.)
+        ///
+        /// - Remark: Generated from `#/components/schemas/SwiftLabelResolutionVariant5`.
+        public struct SwiftLabelResolutionVariant5: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/SwiftLabelResolutionVariant5/kind`.
+            public var kind: Components.Schemas.SwiftLabelResolutionVariant5Kind
+            /// Creates a new `SwiftLabelResolutionVariant5`.
+            ///
+            /// - Parameters:
+            ///   - kind:
+            public init(kind: Components.Schemas.SwiftLabelResolutionVariant5Kind) {
+                self.kind = kind
+            }
+            public enum CodingKeys: String, CodingKey {
+                case kind
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/SwiftLabelResolutionVariant5Kind`.
+        @frozen public enum SwiftLabelResolutionVariant5Kind: String, Codable, Hashable, Sendable, CaseIterable {
+            case unrecognised = "unrecognised"
+        }
+        /// - Remark: Generated from `#/components/schemas/SwiftMarkJobReadyResponseVariant2`.
+        public struct SwiftMarkJobReadyResponseVariant2: Codable, Hashable, Sendable {
+            /// True when the job had a linked customer, so the location moved to them at
+            /// once with nothing to accept. False means the handover link was offered by
+            /// email.
+            ///
+            /// - Remark: Generated from `#/components/schemas/SwiftMarkJobReadyResponseVariant2/handedOverToCustomer`.
+            public var handedOverToCustomer: Swift.Bool
+            /// - Remark: Generated from `#/components/schemas/SwiftMarkJobReadyResponseVariant2/installerMode`.
+            public struct InstallerModePayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/SwiftMarkJobReadyResponseVariant2/installerMode/value1`.
+                public var value1: Components.Schemas.InstallerModeHandover
+                /// Creates a new `InstallerModePayload`.
+                ///
+                /// - Parameters:
+                ///   - value1:
+                public init(value1: Components.Schemas.InstallerModeHandover) {
+                    self.value1 = value1
+                }
+                public init(from decoder: any Swift.Decoder) throws {
+                    self.value1 = try .init(from: decoder)
+                }
+                public func encode(to encoder: any Swift.Encoder) throws {
+                    try self.value1.encode(to: encoder)
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/SwiftMarkJobReadyResponseVariant2/installerMode`.
+            public var installerMode: Components.Schemas.SwiftMarkJobReadyResponseVariant2.InstallerModePayload?
+            /// - Remark: Generated from `#/components/schemas/SwiftMarkJobReadyResponseVariant2/transferHeldReason`.
+            public struct TransferHeldReasonPayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/SwiftMarkJobReadyResponseVariant2/transferHeldReason/value1`.
+                public var value1: Components.Schemas.JobTransferHeldReason
+                /// Creates a new `TransferHeldReasonPayload`.
+                ///
+                /// - Parameters:
+                ///   - value1:
+                public init(value1: Components.Schemas.JobTransferHeldReason) {
+                    self.value1 = value1
+                }
+                public init(from decoder: any Swift.Decoder) throws {
+                    self.value1 = try decoder.decodeFromSingleValueContainer()
+                }
+                public func encode(to encoder: any Swift.Encoder) throws {
+                    try encoder.encodeToSingleValueContainer(self.value1)
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/SwiftMarkJobReadyResponseVariant2/transferHeldReason`.
+            public var transferHeldReason: Components.Schemas.SwiftMarkJobReadyResponseVariant2.TransferHeldReasonPayload?
+            /// Creates a new `SwiftMarkJobReadyResponseVariant2`.
+            ///
+            /// - Parameters:
+            ///   - handedOverToCustomer: True when the job had a linked customer, so the location moved to them at
+            ///   - installerMode:
+            ///   - transferHeldReason:
+            public init(
+                handedOverToCustomer: Swift.Bool,
+                installerMode: Components.Schemas.SwiftMarkJobReadyResponseVariant2.InstallerModePayload? = nil,
+                transferHeldReason: Components.Schemas.SwiftMarkJobReadyResponseVariant2.TransferHeldReasonPayload? = nil
+            ) {
+                self.handedOverToCustomer = handedOverToCustomer
+                self.installerMode = installerMode
+                self.transferHeldReason = transferHeldReason
+            }
+            public enum CodingKeys: String, CodingKey {
+                case handedOverToCustomer
+                case installerMode
+                case transferHeldReason
+            }
+        }
+        /// Display-only address facts. Credential management stays on the auth origin.
+        ///
+        /// - Remark: Generated from `#/components/schemas/SwiftMeProfileAddressesItems`.
+        public struct SwiftMeProfileAddressesItems: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/SwiftMeProfileAddressesItems/id`.
+            public var id: Swift.String
+            /// - Remark: Generated from `#/components/schemas/SwiftMeProfileAddressesItems/isPrimary`.
+            public var isPrimary: Swift.Bool
+            /// - Remark: Generated from `#/components/schemas/SwiftMeProfileAddressesItems/masked`.
+            public var masked: Swift.String
+            /// Creates a new `SwiftMeProfileAddressesItems`.
+            ///
+            /// - Parameters:
+            ///   - id:
+            ///   - isPrimary:
+            ///   - masked:
+            public init(
+                id: Swift.String,
+                isPrimary: Swift.Bool,
+                masked: Swift.String
+            ) {
+                self.id = id
+                self.isPrimary = isPrimary
+                self.masked = masked
+            }
+            public enum CodingKeys: String, CodingKey {
+                case id
+                case isPrimary
+                case masked
+            }
+        }
         /// - Remark: Generated from `#/components/schemas/SwiftProjectTransactionSummaryVariant2`.
         public struct SwiftProjectTransactionSummaryVariant2: Codable, Hashable, Sendable {
             /// The charging station this session ran on.
@@ -27423,6 +37469,101 @@ extension Components {
         /// - Remark: Generated from `#/components/schemas/SwiftProtocolChoiceReasonViewVariant3Kind`.
         @frozen public enum SwiftProtocolChoiceReasonViewVariant3Kind: String, Codable, Hashable, Sendable, CaseIterable {
             case unparseable = "unparseable"
+        }
+        /// The label is on a live charging outlet. Only its number.
+        ///
+        /// - Remark: Generated from `#/components/schemas/SwiftPublicLabelAnswerVariant1`.
+        public struct SwiftPublicLabelAnswerVariant1: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/SwiftPublicLabelAnswerVariant1/kind`.
+            public var kind: Components.Schemas.SwiftPublicLabelAnswerVariant1Kind
+            /// The outlet's number on its charger.
+            ///
+            /// - Remark: Generated from `#/components/schemas/SwiftPublicLabelAnswerVariant1/outletNumber`.
+            public var outletNumber: Swift.Int32
+            /// Creates a new `SwiftPublicLabelAnswerVariant1`.
+            ///
+            /// - Parameters:
+            ///   - kind:
+            ///   - outletNumber: The outlet's number on its charger.
+            public init(
+                kind: Components.Schemas.SwiftPublicLabelAnswerVariant1Kind,
+                outletNumber: Swift.Int32
+            ) {
+                self.kind = kind
+                self.outletNumber = outletNumber
+            }
+            public enum CodingKeys: String, CodingKey {
+                case kind
+                case outletNumber
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/SwiftPublicLabelAnswerVariant1Kind`.
+        @frozen public enum SwiftPublicLabelAnswerVariant1Kind: String, Codable, Hashable, Sendable, CaseIterable {
+            case live = "live"
+        }
+        /// The label is not on a bay that takes charging yet.
+        ///
+        /// - Remark: Generated from `#/components/schemas/SwiftPublicLabelAnswerVariant2`.
+        public struct SwiftPublicLabelAnswerVariant2: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/SwiftPublicLabelAnswerVariant2/kind`.
+            public var kind: Components.Schemas.SwiftPublicLabelAnswerVariant2Kind
+            /// Creates a new `SwiftPublicLabelAnswerVariant2`.
+            ///
+            /// - Parameters:
+            ///   - kind:
+            public init(kind: Components.Schemas.SwiftPublicLabelAnswerVariant2Kind) {
+                self.kind = kind
+            }
+            public enum CodingKeys: String, CodingKey {
+                case kind
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/SwiftPublicLabelAnswerVariant2Kind`.
+        @frozen public enum SwiftPublicLabelAnswerVariant2Kind: String, Codable, Hashable, Sendable, CaseIterable {
+            case notSetUp = "notSetUp"
+        }
+        /// The label is out of use for good.
+        ///
+        /// - Remark: Generated from `#/components/schemas/SwiftPublicLabelAnswerVariant3`.
+        public struct SwiftPublicLabelAnswerVariant3: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/SwiftPublicLabelAnswerVariant3/kind`.
+            public var kind: Components.Schemas.SwiftPublicLabelAnswerVariant3Kind
+            /// Creates a new `SwiftPublicLabelAnswerVariant3`.
+            ///
+            /// - Parameters:
+            ///   - kind:
+            public init(kind: Components.Schemas.SwiftPublicLabelAnswerVariant3Kind) {
+                self.kind = kind
+            }
+            public enum CodingKeys: String, CodingKey {
+                case kind
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/SwiftPublicLabelAnswerVariant3Kind`.
+        @frozen public enum SwiftPublicLabelAnswerVariant3Kind: String, Codable, Hashable, Sendable, CaseIterable {
+            case retired = "retired"
+        }
+        /// No label has this ID. (Not `unknown`: every SDK reserves that variant
+        /// name for a `kind` it has not seen.)
+        ///
+        /// - Remark: Generated from `#/components/schemas/SwiftPublicLabelAnswerVariant4`.
+        public struct SwiftPublicLabelAnswerVariant4: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/SwiftPublicLabelAnswerVariant4/kind`.
+            public var kind: Components.Schemas.SwiftPublicLabelAnswerVariant4Kind
+            /// Creates a new `SwiftPublicLabelAnswerVariant4`.
+            ///
+            /// - Parameters:
+            ///   - kind:
+            public init(kind: Components.Schemas.SwiftPublicLabelAnswerVariant4Kind) {
+                self.kind = kind
+            }
+            public enum CodingKeys: String, CodingKey {
+                case kind
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/SwiftPublicLabelAnswerVariant4Kind`.
+        @frozen public enum SwiftPublicLabelAnswerVariant4Kind: String, Codable, Hashable, Sendable, CaseIterable {
+            case unrecognised = "unrecognised"
         }
         /// Outside OAuth: send the browser here.
         ///
@@ -27986,6 +38127,40 @@ extension Components {
                 case externalId
                 case salesPrice
                 case unit
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/SyncedCustomerView`.
+        public struct SyncedCustomerView: Codable, Hashable, Sendable {
+            /// The Fortnox customer's own number.
+            ///
+            /// - Remark: Generated from `#/components/schemas/SyncedCustomerView/externalId`.
+            public var externalId: Swift.String
+            /// - Remark: Generated from `#/components/schemas/SyncedCustomerView/name`.
+            public var name: Swift.String
+            /// The organisation number exactly as Fortnox stores it (never
+            /// normalised), when Fortnox holds one.
+            ///
+            /// - Remark: Generated from `#/components/schemas/SyncedCustomerView/organizationNumber`.
+            public var organizationNumber: Swift.String?
+            /// Creates a new `SyncedCustomerView`.
+            ///
+            /// - Parameters:
+            ///   - externalId: The Fortnox customer's own number.
+            ///   - name:
+            ///   - organizationNumber: The organisation number exactly as Fortnox stores it (never
+            public init(
+                externalId: Swift.String,
+                name: Swift.String,
+                organizationNumber: Swift.String? = nil
+            ) {
+                self.externalId = externalId
+                self.name = name
+                self.organizationNumber = organizationNumber
+            }
+            public enum CodingKeys: String, CodingKey {
+                case externalId
+                case name
+                case organizationNumber
             }
         }
         /// A tariff, modeled on OCPP 2.1's `TariffType` — the response shape for
@@ -28647,8 +38822,8 @@ extension Components {
         ///
         /// - Remark: Generated from `#/components/schemas/TariffHour`.
         public struct TariffHour: Codable, Hashable, Sendable {
-            /// The price in force at half past the hour on an AC outlet; absent when
-            /// no energy price applies to AC then.
+            /// The mean of the hour's four quarters on an AC outlet; absent when no
+            /// energy price applies to AC then, or when `known` is false.
             ///
             /// - Remark: Generated from `#/components/schemas/TariffHour/ac`.
             public var ac: Swift.String?
@@ -28658,25 +38833,35 @@ extension Components {
             ///
             /// - Remark: Generated from `#/components/schemas/TariffHour/hour`.
             public var hour: Swift.Int32
+            /// False when the hour cannot be priced yet: a spot price in it is not
+            /// published, or its market cannot be read. The prices are then absent,
+            /// which is not the same as "no price applies", and never zero.
+            ///
+            /// - Remark: Generated from `#/components/schemas/TariffHour/known`.
+            public var known: Swift.Bool
             /// Creates a new `TariffHour`.
             ///
             /// - Parameters:
-            ///   - ac: The price in force at half past the hour on an AC outlet; absent when
+            ///   - ac: The mean of the hour's four quarters on an AC outlet; absent when no
             ///   - dc:
             ///   - hour: 0 to 23, on the location's clock.
+            ///   - known: False when the hour cannot be priced yet: a spot price in it is not
             public init(
                 ac: Swift.String? = nil,
                 dc: Swift.String? = nil,
-                hour: Swift.Int32
+                hour: Swift.Int32,
+                known: Swift.Bool
             ) {
                 self.ac = ac
                 self.dc = dc
                 self.hour = hour
+                self.known = known
             }
             public enum CodingKeys: String, CodingKey {
                 case ac
                 case dc
                 case hour
+                case known
             }
         }
         /// Why a day has hours, or why it has none.
@@ -28975,48 +39160,6 @@ extension Components {
                 case _type = "type"
             }
         }
-        /// One technician — an ordinary `User`-role member of the installer's own
-        /// organization — with how many of the installer's customers they are
-        /// presently assigned to.
-        ///
-        /// - Remark: Generated from `#/components/schemas/TechnicianSummary`.
-        public struct TechnicianSummary: Codable, Hashable, Sendable {
-            /// - Remark: Generated from `#/components/schemas/TechnicianSummary/assignedCustomerCount`.
-            public var assignedCustomerCount: Swift.Int
-            /// - Remark: Generated from `#/components/schemas/TechnicianSummary/email`.
-            public var email: Swift.String?
-            /// - Remark: Generated from `#/components/schemas/TechnicianSummary/membershipId`.
-            public var membershipId: Swift.String
-            /// The identity provider's opaque subject id — same meaning as
-            /// `MemberSummary::user_id`.
-            ///
-            /// - Remark: Generated from `#/components/schemas/TechnicianSummary/userId`.
-            public var userId: Swift.String
-            /// Creates a new `TechnicianSummary`.
-            ///
-            /// - Parameters:
-            ///   - assignedCustomerCount:
-            ///   - email:
-            ///   - membershipId:
-            ///   - userId: The identity provider's opaque subject id — same meaning as
-            public init(
-                assignedCustomerCount: Swift.Int,
-                email: Swift.String? = nil,
-                membershipId: Swift.String,
-                userId: Swift.String
-            ) {
-                self.assignedCustomerCount = assignedCustomerCount
-                self.email = email
-                self.membershipId = membershipId
-                self.userId = userId
-            }
-            public enum CodingKeys: String, CodingKey {
-                case assignedCustomerCount
-                case email
-                case membershipId
-                case userId
-            }
-        }
         /// - Remark: Generated from `#/components/schemas/TestSessionStartedView`.
         public struct TestSessionStartedView: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/TestSessionStartedView/commandId`.
@@ -29104,6 +39247,14 @@ extension Components {
         }
         /// - Remark: Generated from `#/components/schemas/TokenRequest`.
         public struct TokenRequest: Codable, Hashable, Sendable {
+            /// A public app's id, or a confidential app's when it posts its
+            /// credentials in the body (`client_secret_post`). Home Assistant's
+            /// OAuth helper does the latter and may send an empty `client_secret`.
+            ///
+            /// - Remark: Generated from `#/components/schemas/TokenRequest/client_id`.
+            public var clientId: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/TokenRequest/client_secret`.
+            public var clientSecret: Swift.String?
             /// - Remark: Generated from `#/components/schemas/TokenRequest/code`.
             public var code: Swift.String?
             /// - Remark: Generated from `#/components/schemas/TokenRequest/code_verifier`.
@@ -29117,18 +39268,24 @@ extension Components {
             /// Creates a new `TokenRequest`.
             ///
             /// - Parameters:
+            ///   - clientId: A public app's id, or a confidential app's when it posts its
+            ///   - clientSecret:
             ///   - code:
             ///   - codeVerifier:
             ///   - grantType:
             ///   - redirectUri:
             ///   - refreshToken:
             public init(
+                clientId: Swift.String? = nil,
+                clientSecret: Swift.String? = nil,
                 code: Swift.String? = nil,
                 codeVerifier: Swift.String? = nil,
                 grantType: Swift.String,
                 redirectUri: Swift.String? = nil,
                 refreshToken: Swift.String? = nil
             ) {
+                self.clientId = clientId
+                self.clientSecret = clientSecret
                 self.code = code
                 self.codeVerifier = codeVerifier
                 self.grantType = grantType
@@ -29136,6 +39293,8 @@ extension Components {
                 self.refreshToken = refreshToken
             }
             public enum CodingKeys: String, CodingKey {
+                case clientId = "client_id"
+                case clientSecret = "client_secret"
                 case code
                 case codeVerifier = "code_verifier"
                 case grantType = "grant_type"
@@ -30079,24 +40238,6 @@ extension Components {
                 case status
             }
         }
-        /// - Remark: Generated from `#/components/schemas/UnlinkPaymentsAccountRequest`.
-        public struct UnlinkPaymentsAccountRequest: Codable, Hashable, Sendable {
-            /// Why the account is unlinked, recorded with the operator and the
-            /// time. Required; blank is refused.
-            ///
-            /// - Remark: Generated from `#/components/schemas/UnlinkPaymentsAccountRequest/reason`.
-            public var reason: Swift.String
-            /// Creates a new `UnlinkPaymentsAccountRequest`.
-            ///
-            /// - Parameters:
-            ///   - reason: Why the account is unlinked, recorded with the operator and the
-            public init(reason: Swift.String) {
-                self.reason = reason
-            }
-            public enum CodingKeys: String, CodingKey {
-                case reason
-            }
-        }
         /// Asks a charging station to release a connector's latch.
         ///
         /// Maps to `UnlockConnector.req`. Used to free a connector a driver could
@@ -30406,6 +40547,35 @@ extension Components {
         @frozen public enum UpdateFirmwareTag: String, Codable, Hashable, Sendable, CaseIterable {
             case updateFirmware = "updateFirmware"
         }
+        /// The home to rename.
+        ///
+        /// - Remark: Generated from `#/components/schemas/UpdateHomeRequest`.
+        public struct UpdateHomeRequest: Codable, Hashable, Sendable {
+            /// What the person calls the home: 1 to 80 characters once trimmed.
+            ///
+            /// - Remark: Generated from `#/components/schemas/UpdateHomeRequest/name`.
+            public var name: Swift.String
+            /// Creates a new `UpdateHomeRequest`.
+            ///
+            /// - Parameters:
+            ///   - name: What the person calls the home: 1 to 80 characters once trimmed.
+            public init(name: Swift.String) {
+                self.name = name
+            }
+            public enum CodingKeys: String, CodingKey {
+                case name
+            }
+            public init(from decoder: any Swift.Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                self.name = try container.decode(
+                    Swift.String.self,
+                    forKey: .name
+                )
+                try decoder.ensureNoAdditionalProperties(knownKeys: [
+                    "name"
+                ])
+            }
+        }
         /// A partial update over a token's mutable metadata.
         ///
         /// **Never carries the token's value** — there is no field for it, by
@@ -30448,6 +40618,31 @@ extension Components {
                 case setReach
             }
         }
+        /// - Remark: Generated from `#/components/schemas/UpdateInstallerSettingsRequest`.
+        public struct UpdateInstallerSettingsRequest: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/UpdateInstallerSettingsRequest/operatingCountries`.
+            public var operatingCountries: [Swift.String]
+            /// Creates a new `UpdateInstallerSettingsRequest`.
+            ///
+            /// - Parameters:
+            ///   - operatingCountries:
+            public init(operatingCountries: [Swift.String]) {
+                self.operatingCountries = operatingCountries
+            }
+            public enum CodingKeys: String, CodingKey {
+                case operatingCountries
+            }
+            public init(from decoder: any Swift.Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                self.operatingCountries = try container.decode(
+                    [Swift.String].self,
+                    forKey: .operatingCountries
+                )
+                try decoder.ensureNoAdditionalProperties(knownKeys: [
+                    "operatingCountries"
+                ])
+            }
+        }
         /// - Remark: Generated from `#/components/schemas/UpdateJobRequest`.
         public typealias UpdateJobRequest = FlowionUpdateJobRequest
         /// - Remark: Generated from `#/components/schemas/UpdateLocationRequest`.
@@ -30469,6 +40664,12 @@ extension Components {
         ///
         /// - Remark: Generated from `#/components/schemas/UpdateProjectAuthorizationSettingsRequest`.
         public struct UpdateProjectAuthorizationSettingsRequest: Codable, Hashable, Sendable {
+            /// Turns id-token credentials on or off for this project (`on` | `off`).
+            /// Omitted leaves it unchanged. The legacy window is the registry's: it
+            /// cannot be set here.
+            ///
+            /// - Remark: Generated from `#/components/schemas/UpdateProjectAuthorizationSettingsRequest/credentialsMode`.
+            public var credentialsMode: Swift.String?
             /// Turns Flowion Home on or off for this project's people. Omitted
             /// leaves it unchanged.
             ///
@@ -30483,22 +40684,26 @@ extension Components {
             /// Creates a new `UpdateProjectAuthorizationSettingsRequest`.
             ///
             /// - Parameters:
+            ///   - credentialsMode: Turns id-token credentials on or off for this project (`on` | `off`).
             ///   - homeLinkable: Turns Flowion Home on or off for this project's people. Omitted
             ///   - masterPassGroupKey:
             ///   - rateLimitAttempts:
             ///   - rateLimitWindowSeconds:
             public init(
+                credentialsMode: Swift.String? = nil,
                 homeLinkable: Swift.Bool? = nil,
                 masterPassGroupKey: Swift.String? = nil,
                 rateLimitAttempts: Swift.Int32? = nil,
                 rateLimitWindowSeconds: Swift.Int32? = nil
             ) {
+                self.credentialsMode = credentialsMode
                 self.homeLinkable = homeLinkable
                 self.masterPassGroupKey = masterPassGroupKey
                 self.rateLimitAttempts = rateLimitAttempts
                 self.rateLimitWindowSeconds = rateLimitWindowSeconds
             }
             public enum CodingKeys: String, CodingKey {
+                case credentialsMode
                 case homeLinkable
                 case masterPassGroupKey
                 case rateLimitAttempts
@@ -31104,6 +41309,26 @@ extension Components {
             }
             /// - Remark: Generated from `#/components/schemas/VehicleBattery/chargeLimitPercent`.
             public var chargeLimitPercent: Components.Schemas.VehicleBattery.ChargeLimitPercentPayload?
+            /// - Remark: Generated from `#/components/schemas/VehicleBattery/chargingPowerKw`.
+            public struct ChargingPowerKwPayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/VehicleBattery/chargingPowerKw/value1`.
+                public var value1: Components.Schemas.VehicleObservedValue
+                /// Creates a new `ChargingPowerKwPayload`.
+                ///
+                /// - Parameters:
+                ///   - value1:
+                public init(value1: Components.Schemas.VehicleObservedValue) {
+                    self.value1 = value1
+                }
+                public init(from decoder: any Swift.Decoder) throws {
+                    self.value1 = try .init(from: decoder)
+                }
+                public func encode(to encoder: any Swift.Encoder) throws {
+                    try self.value1.encode(to: encoder)
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/VehicleBattery/chargingPowerKw`.
+            public var chargingPowerKw: Components.Schemas.VehicleBattery.ChargingPowerKwPayload?
             /// - Remark: Generated from `#/components/schemas/VehicleBattery/chargingState`.
             public var chargingState: Components.Schemas.VehicleChargingState
             /// - Remark: Generated from `#/components/schemas/VehicleBattery/chargingStateObservedAt`.
@@ -31113,6 +41338,46 @@ extension Components {
             ///
             /// - Remark: Generated from `#/components/schemas/VehicleBattery/chargingStateStale`.
             public var chargingStateStale: Swift.Bool
+            /// - Remark: Generated from `#/components/schemas/VehicleBattery/connectivity`.
+            public struct ConnectivityPayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/VehicleBattery/connectivity/value1`.
+                public var value1: Components.Schemas.VehicleConnectivity
+                /// Creates a new `ConnectivityPayload`.
+                ///
+                /// - Parameters:
+                ///   - value1:
+                public init(value1: Components.Schemas.VehicleConnectivity) {
+                    self.value1 = value1
+                }
+                public init(from decoder: any Swift.Decoder) throws {
+                    self.value1 = try .init(from: decoder)
+                }
+                public func encode(to encoder: any Swift.Encoder) throws {
+                    try self.value1.encode(to: encoder)
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/VehicleBattery/connectivity`.
+            public var connectivity: Components.Schemas.VehicleBattery.ConnectivityPayload?
+            /// - Remark: Generated from `#/components/schemas/VehicleBattery/ownChargingSchedule`.
+            public struct OwnChargingSchedulePayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/VehicleBattery/ownChargingSchedule/value1`.
+                public var value1: Components.Schemas.OwnChargingSchedule
+                /// Creates a new `OwnChargingSchedulePayload`.
+                ///
+                /// - Parameters:
+                ///   - value1:
+                public init(value1: Components.Schemas.OwnChargingSchedule) {
+                    self.value1 = value1
+                }
+                public init(from decoder: any Swift.Decoder) throws {
+                    self.value1 = try .init(from: decoder)
+                }
+                public func encode(to encoder: any Swift.Encoder) throws {
+                    try self.value1.encode(to: encoder)
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/VehicleBattery/ownChargingSchedule`.
+            public var ownChargingSchedule: Components.Schemas.VehicleBattery.OwnChargingSchedulePayload?
             /// - Remark: Generated from `#/components/schemas/VehicleBattery/stateOfChargePercent`.
             public struct StateOfChargePercentPayload: Codable, Hashable, Sendable {
                 /// - Remark: Generated from `#/components/schemas/VehicleBattery/stateOfChargePercent/value1`.
@@ -31141,9 +41406,12 @@ extension Components {
             ///   - capacitySource:
             ///   - chargeCurrentLimitAmps:
             ///   - chargeLimitPercent:
+            ///   - chargingPowerKw:
             ///   - chargingState:
             ///   - chargingStateObservedAt:
             ///   - chargingStateStale: Whether `chargingState` is too old to read as current. `false` when
+            ///   - connectivity:
+            ///   - ownChargingSchedule:
             ///   - stateOfChargePercent:
             public init(
                 capacityEnteredBy: Swift.String? = nil,
@@ -31151,9 +41419,12 @@ extension Components {
                 capacitySource: Components.Schemas.VehicleBattery.CapacitySourcePayload? = nil,
                 chargeCurrentLimitAmps: Components.Schemas.VehicleBattery.ChargeCurrentLimitAmpsPayload? = nil,
                 chargeLimitPercent: Components.Schemas.VehicleBattery.ChargeLimitPercentPayload? = nil,
+                chargingPowerKw: Components.Schemas.VehicleBattery.ChargingPowerKwPayload? = nil,
                 chargingState: Components.Schemas.VehicleChargingState,
                 chargingStateObservedAt: Foundation.Date? = nil,
                 chargingStateStale: Swift.Bool,
+                connectivity: Components.Schemas.VehicleBattery.ConnectivityPayload? = nil,
+                ownChargingSchedule: Components.Schemas.VehicleBattery.OwnChargingSchedulePayload? = nil,
                 stateOfChargePercent: Components.Schemas.VehicleBattery.StateOfChargePercentPayload? = nil
             ) {
                 self.capacityEnteredBy = capacityEnteredBy
@@ -31161,9 +41432,12 @@ extension Components {
                 self.capacitySource = capacitySource
                 self.chargeCurrentLimitAmps = chargeCurrentLimitAmps
                 self.chargeLimitPercent = chargeLimitPercent
+                self.chargingPowerKw = chargingPowerKw
                 self.chargingState = chargingState
                 self.chargingStateObservedAt = chargingStateObservedAt
                 self.chargingStateStale = chargingStateStale
+                self.connectivity = connectivity
+                self.ownChargingSchedule = ownChargingSchedule
                 self.stateOfChargePercent = stateOfChargePercent
             }
             public enum CodingKeys: String, CodingKey {
@@ -31172,9 +41446,12 @@ extension Components {
                 case capacitySource
                 case chargeCurrentLimitAmps
                 case chargeLimitPercent
+                case chargingPowerKw
                 case chargingState
                 case chargingStateObservedAt
                 case chargingStateStale
+                case connectivity
+                case ownChargingSchedule
                 case stateOfChargePercent
             }
         }
@@ -31232,6 +41509,70 @@ extension Components {
                 case peakPowerW
             }
         }
+        /// - Remark: Generated from `#/components/schemas/VehicleChargingPreferences`.
+        public struct VehicleChargingPreferences: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/VehicleChargingPreferences/flexibleCeilingPercent`.
+            public var flexibleCeilingPercent: Swift.Int32
+            /// - Remark: Generated from `#/components/schemas/VehicleChargingPreferences/minimumPercent`.
+            public var minimumPercent: Swift.Int32
+            /// Local minutes after midnight in the home's time zone (07:00 = 420).
+            ///
+            /// - Remark: Generated from `#/components/schemas/VehicleChargingPreferences/readyByMinute`.
+            public var readyByMinute: Swift.Int32
+            /// ISO weekdays, ascending and unique: Monday = 1, Sunday = 7.
+            ///
+            /// - Remark: Generated from `#/components/schemas/VehicleChargingPreferences/weekdays`.
+            public var weekdays: [Swift.Int32]
+            /// Creates a new `VehicleChargingPreferences`.
+            ///
+            /// - Parameters:
+            ///   - flexibleCeilingPercent:
+            ///   - minimumPercent:
+            ///   - readyByMinute: Local minutes after midnight in the home's time zone (07:00 = 420).
+            ///   - weekdays: ISO weekdays, ascending and unique: Monday = 1, Sunday = 7.
+            public init(
+                flexibleCeilingPercent: Swift.Int32,
+                minimumPercent: Swift.Int32,
+                readyByMinute: Swift.Int32,
+                weekdays: [Swift.Int32]
+            ) {
+                self.flexibleCeilingPercent = flexibleCeilingPercent
+                self.minimumPercent = minimumPercent
+                self.readyByMinute = readyByMinute
+                self.weekdays = weekdays
+            }
+            public enum CodingKeys: String, CodingKey {
+                case flexibleCeilingPercent
+                case minimumPercent
+                case readyByMinute
+                case weekdays
+            }
+            public init(from decoder: any Swift.Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                self.flexibleCeilingPercent = try container.decode(
+                    Swift.Int32.self,
+                    forKey: .flexibleCeilingPercent
+                )
+                self.minimumPercent = try container.decode(
+                    Swift.Int32.self,
+                    forKey: .minimumPercent
+                )
+                self.readyByMinute = try container.decode(
+                    Swift.Int32.self,
+                    forKey: .readyByMinute
+                )
+                self.weekdays = try container.decode(
+                    [Swift.Int32].self,
+                    forKey: .weekdays
+                )
+                try decoder.ensureNoAdditionalProperties(knownKeys: [
+                    "flexibleCeilingPercent",
+                    "minimumPercent",
+                    "readyByMinute",
+                    "weekdays"
+                ])
+            }
+        }
         /// - Remark: Generated from `#/components/schemas/VehicleChargingState`.
         public typealias VehicleChargingState = FlowionVehicleChargingState
         /// - Remark: Generated from `#/components/schemas/VehicleCompleteConnectionRequest`.
@@ -31277,6 +41618,12 @@ extension Components {
         public typealias VehicleCompleteConnectionResult = FlowionVehicleCompleteConnectionResult
         /// - Remark: Generated from `#/components/schemas/VehicleConnectionHealth`.
         public typealias VehicleConnectionHealth = FlowionVehicleConnectionHealth
+        /// Whether a car holds its connection to its brand's stream. A car that does is
+        /// awake; one that does not is asleep or out of signal, and the stream cannot say
+        /// which, so this says neither.
+        ///
+        /// - Remark: Generated from `#/components/schemas/VehicleConnectionState`.
+        public typealias VehicleConnectionState = FlowionVehicleConnectionState
         /// One brand account a project has connected. Never carries a credential.
         ///
         /// - Remark: Generated from `#/components/schemas/VehicleConnectionSummary`.
@@ -31296,6 +41643,13 @@ extension Components {
             public var healthChangedAt: Foundation.Date?
             /// - Remark: Generated from `#/components/schemas/VehicleConnectionSummary/id`.
             public var id: Swift.String
+            /// The person took the optional step that lets Flowion follow the car's
+            /// arrival at their own chargers, and has not withdrawn it. Only a
+            /// person's connection can: always `false` for a project's. A flag, not a
+            /// position: no position is ever returned.
+            ///
+            /// - Remark: Generated from `#/components/schemas/VehicleConnectionSummary/trackingConsent`.
+            public var trackingConsent: Swift.Bool
             /// Vehicles this project tracks through the connection.
             ///
             /// - Remark: Generated from `#/components/schemas/VehicleConnectionSummary/vehicleCount`.
@@ -31308,6 +41662,7 @@ extension Components {
             ///   - health:
             ///   - healthChangedAt: When `health` last changed. `null` when it never has.
             ///   - id:
+            ///   - trackingConsent: The person took the optional step that lets Flowion follow the car's
             ///   - vehicleCount: Vehicles this project tracks through the connection.
             public init(
                 brand: Components.Schemas.VehicleBrand,
@@ -31315,6 +41670,7 @@ extension Components {
                 health: Components.Schemas.VehicleConnectionHealth,
                 healthChangedAt: Foundation.Date? = nil,
                 id: Swift.String,
+                trackingConsent: Swift.Bool,
                 vehicleCount: Swift.Int32
             ) {
                 self.brand = brand
@@ -31322,6 +41678,7 @@ extension Components {
                 self.health = health
                 self.healthChangedAt = healthChangedAt
                 self.id = id
+                self.trackingConsent = trackingConsent
                 self.vehicleCount = vehicleCount
             }
             public enum CodingKeys: String, CodingKey {
@@ -31330,7 +41687,36 @@ extension Components {
                 case health
                 case healthChangedAt
                 case id
+                case trackingConsent
                 case vehicleCount
+            }
+        }
+        /// A car's connection to its brand's stream.
+        ///
+        /// - Remark: Generated from `#/components/schemas/VehicleConnectivity`.
+        public struct VehicleConnectivity: Codable, Hashable, Sendable {
+            /// When the car connected (`connected`) or when its connection went
+            /// (`disconnected`).
+            ///
+            /// - Remark: Generated from `#/components/schemas/VehicleConnectivity/changedAt`.
+            public var changedAt: Foundation.Date
+            /// - Remark: Generated from `#/components/schemas/VehicleConnectivity/state`.
+            public var state: Components.Schemas.VehicleConnectionState
+            /// Creates a new `VehicleConnectivity`.
+            ///
+            /// - Parameters:
+            ///   - changedAt: When the car connected (`connected`) or when its connection went
+            ///   - state:
+            public init(
+                changedAt: Foundation.Date,
+                state: Components.Schemas.VehicleConnectionState
+            ) {
+                self.changedAt = changedAt
+                self.state = state
+            }
+            public enum CodingKeys: String, CodingKey {
+                case changedAt
+                case state
             }
         }
         /// - Remark: Generated from `#/components/schemas/VehicleConsentRefusal`.
@@ -31926,6 +42312,12 @@ extension Components {
                 case state
             }
         }
+        /// Why the installer is coming back to a customer's chargers: the
+        /// closed set that makes a job on an existing location a revisit. It decides
+        /// which installer-mode steps are asked for and is shown to the customer.
+        ///
+        /// - Remark: Generated from `#/components/schemas/VisitReason`.
+        public typealias VisitReason = FlowionVisitReason
         /// - Remark: Generated from `#/components/schemas/WaiveExpectedChargerRequest`.
         public struct WaiveExpectedChargerRequest: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/WaiveExpectedChargerRequest/reason`.
@@ -31939,6 +42331,35 @@ extension Components {
             }
             public enum CodingKeys: String, CodingKey {
                 case reason
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/WeatherForecastMetric`.
+        public typealias WeatherForecastMetric = FlowionWeatherForecastMetric
+        /// - Remark: Generated from `#/components/schemas/WeatherForecastRange`.
+        public typealias WeatherForecastRange = FlowionWeatherForecastRange
+        /// - Remark: Generated from `#/components/schemas/WeatherForecastSeries`.
+        public struct WeatherForecastSeries: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/WeatherForecastSeries/points`.
+            public var points: [Components.Schemas.MetricPoint]
+            /// W/m²: mean global horizontal irradiance, not instantaneous sunlight.
+            ///
+            /// - Remark: Generated from `#/components/schemas/WeatherForecastSeries/unit`.
+            public var unit: Swift.String
+            /// Creates a new `WeatherForecastSeries`.
+            ///
+            /// - Parameters:
+            ///   - points:
+            ///   - unit: W/m²: mean global horizontal irradiance, not instantaneous sunlight.
+            public init(
+                points: [Components.Schemas.MetricPoint],
+                unit: Swift.String
+            ) {
+                self.points = points
+                self.unit = unit
+            }
+            public enum CodingKeys: String, CodingKey {
+                case points
+                case unit
             }
         }
         /// - Remark: Generated from `#/components/schemas/WhoCanChargeEntry`.
@@ -32020,10 +42441,35 @@ extension Components {
                 case nextCursor
             }
         }
+        /// - Remark: Generated from `#/components/schemas/WithdrawAdditionsRequest`.
+        public struct WithdrawAdditionsRequest: Codable, Hashable, Sendable {
+            /// The additions to withdraw. Empty withdraws every addition the customer has
+            /// not accepted.
+            ///
+            /// - Remark: Generated from `#/components/schemas/WithdrawAdditionsRequest/additionIds`.
+            public var additionIds: [Swift.String]?
+            /// Creates a new `WithdrawAdditionsRequest`.
+            ///
+            /// - Parameters:
+            ///   - additionIds: The additions to withdraw. Empty withdraws every addition the customer has
+            public init(additionIds: [Swift.String]? = nil) {
+                self.additionIds = additionIds
+            }
+            public enum CodingKeys: String, CodingKey {
+                case additionIds
+            }
+        }
         /// - Remark: Generated from `#/components/schemas/WritePermissionPolicyRequest`.
         public struct WritePermissionPolicyRequest: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/WritePermissionPolicyRequest/document`.
             public var document: Components.Schemas.PolicyDocument
+            /// `PUT` only: the `version` you read. When it is not the stored version
+            /// nothing is changed and the answer is `409 permission_policy.stale`, so
+            /// two people editing the same policy cannot silently overwrite each
+            /// other. Absent: the write goes through as before. A `POST` ignores it.
+            ///
+            /// - Remark: Generated from `#/components/schemas/WritePermissionPolicyRequest/expectedVersion`.
+            public var expectedVersion: Swift.Int32?
             /// Unique within the organization and never a managed policy's name.
             /// At most 100 characters.
             ///
@@ -32033,16 +42479,20 @@ extension Components {
             ///
             /// - Parameters:
             ///   - document:
+            ///   - expectedVersion: `PUT` only: the `version` you read. When it is not the stored version
             ///   - name: Unique within the organization and never a managed policy's name.
             public init(
                 document: Components.Schemas.PolicyDocument,
+                expectedVersion: Swift.Int32? = nil,
                 name: Swift.String
             ) {
                 self.document = document
+                self.expectedVersion = expectedVersion
                 self.name = name
             }
             public enum CodingKeys: String, CodingKey {
                 case document
+                case expectedVersion
                 case name
             }
             public init(from decoder: any Swift.Decoder) throws {
@@ -32051,14 +42501,664 @@ extension Components {
                     Components.Schemas.PolicyDocument.self,
                     forKey: .document
                 )
+                self.expectedVersion = try container.decodeIfPresent(
+                    Swift.Int32.self,
+                    forKey: .expectedVersion
+                )
                 self.name = try container.decode(
                     Swift.String.self,
                     forKey: .name
                 )
                 try decoder.ensureNoAdditionalProperties(knownKeys: [
                     "document",
+                    "expectedVersion",
                     "name"
                 ])
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/ZaptecAttemptView`.
+        public struct ZaptecAttemptView: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/ZaptecAttemptView/blockers`.
+            public var blockers: [Components.Schemas.ZaptecBlockerView]
+            /// - Remark: Generated from `#/components/schemas/ZaptecAttemptView/id`.
+            public var id: Swift.String
+            /// - Remark: Generated from `#/components/schemas/ZaptecAttemptView/installation`.
+            public struct InstallationPayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/ZaptecAttemptView/installation/value1`.
+                public var value1: Components.Schemas.ZaptecInstallationView
+                /// Creates a new `InstallationPayload`.
+                ///
+                /// - Parameters:
+                ///   - value1:
+                public init(value1: Components.Schemas.ZaptecInstallationView) {
+                    self.value1 = value1
+                }
+                public init(from decoder: any Swift.Decoder) throws {
+                    self.value1 = try .init(from: decoder)
+                }
+                public func encode(to encoder: any Swift.Encoder) throws {
+                    try self.value1.encode(to: encoder)
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/ZaptecAttemptView/installation`.
+            public var installation: Components.Schemas.ZaptecAttemptView.InstallationPayload?
+            /// - Remark: Generated from `#/components/schemas/ZaptecAttemptView/installationKind`.
+            public var installationKind: Swift.String
+            /// - Remark: Generated from `#/components/schemas/ZaptecAttemptView/jobId`.
+            public var jobId: Swift.String?
+            /// Previously saved choices; cleared when authority or topology changes.
+            ///
+            /// - Remark: Generated from `#/components/schemas/ZaptecAttemptView/mappings`.
+            public var mappings: [Components.Schemas.ZaptecMappingView]
+            /// - Remark: Generated from `#/components/schemas/ZaptecAttemptView/projectId`.
+            public var projectId: Swift.String
+            /// Previously saved approval; this alone never authorizes a provider switch.
+            ///
+            /// - Remark: Generated from `#/components/schemas/ZaptecAttemptView/providerChangeAccepted`.
+            public var providerChangeAccepted: Swift.Bool
+            /// - Remark: Generated from `#/components/schemas/ZaptecAttemptView/revision`.
+            public var revision: Swift.Int64
+            /// Open lifecycle value. Unknown stages must not authorize advancement.
+            ///
+            /// - Remark: Generated from `#/components/schemas/ZaptecAttemptView/stage`.
+            public var stage: Swift.String
+            /// - Remark: Generated from `#/components/schemas/ZaptecAttemptView/steps`.
+            public var steps: [Components.Schemas.ZaptecStepView]
+            /// Unix seconds, supplied by the workflow.
+            ///
+            /// - Remark: Generated from `#/components/schemas/ZaptecAttemptView/updatedAt`.
+            public var updatedAt: Swift.Int64
+            /// Creates a new `ZaptecAttemptView`.
+            ///
+            /// - Parameters:
+            ///   - blockers:
+            ///   - id:
+            ///   - installation:
+            ///   - installationKind:
+            ///   - jobId:
+            ///   - mappings: Previously saved choices; cleared when authority or topology changes.
+            ///   - projectId:
+            ///   - providerChangeAccepted: Previously saved approval; this alone never authorizes a provider switch.
+            ///   - revision:
+            ///   - stage: Open lifecycle value. Unknown stages must not authorize advancement.
+            ///   - steps:
+            ///   - updatedAt: Unix seconds, supplied by the workflow.
+            public init(
+                blockers: [Components.Schemas.ZaptecBlockerView],
+                id: Swift.String,
+                installation: Components.Schemas.ZaptecAttemptView.InstallationPayload? = nil,
+                installationKind: Swift.String,
+                jobId: Swift.String? = nil,
+                mappings: [Components.Schemas.ZaptecMappingView],
+                projectId: Swift.String,
+                providerChangeAccepted: Swift.Bool,
+                revision: Swift.Int64,
+                stage: Swift.String,
+                steps: [Components.Schemas.ZaptecStepView],
+                updatedAt: Swift.Int64
+            ) {
+                self.blockers = blockers
+                self.id = id
+                self.installation = installation
+                self.installationKind = installationKind
+                self.jobId = jobId
+                self.mappings = mappings
+                self.projectId = projectId
+                self.providerChangeAccepted = providerChangeAccepted
+                self.revision = revision
+                self.stage = stage
+                self.steps = steps
+                self.updatedAt = updatedAt
+            }
+            public enum CodingKeys: String, CodingKey {
+                case blockers
+                case id
+                case installation
+                case installationKind
+                case jobId
+                case mappings
+                case projectId
+                case providerChangeAccepted
+                case revision
+                case stage
+                case steps
+                case updatedAt
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/ZaptecAvailabilityView`.
+        public struct ZaptecAvailabilityView: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/ZaptecAvailabilityView/available`.
+            public var available: Swift.Bool
+            /// - Remark: Generated from `#/components/schemas/ZaptecAvailabilityView/reason`.
+            public var reason: Swift.String
+            /// Creates a new `ZaptecAvailabilityView`.
+            ///
+            /// - Parameters:
+            ///   - available:
+            ///   - reason:
+            public init(
+                available: Swift.Bool,
+                reason: Swift.String
+            ) {
+                self.available = available
+                self.reason = reason
+            }
+            public enum CodingKeys: String, CodingKey {
+                case available
+                case reason
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/ZaptecBlockerView`.
+        public struct ZaptecBlockerView: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/ZaptecBlockerView/code`.
+            public var code: Swift.String
+            /// - Remark: Generated from `#/components/schemas/ZaptecBlockerView/message`.
+            public var message: Swift.String
+            /// Creates a new `ZaptecBlockerView`.
+            ///
+            /// - Parameters:
+            ///   - code:
+            ///   - message:
+            public init(
+                code: Swift.String,
+                message: Swift.String
+            ) {
+                self.code = code
+                self.message = message
+            }
+            public enum CodingKeys: String, CodingKey {
+                case code
+                case message
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/ZaptecChargerView`.
+        public struct ZaptecChargerView: Codable, Hashable, Sendable {
+            /// Documented eligibility, not a physical commissioning result.
+            ///
+            /// - Remark: Generated from `#/components/schemas/ZaptecChargerView/eligibility`.
+            public var eligibility: Swift.String
+            /// - Remark: Generated from `#/components/schemas/ZaptecChargerView/firmware`.
+            public var firmware: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/ZaptecChargerView/id`.
+            public var id: Swift.String
+            /// - Remark: Generated from `#/components/schemas/ZaptecChargerView/isOnline`.
+            public var isOnline: Swift.Bool?
+            /// - Remark: Generated from `#/components/schemas/ZaptecChargerView/model`.
+            public var model: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/ZaptecChargerView/name`.
+            public var name: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/ZaptecChargerView/serial`.
+            public var serial: Swift.String?
+            /// Creates a new `ZaptecChargerView`.
+            ///
+            /// - Parameters:
+            ///   - eligibility: Documented eligibility, not a physical commissioning result.
+            ///   - firmware:
+            ///   - id:
+            ///   - isOnline:
+            ///   - model:
+            ///   - name:
+            ///   - serial:
+            public init(
+                eligibility: Swift.String,
+                firmware: Swift.String? = nil,
+                id: Swift.String,
+                isOnline: Swift.Bool? = nil,
+                model: Swift.String? = nil,
+                name: Swift.String? = nil,
+                serial: Swift.String? = nil
+            ) {
+                self.eligibility = eligibility
+                self.firmware = firmware
+                self.id = id
+                self.isOnline = isOnline
+                self.model = model
+                self.name = name
+                self.serial = serial
+            }
+            public enum CodingKeys: String, CodingKey {
+                case eligibility
+                case firmware
+                case id
+                case isOnline
+                case model
+                case name
+                case serial
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/ZaptecCircuitView`.
+        public struct ZaptecCircuitView: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/ZaptecCircuitView/chargers`.
+            public var chargers: [Components.Schemas.ZaptecChargerView]
+            /// - Remark: Generated from `#/components/schemas/ZaptecCircuitView/id`.
+            public var id: Swift.String
+            /// - Remark: Generated from `#/components/schemas/ZaptecCircuitView/name`.
+            public var name: Swift.String?
+            /// Creates a new `ZaptecCircuitView`.
+            ///
+            /// - Parameters:
+            ///   - chargers:
+            ///   - id:
+            ///   - name:
+            public init(
+                chargers: [Components.Schemas.ZaptecChargerView],
+                id: Swift.String,
+                name: Swift.String? = nil
+            ) {
+                self.chargers = chargers
+                self.id = id
+                self.name = name
+            }
+            public enum CodingKeys: String, CodingKey {
+                case chargers
+                case id
+                case name
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/ZaptecCompleteRequest`.
+        public struct ZaptecCompleteRequest: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/ZaptecCompleteRequest/installationId`.
+            public var installationId: Swift.String
+            /// Expiring, single-use consent state; never persist or log it.
+            ///
+            /// - Remark: Generated from `#/components/schemas/ZaptecCompleteRequest/state`.
+            public var state: Swift.String
+            /// Creates a new `ZaptecCompleteRequest`.
+            ///
+            /// - Parameters:
+            ///   - installationId:
+            ///   - state: Expiring, single-use consent state; never persist or log it.
+            public init(
+                installationId: Swift.String,
+                state: Swift.String
+            ) {
+                self.installationId = installationId
+                self.state = state
+            }
+            public enum CodingKeys: String, CodingKey {
+                case installationId
+                case state
+            }
+            public init(from decoder: any Swift.Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                self.installationId = try container.decode(
+                    Swift.String.self,
+                    forKey: .installationId
+                )
+                self.state = try container.decode(
+                    Swift.String.self,
+                    forKey: .state
+                )
+                try decoder.ensureNoAdditionalProperties(knownKeys: [
+                    "installationId",
+                    "state"
+                ])
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/ZaptecConsentView`.
+        public struct ZaptecConsentView: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/ZaptecConsentView/attempt`.
+            public struct AttemptPayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/ZaptecConsentView/attempt/value1`.
+                public var value1: Components.Schemas.ZaptecAttemptView
+                /// Creates a new `AttemptPayload`.
+                ///
+                /// - Parameters:
+                ///   - value1:
+                public init(value1: Components.Schemas.ZaptecAttemptView) {
+                    self.value1 = value1
+                }
+                public init(from decoder: any Swift.Decoder) throws {
+                    self.value1 = try .init(from: decoder)
+                }
+                public func encode(to encoder: any Swift.Encoder) throws {
+                    try self.value1.encode(to: encoder)
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/ZaptecConsentView/attempt`.
+            public var attempt: Components.Schemas.ZaptecConsentView.AttemptPayload?
+            /// - Remark: Generated from `#/components/schemas/ZaptecConsentView/availability`.
+            public var availability: Components.Schemas.ZaptecAvailabilityView
+            /// Transient partner consent URL; never persist or log it.
+            ///
+            /// - Remark: Generated from `#/components/schemas/ZaptecConsentView/consentUrl`.
+            public var consentUrl: Swift.String?
+            /// Creates a new `ZaptecConsentView`.
+            ///
+            /// - Parameters:
+            ///   - attempt:
+            ///   - availability:
+            ///   - consentUrl: Transient partner consent URL; never persist or log it.
+            public init(
+                attempt: Components.Schemas.ZaptecConsentView.AttemptPayload? = nil,
+                availability: Components.Schemas.ZaptecAvailabilityView,
+                consentUrl: Swift.String? = nil
+            ) {
+                self.attempt = attempt
+                self.availability = availability
+                self.consentUrl = consentUrl
+            }
+            public enum CodingKeys: String, CodingKey {
+                case attempt
+                case availability
+                case consentUrl
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/ZaptecInstallationKind`.
+        @frozen public enum ZaptecInstallationKind: String, Codable, Hashable, Sendable, CaseIterable {
+            case go = "go"
+            case pro = "pro"
+        }
+        /// - Remark: Generated from `#/components/schemas/ZaptecInstallationView`.
+        public struct ZaptecInstallationView: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/ZaptecInstallationView/circuits`.
+            public var circuits: [Components.Schemas.ZaptecCircuitView]
+            /// - Remark: Generated from `#/components/schemas/ZaptecInstallationView/id`.
+            public var id: Swift.String
+            /// - Remark: Generated from `#/components/schemas/ZaptecInstallationView/name`.
+            public var name: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/ZaptecInstallationView/stale`.
+            public var stale: Swift.Bool
+            /// Creates a new `ZaptecInstallationView`.
+            ///
+            /// - Parameters:
+            ///   - circuits:
+            ///   - id:
+            ///   - name:
+            ///   - stale:
+            public init(
+                circuits: [Components.Schemas.ZaptecCircuitView],
+                id: Swift.String,
+                name: Swift.String? = nil,
+                stale: Swift.Bool
+            ) {
+                self.circuits = circuits
+                self.id = id
+                self.name = name
+                self.stale = stale
+            }
+            public enum CodingKeys: String, CodingKey {
+                case circuits
+                case id
+                case name
+                case stale
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/ZaptecMappingRequest`.
+        public struct ZaptecMappingRequest: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/ZaptecMappingRequest/circuitId`.
+            public var circuitId: Swift.String
+            /// - Remark: Generated from `#/components/schemas/ZaptecMappingRequest/confirmPhaseTopology`.
+            public var confirmPhaseTopology: Swift.Bool
+            /// - Remark: Generated from `#/components/schemas/ZaptecMappingRequest/externalCircuitId`.
+            public var externalCircuitId: Swift.String
+            /// Creates a new `ZaptecMappingRequest`.
+            ///
+            /// - Parameters:
+            ///   - circuitId:
+            ///   - confirmPhaseTopology:
+            ///   - externalCircuitId:
+            public init(
+                circuitId: Swift.String,
+                confirmPhaseTopology: Swift.Bool,
+                externalCircuitId: Swift.String
+            ) {
+                self.circuitId = circuitId
+                self.confirmPhaseTopology = confirmPhaseTopology
+                self.externalCircuitId = externalCircuitId
+            }
+            public enum CodingKeys: String, CodingKey {
+                case circuitId
+                case confirmPhaseTopology
+                case externalCircuitId
+            }
+            public init(from decoder: any Swift.Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                self.circuitId = try container.decode(
+                    Swift.String.self,
+                    forKey: .circuitId
+                )
+                self.confirmPhaseTopology = try container.decode(
+                    Swift.Bool.self,
+                    forKey: .confirmPhaseTopology
+                )
+                self.externalCircuitId = try container.decode(
+                    Swift.String.self,
+                    forKey: .externalCircuitId
+                )
+                try decoder.ensureNoAdditionalProperties(knownKeys: [
+                    "circuitId",
+                    "confirmPhaseTopology",
+                    "externalCircuitId"
+                ])
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/ZaptecMappingView`.
+        public struct ZaptecMappingView: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/ZaptecMappingView/circuitId`.
+            public var circuitId: Swift.String
+            /// - Remark: Generated from `#/components/schemas/ZaptecMappingView/confirmPhaseTopology`.
+            public var confirmPhaseTopology: Swift.Bool
+            /// - Remark: Generated from `#/components/schemas/ZaptecMappingView/externalCircuitId`.
+            public var externalCircuitId: Swift.String
+            /// Creates a new `ZaptecMappingView`.
+            ///
+            /// - Parameters:
+            ///   - circuitId:
+            ///   - confirmPhaseTopology:
+            ///   - externalCircuitId:
+            public init(
+                circuitId: Swift.String,
+                confirmPhaseTopology: Swift.Bool,
+                externalCircuitId: Swift.String
+            ) {
+                self.circuitId = circuitId
+                self.confirmPhaseTopology = confirmPhaseTopology
+                self.externalCircuitId = externalCircuitId
+            }
+            public enum CodingKeys: String, CodingKey {
+                case circuitId
+                case confirmPhaseTopology
+                case externalCircuitId
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/ZaptecOnboardingView`.
+        public struct ZaptecOnboardingView: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/ZaptecOnboardingView/attempt`.
+            public struct AttemptPayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/ZaptecOnboardingView/attempt/value1`.
+                public var value1: Components.Schemas.ZaptecAttemptView
+                /// Creates a new `AttemptPayload`.
+                ///
+                /// - Parameters:
+                ///   - value1:
+                public init(value1: Components.Schemas.ZaptecAttemptView) {
+                    self.value1 = value1
+                }
+                public init(from decoder: any Swift.Decoder) throws {
+                    self.value1 = try .init(from: decoder)
+                }
+                public func encode(to encoder: any Swift.Encoder) throws {
+                    try self.value1.encode(to: encoder)
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/ZaptecOnboardingView/attempt`.
+            public var attempt: Components.Schemas.ZaptecOnboardingView.AttemptPayload?
+            /// - Remark: Generated from `#/components/schemas/ZaptecOnboardingView/availability`.
+            public var availability: Components.Schemas.ZaptecAvailabilityView
+            /// Creates a new `ZaptecOnboardingView`.
+            ///
+            /// - Parameters:
+            ///   - attempt:
+            ///   - availability:
+            public init(
+                attempt: Components.Schemas.ZaptecOnboardingView.AttemptPayload? = nil,
+                availability: Components.Schemas.ZaptecAvailabilityView
+            ) {
+                self.attempt = attempt
+                self.availability = availability
+            }
+            public enum CodingKeys: String, CodingKey {
+                case attempt
+                case availability
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/ZaptecReviewRequest`.
+        public struct ZaptecReviewRequest: Codable, Hashable, Sendable {
+            /// Explicit approval; it does not override ownership or hardware blockers.
+            ///
+            /// - Remark: Generated from `#/components/schemas/ZaptecReviewRequest/acceptProviderChange`.
+            public var acceptProviderChange: Swift.Bool
+            /// - Remark: Generated from `#/components/schemas/ZaptecReviewRequest/circuits`.
+            public var circuits: [Components.Schemas.ZaptecMappingRequest]
+            /// - Remark: Generated from `#/components/schemas/ZaptecReviewRequest/revision`.
+            public var revision: Swift.Int64
+            /// Creates a new `ZaptecReviewRequest`.
+            ///
+            /// - Parameters:
+            ///   - acceptProviderChange: Explicit approval; it does not override ownership or hardware blockers.
+            ///   - circuits:
+            ///   - revision:
+            public init(
+                acceptProviderChange: Swift.Bool,
+                circuits: [Components.Schemas.ZaptecMappingRequest],
+                revision: Swift.Int64
+            ) {
+                self.acceptProviderChange = acceptProviderChange
+                self.circuits = circuits
+                self.revision = revision
+            }
+            public enum CodingKeys: String, CodingKey {
+                case acceptProviderChange
+                case circuits
+                case revision
+            }
+            public init(from decoder: any Swift.Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                self.acceptProviderChange = try container.decode(
+                    Swift.Bool.self,
+                    forKey: .acceptProviderChange
+                )
+                self.circuits = try container.decode(
+                    [Components.Schemas.ZaptecMappingRequest].self,
+                    forKey: .circuits
+                )
+                self.revision = try container.decode(
+                    Swift.Int64.self,
+                    forKey: .revision
+                )
+                try decoder.ensureNoAdditionalProperties(knownKeys: [
+                    "acceptProviderChange",
+                    "circuits",
+                    "revision"
+                ])
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/ZaptecRevisionRequest`.
+        public struct ZaptecRevisionRequest: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/ZaptecRevisionRequest/revision`.
+            public var revision: Swift.Int64
+            /// Creates a new `ZaptecRevisionRequest`.
+            ///
+            /// - Parameters:
+            ///   - revision:
+            public init(revision: Swift.Int64) {
+                self.revision = revision
+            }
+            public enum CodingKeys: String, CodingKey {
+                case revision
+            }
+            public init(from decoder: any Swift.Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                self.revision = try container.decode(
+                    Swift.Int64.self,
+                    forKey: .revision
+                )
+                try decoder.ensureNoAdditionalProperties(knownKeys: [
+                    "revision"
+                ])
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/ZaptecStartRequest`.
+        public struct ZaptecStartRequest: Codable, Hashable, Sendable {
+            /// Required for Pro. The opaque vendor ID is not ownership evidence.
+            ///
+            /// - Remark: Generated from `#/components/schemas/ZaptecStartRequest/installationId`.
+            public var installationId: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/ZaptecStartRequest/installationKind`.
+            public var installationKind: Components.Schemas.ZaptecInstallationKind
+            /// Caller-generated UUID; reuse with unchanged input when retrying.
+            ///
+            /// - Remark: Generated from `#/components/schemas/ZaptecStartRequest/requestId`.
+            public var requestId: Swift.String
+            /// Creates a new `ZaptecStartRequest`.
+            ///
+            /// - Parameters:
+            ///   - installationId: Required for Pro. The opaque vendor ID is not ownership evidence.
+            ///   - installationKind:
+            ///   - requestId: Caller-generated UUID; reuse with unchanged input when retrying.
+            public init(
+                installationId: Swift.String? = nil,
+                installationKind: Components.Schemas.ZaptecInstallationKind,
+                requestId: Swift.String
+            ) {
+                self.installationId = installationId
+                self.installationKind = installationKind
+                self.requestId = requestId
+            }
+            public enum CodingKeys: String, CodingKey {
+                case installationId
+                case installationKind
+                case requestId
+            }
+            public init(from decoder: any Swift.Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                self.installationId = try container.decodeIfPresent(
+                    Swift.String.self,
+                    forKey: .installationId
+                )
+                self.installationKind = try container.decode(
+                    Components.Schemas.ZaptecInstallationKind.self,
+                    forKey: .installationKind
+                )
+                self.requestId = try container.decode(
+                    Swift.String.self,
+                    forKey: .requestId
+                )
+                try decoder.ensureNoAdditionalProperties(knownKeys: [
+                    "installationId",
+                    "installationKind",
+                    "requestId"
+                ])
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/ZaptecStepView`.
+        public struct ZaptecStepView: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/ZaptecStepView/errorCode`.
+            public var errorCode: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/ZaptecStepView/id`.
+            public var id: Swift.String
+            /// - Remark: Generated from `#/components/schemas/ZaptecStepView/status`.
+            public var status: Swift.String
+            /// Creates a new `ZaptecStepView`.
+            ///
+            /// - Parameters:
+            ///   - errorCode:
+            ///   - id:
+            ///   - status:
+            public init(
+                errorCode: Swift.String? = nil,
+                id: Swift.String,
+                status: Swift.String
+            ) {
+                self.errorCode = errorCode
+                self.id = id
+                self.status = status
+            }
+            public enum CodingKeys: String, CodingKey {
+                case errorCode
+                case id
+                case status
             }
         }
     }

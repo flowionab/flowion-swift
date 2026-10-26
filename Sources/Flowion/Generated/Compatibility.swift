@@ -72,6 +72,19 @@ public struct FlowionActorKind: RawRepresentable, Codable, Hashable, Sendable {
     public var isKnown: Bool { ["charger", "flowion", "person", "apiKey"].contains(rawValue) }
 }
 
+public struct FlowionAdditionOfferStateApi: RawRepresentable, Codable, Hashable, Sendable {
+    public let rawValue: String
+    public init(rawValue: String) { self.rawValue = rawValue }
+    public init(from decoder: any Decoder) throws { rawValue = try decoder.singleValueContainer().decode(String.self) }
+    public func encode(to encoder: any Encoder) throws { var c = encoder.singleValueContainer(); try c.encode(rawValue) }
+    public static let `open` = Self(rawValue: "open")
+    public static let `accepted` = Self(rawValue: "accepted")
+    public static let `declined` = Self(rawValue: "declined")
+    public static let `expired` = Self(rawValue: "expired")
+    public static let `cancelled` = Self(rawValue: "cancelled")
+    public var isKnown: Bool { ["open", "accepted", "declined", "expired", "cancelled"].contains(rawValue) }
+}
+
 public struct FlowionAllocationReasonResponse: RawRepresentable, Codable, Hashable, Sendable {
     public let rawValue: String
     public init(rawValue: String) { self.rawValue = rawValue }
@@ -96,6 +109,16 @@ public struct FlowionApiKeyMode: RawRepresentable, Codable, Hashable, Sendable {
     public var isKnown: Bool { ["live", "sandbox"].contains(rawValue) }
 }
 
+public struct FlowionAppAudience: RawRepresentable, Codable, Hashable, Sendable {
+    public let rawValue: String
+    public init(rawValue: String) { self.rawValue = rawValue }
+    public init(from decoder: any Decoder) throws { rawValue = try decoder.singleValueContainer().decode(String.self) }
+    public func encode(to encoder: any Encoder) throws { var c = encoder.singleValueContainer(); try c.encode(rawValue) }
+    public static let `organization` = Self(rawValue: "organization")
+    public static let `home` = Self(rawValue: "home")
+    public var isKnown: Bool { ["organization", "home"].contains(rawValue) }
+}
+
 public struct FlowionAppCategory: RawRepresentable, Codable, Hashable, Sendable {
     public let rawValue: String
     public init(rawValue: String) { self.rawValue = rawValue }
@@ -105,7 +128,19 @@ public struct FlowionAppCategory: RawRepresentable, Codable, Hashable, Sendable 
     public static let `propertySystem` = Self(rawValue: "propertySystem")
     public static let `installerTools` = Self(rawValue: "installerTools")
     public static let `other` = Self(rawValue: "other")
-    public var isKnown: Bool { ["accounting", "propertySystem", "installerTools", "other"].contains(rawValue) }
+    public static let `homeAutomation` = Self(rawValue: "homeAutomation")
+    public static let `energy` = Self(rawValue: "energy")
+    public var isKnown: Bool { ["accounting", "propertySystem", "installerTools", "other", "homeAutomation", "energy"].contains(rawValue) }
+}
+
+public struct FlowionAppClientType: RawRepresentable, Codable, Hashable, Sendable {
+    public let rawValue: String
+    public init(rawValue: String) { self.rawValue = rawValue }
+    public init(from decoder: any Decoder) throws { rawValue = try decoder.singleValueContainer().decode(String.self) }
+    public func encode(to encoder: any Encoder) throws { var c = encoder.singleValueContainer(); try c.encode(rawValue) }
+    public static let `confidential` = Self(rawValue: "confidential")
+    public static let `public` = Self(rawValue: "public")
+    public var isKnown: Bool { ["confidential", "public"].contains(rawValue) }
 }
 
 public struct FlowionAppFieldType: RawRepresentable, Codable, Hashable, Sendable {
@@ -135,6 +170,18 @@ public struct FlowionAppReviewState: RawRepresentable, Codable, Hashable, Sendab
     public var isKnown: Bool { ["private", "submitted", "published", "rejected", "suspended", "unpublished"].contains(rawValue) }
 }
 
+public struct FlowionAppRevisionState: RawRepresentable, Codable, Hashable, Sendable {
+    public let rawValue: String
+    public init(rawValue: String) { self.rawValue = rawValue }
+    public init(from decoder: any Decoder) throws { rawValue = try decoder.singleValueContainer().decode(String.self) }
+    public func encode(to encoder: any Encoder) throws { var c = encoder.singleValueContainer(); try c.encode(rawValue) }
+    public static let `pending` = Self(rawValue: "pending")
+    public static let `approved` = Self(rawValue: "approved")
+    public static let `rejected` = Self(rawValue: "rejected")
+    public static let `superseded` = Self(rawValue: "superseded")
+    public var isKnown: Bool { ["pending", "approved", "rejected", "superseded"].contains(rawValue) }
+}
+
 public struct FlowionAssistantLimit: RawRepresentable, Codable, Hashable, Sendable {
     public let rawValue: String
     public init(rawValue: String) { self.rawValue = rawValue }
@@ -145,7 +192,8 @@ public struct FlowionAssistantLimit: RawRepresentable, Codable, Hashable, Sendab
     public static let `conversationsPerDay` = Self(rawValue: "conversationsPerDay")
     public static let `platformCardless` = Self(rawValue: "platformCardless")
     public static let `toolCallsPerTurn` = Self(rawValue: "toolCallsPerTurn")
-    public var isKnown: Bool { ["messageLength", "callsPerConversation", "conversationsPerDay", "platformCardless", "toolCallsPerTurn"].contains(rawValue) }
+    public static let `installerPersonDay` = Self(rawValue: "installerPersonDay")
+    public var isKnown: Bool { ["messageLength", "callsPerConversation", "conversationsPerDay", "platformCardless", "toolCallsPerTurn", "installerPersonDay"].contains(rawValue) }
 }
 
 public struct FlowionAssistantOutcome: RawRepresentable, Codable, Hashable, Sendable {
@@ -171,18 +219,32 @@ public struct FlowionAssistantProposalKind: RawRepresentable, Codable, Hashable,
     public var isKnown: Bool { ["tariffVersion", "tariffNew"].contains(rawValue) }
 }
 
+public struct FlowionAssistantProposalState: RawRepresentable, Codable, Hashable, Sendable {
+    public let rawValue: String
+    public init(rawValue: String) { self.rawValue = rawValue }
+    public init(from decoder: any Decoder) throws { rawValue = try decoder.singleValueContainer().decode(String.self) }
+    public func encode(to encoder: any Encoder) throws { var c = encoder.singleValueContainer(); try c.encode(rawValue) }
+    public static let `shown` = Self(rawValue: "shown")
+    public static let `saved` = Self(rawValue: "saved")
+    public static let `discarded` = Self(rawValue: "discarded")
+    public var isKnown: Bool { ["shown", "saved", "discarded"].contains(rawValue) }
+}
+
 public struct FlowionAssistantStreamEventType: RawRepresentable, Codable, Hashable, Sendable {
     public let rawValue: String
     public init(rawValue: String) { self.rawValue = rawValue }
     public init(from decoder: any Decoder) throws { rawValue = try decoder.singleValueContainer().decode(String.self) }
     public func encode(to encoder: any Encoder) throws { var c = encoder.singleValueContainer(); try c.encode(rawValue) }
     public static let `delta` = Self(rawValue: "delta")
+    public static let `turnStarted` = Self(rawValue: "turnStarted")
+    public static let `documentPage` = Self(rawValue: "documentPage")
+    public static let `jobDraft` = Self(rawValue: "jobDraft")
     public static let `choice` = Self(rawValue: "choice")
     public static let `proposal` = Self(rawValue: "proposal")
     public static let `limit` = Self(rawValue: "limit")
     public static let `done` = Self(rawValue: "done")
     public static let `working` = Self(rawValue: "working")
-    public var isKnown: Bool { ["delta", "choice", "proposal", "limit", "done", "working"].contains(rawValue) }
+    public var isKnown: Bool { ["delta", "turnStarted", "documentPage", "jobDraft", "choice", "proposal", "limit", "done", "working"].contains(rawValue) }
 }
 
 public struct FlowionAssistantWorkingOn: RawRepresentable, Codable, Hashable, Sendable {
@@ -205,6 +267,17 @@ public struct FlowionAttributeTypeView: RawRepresentable, Codable, Hashable, Sen
     public static let `minSet` = Self(rawValue: "min_set")
     public static let `maxSet` = Self(rawValue: "max_set")
     public var isKnown: Bool { ["actual", "target", "min_set", "max_set"].contains(rawValue) }
+}
+
+public struct FlowionAutochargeReason: RawRepresentable, Codable, Hashable, Sendable {
+    public let rawValue: String
+    public init(rawValue: String) { self.rawValue = rawValue }
+    public init(from decoder: any Decoder) throws { rawValue = try decoder.singleValueContainer().decode(String.self) }
+    public func encode(to encoder: any Encoder) throws { var c = encoder.singleValueContainer(); try c.encode(rawValue) }
+    public static let `paid` = Self(rawValue: "paid")
+    public static let `free` = Self(rawValue: "free")
+    public static let `public` = Self(rawValue: "public")
+    public var isKnown: Bool { ["paid", "free", "public"].contains(rawValue) }
 }
 
 public struct FlowionAvailabilityKindApi: RawRepresentable, Codable, Hashable, Sendable {
@@ -261,31 +334,6 @@ public struct FlowionCapabilityApi: RawRepresentable, Codable, Hashable, Sendabl
     public var isKnown: Bool { ["supported", "notSupported", "notYetKnown"].contains(rawValue) }
 }
 
-public struct FlowionCertificateProfileParam: RawRepresentable, Codable, Hashable, Sendable {
-    public let rawValue: String
-    public init(rawValue: String) { self.rawValue = rawValue }
-    public init(from decoder: any Decoder) throws { rawValue = try decoder.singleValueContainer().decode(String.self) }
-    public func encode(to encoder: any Encoder) throws { var c = encoder.singleValueContainer(); try c.encode(rawValue) }
-    public static let `v2gLeafIso2` = Self(rawValue: "v2gLeafIso2")
-    public static let `v2gLeafIso20` = Self(rawValue: "v2gLeafIso20")
-    public static let `contract` = Self(rawValue: "contract")
-    public static let `provisioning` = Self(rawValue: "provisioning")
-    public static let `chargingStation` = Self(rawValue: "chargingStation")
-    public var isKnown: Bool { ["v2gLeafIso2", "v2gLeafIso20", "contract", "provisioning", "chargingStation"].contains(rawValue) }
-}
-
-public struct FlowionCertificateStatusParam: RawRepresentable, Codable, Hashable, Sendable {
-    public let rawValue: String
-    public init(rawValue: String) { self.rawValue = rawValue }
-    public init(from decoder: any Decoder) throws { rawValue = try decoder.singleValueContainer().decode(String.self) }
-    public func encode(to encoder: any Encoder) throws { var c = encoder.singleValueContainer(); try c.encode(rawValue) }
-    public static let `current` = Self(rawValue: "current")
-    public static let `superseded` = Self(rawValue: "superseded")
-    public static let `revoked` = Self(rawValue: "revoked")
-    public static let `expired` = Self(rawValue: "expired")
-    public var isKnown: Bool { ["current", "superseded", "revoked", "expired"].contains(rawValue) }
-}
-
 public struct FlowionChargerCommissioningStatusWire: RawRepresentable, Codable, Hashable, Sendable {
     public let rawValue: String
     public init(rawValue: String) { self.rawValue = rawValue }
@@ -305,9 +353,9 @@ public struct FlowionChargerLimitationReason: RawRepresentable, Codable, Hashabl
     public init(from decoder: any Decoder) throws { rawValue = try decoder.singleValueContainer().decode(String.self) }
     public func encode(to encoder: any Encoder) throws { var c = encoder.singleValueContainer(); try c.encode(rawValue) }
     public static let `notHandedOver` = Self(rawValue: "notHandedOver")
-    public static let `notCoveredBySubscription` = Self(rawValue: "notCoveredBySubscription")
     public static let `billingSuspended` = Self(rawValue: "billingSuspended")
-    public var isKnown: Bool { ["notHandedOver", "notCoveredBySubscription", "billingSuspended"].contains(rawValue) }
+    public static let `awaitingAcceptance` = Self(rawValue: "awaitingAcceptance")
+    public var isKnown: Bool { ["notHandedOver", "billingSuspended", "awaitingAcceptance"].contains(rawValue) }
 }
 
 public struct FlowionChargerStatus: RawRepresentable, Codable, Hashable, Sendable {
@@ -386,6 +434,17 @@ public struct FlowionChargingState: RawRepresentable, Codable, Hashable, Sendabl
     public static let `suspendedEVSE` = Self(rawValue: "SuspendedEVSE")
     public static let `idle` = Self(rawValue: "Idle")
     public var isKnown: Bool { ["Charging", "EVConnected", "SuspendedEV", "SuspendedEVSE", "Idle"].contains(rawValue) }
+}
+
+public struct FlowionCircuitChangeStateApi: RawRepresentable, Codable, Hashable, Sendable {
+    public let rawValue: String
+    public init(rawValue: String) { self.rawValue = rawValue }
+    public init(from decoder: any Decoder) throws { rawValue = try decoder.singleValueContainer().decode(String.self) }
+    public func encode(to encoder: any Encoder) throws { var c = encoder.singleValueContainer(); try c.encode(rawValue) }
+    public static let `held` = Self(rawValue: "held")
+    public static let `applied` = Self(rawValue: "applied")
+    public static let `dropped` = Self(rawValue: "dropped")
+    public var isKnown: Bool { ["held", "applied", "dropped"].contains(rawValue) }
 }
 
 public struct FlowionCircuitCurrentRange: RawRepresentable, Codable, Hashable, Sendable {
@@ -495,6 +554,17 @@ public struct FlowionConfigurationChangeOutcome: RawRepresentable, Codable, Hash
     public var isKnown: Bool { ["Accepted", "Rejected", "RebootRequired", "NotSupported"].contains(rawValue) }
 }
 
+public struct FlowionConnectionAttentionReason: RawRepresentable, Codable, Hashable, Sendable {
+    public let rawValue: String
+    public init(rawValue: String) { self.rawValue = rawValue }
+    public init(from decoder: any Decoder) throws { rawValue = try decoder.singleValueContainer().decode(String.self) }
+    public func encode(to encoder: any Encoder) throws { var c = encoder.singleValueContainer(); try c.encode(rawValue) }
+    public static let `appNoLongerOpenToHomes` = Self(rawValue: "appNoLongerOpenToHomes")
+    public static let `appSuspended` = Self(rawValue: "appSuspended")
+    public static let `awaitingConsent` = Self(rawValue: "awaitingConsent")
+    public var isKnown: Bool { ["appNoLongerOpenToHomes", "appSuspended", "awaitingConsent"].contains(rawValue) }
+}
+
 public struct FlowionConnectionOperatorType: RawRepresentable, Codable, Hashable, Sendable {
     public let rawValue: String
     public init(rawValue: String) { self.rawValue = rawValue }
@@ -600,6 +670,18 @@ public struct FlowionDataTransferOutcome: RawRepresentable, Codable, Hashable, S
     public static let `unknownMessageId` = Self(rawValue: "UnknownMessageId")
     public static let `unknownVendorId` = Self(rawValue: "UnknownVendorId")
     public var isKnown: Bool { ["Accepted", "Rejected", "UnknownMessageId", "UnknownVendorId"].contains(rawValue) }
+}
+
+public struct FlowionDerivedConnectionState: RawRepresentable, Codable, Hashable, Sendable {
+    public let rawValue: String
+    public init(rawValue: String) { self.rawValue = rawValue }
+    public init(from decoder: any Decoder) throws { rawValue = try decoder.singleValueContainer().decode(String.self) }
+    public func encode(to encoder: any Encoder) throws { var c = encoder.singleValueContainer(); try c.encode(rawValue) }
+    public static let `working` = Self(rawValue: "working")
+    public static let `needsAttention` = Self(rawValue: "needsAttention")
+    public static let `expired` = Self(rawValue: "expired")
+    public static let `removed` = Self(rawValue: "removed")
+    public var isKnown: Bool { ["working", "needsAttention", "expired", "removed"].contains(rawValue) }
 }
 
 public struct FlowionDiagnosticsStateView: RawRepresentable, Codable, Hashable, Sendable {
@@ -811,6 +893,17 @@ public struct FlowionHomeChargerState: RawRepresentable, Codable, Hashable, Send
     public var isKnown: Bool { ["available", "charging", "paused", "waiting", "faulted", "offline"].contains(rawValue) }
 }
 
+public struct FlowionHomeElectricityKind: RawRepresentable, Codable, Hashable, Sendable {
+    public let rawValue: String
+    public init(rawValue: String) { self.rawValue = rawValue }
+    public init(from decoder: any Decoder) throws { rawValue = try decoder.singleValueContainer().decode(String.self) }
+    public func encode(to encoder: any Encoder) throws { var c = encoder.singleValueContainer(); try c.encode(rawValue) }
+    public static let `byTheHour` = Self(rawValue: "byTheHour")
+    public static let `fixed` = Self(rawValue: "fixed")
+    public static let `unknown` = Self(rawValue: "unknown")
+    public var isKnown: Bool { ["byTheHour", "fixed", "unknown"].contains(rawValue) }
+}
+
 public struct FlowionIdTokenType: RawRepresentable, Codable, Hashable, Sendable {
     public let rawValue: String
     public init(rawValue: String) { self.rawValue = rawValue }
@@ -835,6 +928,84 @@ public struct FlowionInboundMessageDirectionApi: RawRepresentable, Codable, Hash
     public static let `inboundCall` = Self(rawValue: "inboundCall")
     public static let `outboundReply` = Self(rawValue: "outboundReply")
     public var isKnown: Bool { ["inboundCall", "outboundReply"].contains(rawValue) }
+}
+
+public struct FlowionInstallerModeEndReason: RawRepresentable, Codable, Hashable, Sendable {
+    public let rawValue: String
+    public init(rawValue: String) { self.rawValue = rawValue }
+    public init(from decoder: any Decoder) throws { rawValue = try decoder.singleValueContainer().decode(String.self) }
+    public func encode(to encoder: any Encoder) throws { var c = encoder.singleValueContainer(); try c.encode(rawValue) }
+    public static let `installer` = Self(rawValue: "installer")
+    public static let `handover` = Self(rawValue: "handover")
+    public static let `cancelled` = Self(rawValue: "cancelled")
+    public static let `limit` = Self(rawValue: "limit")
+    public static let `chargerLeft` = Self(rawValue: "chargerLeft")
+    public static let `customer` = Self(rawValue: "customer")
+    public var isKnown: Bool { ["installer", "handover", "cancelled", "limit", "chargerLeft", "customer"].contains(rawValue) }
+}
+
+public struct FlowionInstallerModeSettingState: RawRepresentable, Codable, Hashable, Sendable {
+    public let rawValue: String
+    public init(rawValue: String) { self.rawValue = rawValue }
+    public init(from decoder: any Decoder) throws { rawValue = try decoder.singleValueContainer().decode(String.self) }
+    public func encode(to encoder: any Encoder) throws { var c = encoder.singleValueContainer(); try c.encode(rawValue) }
+    public static let `applied` = Self(rawValue: "applied")
+    public static let `skipped` = Self(rawValue: "skipped")
+    public static let `pending` = Self(rawValue: "pending")
+    public var isKnown: Bool { ["applied", "skipped", "pending"].contains(rawValue) }
+}
+
+public struct FlowionInstallerModeSkipReason: RawRepresentable, Codable, Hashable, Sendable {
+    public let rawValue: String
+    public init(rawValue: String) { self.rawValue = rawValue }
+    public init(from decoder: any Decoder) throws { rawValue = try decoder.singleValueContainer().decode(String.self) }
+    public func encode(to encoder: any Encoder) throws { var c = encoder.singleValueContainer(); try c.encode(rawValue) }
+    public static let `unsupported` = Self(rawValue: "unsupported")
+    public static let `readOnly` = Self(rawValue: "readOnly")
+    public var isKnown: Bool { ["unsupported", "readOnly"].contains(rawValue) }
+}
+
+public struct FlowionInstallerModeState: RawRepresentable, Codable, Hashable, Sendable {
+    public let rawValue: String
+    public init(rawValue: String) { self.rawValue = rawValue }
+    public init(from decoder: any Decoder) throws { rawValue = try decoder.singleValueContainer().decode(String.self) }
+    public func encode(to encoder: any Encoder) throws { var c = encoder.singleValueContainer(); try c.encode(rawValue) }
+    public static let `off` = Self(rawValue: "off")
+    public static let `turningOn` = Self(rawValue: "turningOn")
+    public static let `on` = Self(rawValue: "on")
+    public static let `turningOff` = Self(rawValue: "turningOff")
+    public static let `notConfirmed` = Self(rawValue: "notConfirmed")
+    public static let `flagged` = Self(rawValue: "flagged")
+    public var isKnown: Bool { ["off", "turningOn", "on", "turningOff", "notConfirmed", "flagged"].contains(rawValue) }
+}
+
+public struct FlowionInstallerModeStep: RawRepresentable, Codable, Hashable, Sendable {
+    public let rawValue: String
+    public init(rawValue: String) { self.rawValue = rawValue }
+    public init(from decoder: any Decoder) throws { rawValue = try decoder.singleValueContainer().decode(String.self) }
+    public func encode(to encoder: any Encoder) throws { var c = encoder.singleValueContainer(); try c.encode(rawValue) }
+    public static let `labelMatches` = Self(rawValue: "labelMatches")
+    public static let `onlineAndBooted` = Self(rawValue: "onlineAndBooted")
+    public static let `plugInSeen` = Self(rawValue: "plugInSeen")
+    public static let `testChargeStarts` = Self(rawValue: "testChargeStarts")
+    public static let `testChargeStops` = Self(rawValue: "testChargeStops")
+    public static let `cableRatingLimits` = Self(rawValue: "cableRatingLimits")
+    public static let `unplugReleases` = Self(rawValue: "unplugReleases")
+    public static let `lightAndDisplay` = Self(rawValue: "lightAndDisplay")
+    public static let `vehicleErrorStates` = Self(rawValue: "vehicleErrorStates")
+    public var isKnown: Bool { ["labelMatches", "onlineAndBooted", "plugInSeen", "testChargeStarts", "testChargeStops", "cableRatingLimits", "unplugReleases", "lightAndDisplay", "vehicleErrorStates"].contains(rawValue) }
+}
+
+public struct FlowionInstallerModeStepState: RawRepresentable, Codable, Hashable, Sendable {
+    public let rawValue: String
+    public init(rawValue: String) { self.rawValue = rawValue }
+    public init(from decoder: any Decoder) throws { rawValue = try decoder.singleValueContainer().decode(String.self) }
+    public func encode(to encoder: any Encoder) throws { var c = encoder.singleValueContainer(); try c.encode(rawValue) }
+    public static let `notYet` = Self(rawValue: "notYet")
+    public static let `done` = Self(rawValue: "done")
+    public static let `skipped` = Self(rawValue: "skipped")
+    public static let `notAskedFor` = Self(rawValue: "notAskedFor")
+    public var isKnown: Bool { ["notYet", "done", "skipped", "notAskedFor"].contains(rawValue) }
 }
 
 public struct FlowionIntegrationInstallationState: RawRepresentable, Codable, Hashable, Sendable {
@@ -890,6 +1061,29 @@ public struct FlowionIssuedByKindApi: RawRepresentable, Codable, Hashable, Senda
     public var isKnown: Bool { ["person", "apiKey", "flowion"].contains(rawValue) }
 }
 
+public struct FlowionJobAdditionKindApi: RawRepresentable, Codable, Hashable, Sendable {
+    public let rawValue: String
+    public init(rawValue: String) { self.rawValue = rawValue }
+    public init(from decoder: any Decoder) throws { rawValue = try decoder.singleValueContainer().decode(String.self) }
+    public func encode(to encoder: any Encoder) throws { var c = encoder.singleValueContainer(); try c.encode(rawValue) }
+    public static let `charger` = Self(rawValue: "charger")
+    public static let `circuit` = Self(rawValue: "circuit")
+    public var isKnown: Bool { ["charger", "circuit"].contains(rawValue) }
+}
+
+public struct FlowionJobAdditionStateApi: RawRepresentable, Codable, Hashable, Sendable {
+    public let rawValue: String
+    public init(rawValue: String) { self.rawValue = rawValue }
+    public init(from decoder: any Decoder) throws { rawValue = try decoder.singleValueContainer().decode(String.self) }
+    public func encode(to encoder: any Encoder) throws { var c = encoder.singleValueContainer(); try c.encode(rawValue) }
+    public static let `registered` = Self(rawValue: "registered")
+    public static let `offered` = Self(rawValue: "offered")
+    public static let `accepted` = Self(rawValue: "accepted")
+    public static let `declined` = Self(rawValue: "declined")
+    public static let `withdrawn` = Self(rawValue: "withdrawn")
+    public var isKnown: Bool { ["registered", "offered", "accepted", "declined", "withdrawn"].contains(rawValue) }
+}
+
 public struct FlowionJobEaseeCommissioningState: RawRepresentable, Codable, Hashable, Sendable {
     public let rawValue: String
     public init(rawValue: String) { self.rawValue = rawValue }
@@ -903,6 +1097,33 @@ public struct FlowionJobEaseeCommissioningState: RawRepresentable, Codable, Hash
     public var isKnown: Bool { ["pending", "inProgress", "commissioned", "failed", "awaitingOperatorSelection"].contains(rawValue) }
 }
 
+public struct FlowionJobInvitationState: RawRepresentable, Codable, Hashable, Sendable {
+    public let rawValue: String
+    public init(rawValue: String) { self.rawValue = rawValue }
+    public init(from decoder: any Decoder) throws { rawValue = try decoder.singleValueContainer().decode(String.self) }
+    public func encode(to encoder: any Encoder) throws { var c = encoder.singleValueContainer(); try c.encode(rawValue) }
+    public static let `owed` = Self(rawValue: "owed")
+    public static let `sent` = Self(rawValue: "sent")
+    public static let `accepted` = Self(rawValue: "accepted")
+    public static let `declined` = Self(rawValue: "declined")
+    public static let `reported` = Self(rawValue: "reported")
+    public static let `expired` = Self(rawValue: "expired")
+    public static let `superseded` = Self(rawValue: "superseded")
+    public static let `notSentLimited` = Self(rawValue: "notSentLimited")
+    public static let `notInvited` = Self(rawValue: "notInvited")
+    public var isKnown: Bool { ["owed", "sent", "accepted", "declined", "reported", "expired", "superseded", "notSentLimited", "notInvited"].contains(rawValue) }
+}
+
+public struct FlowionJobLocationKindApi: RawRepresentable, Codable, Hashable, Sendable {
+    public let rawValue: String
+    public init(rawValue: String) { self.rawValue = rawValue }
+    public init(from decoder: any Decoder) throws { rawValue = try decoder.singleValueContainer().decode(String.self) }
+    public func encode(to encoder: any Encoder) throws { var c = encoder.singleValueContainer(); try c.encode(rawValue) }
+    public static let `newLocation` = Self(rawValue: "newLocation")
+    public static let `existingLocation` = Self(rawValue: "existingLocation")
+    public var isKnown: Bool { ["newLocation", "existingLocation"].contains(rawValue) }
+}
+
 public struct FlowionJobStatusApi: RawRepresentable, Codable, Hashable, Sendable {
     public let rawValue: String
     public init(rawValue: String) { self.rawValue = rawValue }
@@ -914,6 +1135,39 @@ public struct FlowionJobStatusApi: RawRepresentable, Codable, Hashable, Sendable
     public static let `handedOver` = Self(rawValue: "handedOver")
     public static let `cancelled` = Self(rawValue: "cancelled")
     public var isKnown: Bool { ["planned", "inProgress", "readyForHandover", "handedOver", "cancelled"].contains(rawValue) }
+}
+
+public struct FlowionJobTransferHeldReason: RawRepresentable, Codable, Hashable, Sendable {
+    public let rawValue: String
+    public init(rawValue: String) { self.rawValue = rawValue }
+    public init(from decoder: any Decoder) throws { rawValue = try decoder.singleValueContainer().decode(String.self) }
+    public func encode(to encoder: any Encoder) throws { var c = encoder.singleValueContainer(); try c.encode(rawValue) }
+    public static let `billingSuspended` = Self(rawValue: "billingSuspended")
+    public static let `other` = Self(rawValue: "other")
+    public var isKnown: Bool { ["billingSuspended", "other"].contains(rawValue) }
+}
+
+public struct FlowionLinkedJobIntentionKind: RawRepresentable, Codable, Hashable, Sendable {
+    public let rawValue: String
+    public init(rawValue: String) { self.rawValue = rawValue }
+    public init(from decoder: any Decoder) throws { rawValue = try decoder.singleValueContainer().decode(String.self) }
+    public func encode(to encoder: any Encoder) throws { var c = encoder.singleValueContainer(); try c.encode(rawValue) }
+    public static let `assignTariff` = Self(rawValue: "assignTariff")
+    public static let `setSiteAccess` = Self(rawValue: "setSiteAccess")
+    public static let `setDeviceSetting` = Self(rawValue: "setDeviceSetting")
+    public var isKnown: Bool { ["assignTariff", "setSiteAccess", "setDeviceSetting"].contains(rawValue) }
+}
+
+public struct FlowionLinkedJobIntentionState: RawRepresentable, Codable, Hashable, Sendable {
+    public let rawValue: String
+    public init(rawValue: String) { self.rawValue = rawValue }
+    public init(from decoder: any Decoder) throws { rawValue = try decoder.singleValueContainer().decode(String.self) }
+    public func encode(to encoder: any Encoder) throws { var c = encoder.singleValueContainer(); try c.encode(rawValue) }
+    public static let `recorded` = Self(rawValue: "recorded")
+    public static let `applied` = Self(rawValue: "applied")
+    public static let `skipped` = Self(rawValue: "skipped")
+    public static let `failed` = Self(rawValue: "failed")
+    public var isKnown: Bool { ["recorded", "applied", "skipped", "failed"].contains(rawValue) }
 }
 
 public struct FlowionLiveEventType: RawRepresentable, Codable, Hashable, Sendable {
@@ -1188,7 +1442,10 @@ public struct FlowionNotificationKind: RawRepresentable, Codable, Hashable, Send
     public static let `billingPastDue` = Self(rawValue: "billing_past_due")
     public static let `billingSuspended` = Self(rawValue: "billing_suspended")
     public static let `billingClosed` = Self(rawValue: "billing_closed")
-    public var isKnown: Bool { ["charger_offline", "charger_back_online", "statements_unreported", "billing_past_due", "billing_suspended", "billing_closed"].contains(rawValue) }
+    public static let `cardsGateAnnounced` = Self(rawValue: "cards_gate_announced")
+    public static let `installerVisitOpened` = Self(rawValue: "installer_visit_opened")
+    public static let `installerVisitEnded` = Self(rawValue: "installer_visit_ended")
+    public var isKnown: Bool { ["charger_offline", "charger_back_online", "statements_unreported", "billing_past_due", "billing_suspended", "billing_closed", "cards_gate_announced", "installer_visit_opened", "installer_visit_ended"].contains(rawValue) }
 }
 
 public struct FlowionNotificationLanguage: RawRepresentable, Codable, Hashable, Sendable {
@@ -1212,6 +1469,16 @@ public struct FlowionOutcomeView: RawRepresentable, Codable, Hashable, Sendable 
     public var isKnown: Bool { ["provisioned", "acceptedUnprovisioned", "grandfathered"].contains(rawValue) }
 }
 
+public struct FlowionOwnChargingScheduleMode: RawRepresentable, Codable, Hashable, Sendable {
+    public let rawValue: String
+    public init(rawValue: String) { self.rawValue = rawValue }
+    public init(from decoder: any Decoder) throws { rawValue = try decoder.singleValueContainer().decode(String.self) }
+    public func encode(to encoder: any Encoder) throws { var c = encoder.singleValueContainer(); try c.encode(rawValue) }
+    public static let `startAt` = Self(rawValue: "startAt")
+    public static let `departBy` = Self(rawValue: "departBy")
+    public var isKnown: Bool { ["startAt", "departBy"].contains(rawValue) }
+}
+
 public struct FlowionPaymentsAccountStatus: RawRepresentable, Codable, Hashable, Sendable {
     public let rawValue: String
     public init(rawValue: String) { self.rawValue = rawValue }
@@ -1225,6 +1492,17 @@ public struct FlowionPaymentsAccountStatus: RawRepresentable, Codable, Hashable,
     public static let `rejected` = Self(rawValue: "rejected")
     public static let `disconnected` = Self(rawValue: "disconnected")
     public var isKnown: Bool { ["notStarted", "onboarding", "pendingVerification", "enabled", "restricted", "rejected", "disconnected"].contains(rawValue) }
+}
+
+public struct FlowionPermissionBundle: RawRepresentable, Codable, Hashable, Sendable {
+    public let rawValue: String
+    public init(rawValue: String) { self.rawValue = rawValue }
+    public init(from decoder: any Decoder) throws { rawValue = try decoder.singleValueContainer().decode(String.self) }
+    public func encode(to encoder: any Encoder) throws { var c = encoder.singleValueContainer(); try c.encode(rawValue) }
+    public static let `user` = Self(rawValue: "user")
+    public static let `admin` = Self(rawValue: "admin")
+    public static let `owner` = Self(rawValue: "owner")
+    public var isKnown: Bool { ["user", "admin", "owner"].contains(rawValue) }
 }
 
 public struct FlowionPermissionPlane: RawRepresentable, Codable, Hashable, Sendable {
@@ -1263,6 +1541,45 @@ public struct FlowionPhase: RawRepresentable, Codable, Hashable, Sendable {
     public static let `l2L3` = Self(rawValue: "L2-L3")
     public static let `l3L1` = Self(rawValue: "L3-L1")
     public var isKnown: Bool { ["L1", "L2", "L3", "N", "L1-N", "L2-N", "L3-N", "L1-L2", "L2-L3", "L3-L1"].contains(rawValue) }
+}
+
+public struct FlowionPlanDecidedBy: RawRepresentable, Codable, Hashable, Sendable {
+    public let rawValue: String
+    public init(rawValue: String) { self.rawValue = rawValue }
+    public init(from decoder: any Decoder) throws { rawValue = try decoder.singleValueContainer().decode(String.self) }
+    public func encode(to encoder: any Encoder) throws { var c = encoder.singleValueContainer(); try c.encode(rawValue) }
+    public static let `price` = Self(rawValue: "price")
+    public static let `deadline` = Self(rawValue: "deadline")
+    public static let `capacity` = Self(rawValue: "capacity")
+    public static let `infeasible` = Self(rawValue: "infeasible")
+    public var isKnown: Bool { ["price", "deadline", "capacity", "infeasible"].contains(rawValue) }
+}
+
+public struct FlowionPlanPreviewOutcome: RawRepresentable, Codable, Hashable, Sendable {
+    public let rawValue: String
+    public init(rawValue: String) { self.rawValue = rawValue }
+    public init(from decoder: any Decoder) throws { rawValue = try decoder.singleValueContainer().decode(String.self) }
+    public func encode(to encoder: any Encoder) throws { var c = encoder.singleValueContainer(); try c.encode(rawValue) }
+    public static let `planned` = Self(rawValue: "planned")
+    public static let `noPrices` = Self(rawValue: "noPrices")
+    public static let `noEnergy` = Self(rawValue: "noEnergy")
+    public static let `notPlannedSite` = Self(rawValue: "notPlannedSite")
+    public static let `noCapability` = Self(rawValue: "noCapability")
+    public var isKnown: Bool { ["planned", "noPrices", "noEnergy", "notPlannedSite", "noCapability"].contains(rawValue) }
+}
+
+public struct FlowionPlanState: RawRepresentable, Codable, Hashable, Sendable {
+    public let rawValue: String
+    public init(rawValue: String) { self.rawValue = rawValue }
+    public init(from decoder: any Decoder) throws { rawValue = try decoder.singleValueContainer().decode(String.self) }
+    public func encode(to encoder: any Encoder) throws { var c = encoder.singleValueContainer(); try c.encode(rawValue) }
+    public static let `waiting` = Self(rawValue: "waiting")
+    public static let `charging` = Self(rawValue: "charging")
+    public static let `waitingForTurn` = Self(rawValue: "waitingForTurn")
+    public static let `goalMet` = Self(rawValue: "goalMet")
+    public static let `cannotMeet` = Self(rawValue: "cannotMeet")
+    public static let `notPlanned` = Self(rawValue: "notPlanned")
+    public var isKnown: Bool { ["waiting", "charging", "waitingForTurn", "goalMet", "cannotMeet", "notPlanned"].contains(rawValue) }
 }
 
 public struct FlowionPlugType: RawRepresentable, Codable, Hashable, Sendable {
@@ -1305,6 +1622,19 @@ public struct FlowionPolicyEffect: RawRepresentable, Codable, Hashable, Sendable
     public var isKnown: Bool { ["allow", "deny"].contains(rawValue) }
 }
 
+public struct FlowionPolicyHolderKind: RawRepresentable, Codable, Hashable, Sendable {
+    public let rawValue: String
+    public init(rawValue: String) { self.rawValue = rawValue }
+    public init(from decoder: any Decoder) throws { rawValue = try decoder.singleValueContainer().decode(String.self) }
+    public func encode(to encoder: any Encoder) throws { var c = encoder.singleValueContainer(); try c.encode(rawValue) }
+    public static let `member` = Self(rawValue: "member")
+    public static let `apiKey` = Self(rawValue: "apiKey")
+    public static let `invitation` = Self(rawValue: "invitation")
+    public static let `driver` = Self(rawValue: "driver")
+    public static let `publicGroup` = Self(rawValue: "publicGroup")
+    public var isKnown: Bool { ["member", "apiKey", "invitation", "driver", "publicGroup"].contains(rawValue) }
+}
+
 public struct FlowionPolicyMode: RawRepresentable, Codable, Hashable, Sendable {
     public let rawValue: String
     public init(rawValue: String) { self.rawValue = rawValue }
@@ -1322,6 +1652,57 @@ public struct FlowionPriceBasis: RawRepresentable, Codable, Hashable, Sendable {
     public func encode(to encoder: any Encoder) throws { var c = encoder.singleValueContainer(); try c.encode(rawValue) }
     public static let `atCurrentPrices` = Self(rawValue: "atCurrentPrices")
     public var isKnown: Bool { ["atCurrentPrices"].contains(rawValue) }
+}
+
+public struct FlowionPriceLevel: RawRepresentable, Codable, Hashable, Sendable {
+    public let rawValue: String
+    public init(rawValue: String) { self.rawValue = rawValue }
+    public init(from decoder: any Decoder) throws { rawValue = try decoder.singleValueContainer().decode(String.self) }
+    public func encode(to encoder: any Encoder) throws { var c = encoder.singleValueContainer(); try c.encode(rawValue) }
+    public static let `veryCheap` = Self(rawValue: "veryCheap")
+    public static let `cheap` = Self(rawValue: "cheap")
+    public static let `usual` = Self(rawValue: "usual")
+    public static let `expensive` = Self(rawValue: "expensive")
+    public static let `veryExpensive` = Self(rawValue: "veryExpensive")
+    public var isKnown: Bool { ["veryCheap", "cheap", "usual", "expensive", "veryExpensive"].contains(rawValue) }
+}
+
+public struct FlowionPriceOutcome: RawRepresentable, Codable, Hashable, Sendable {
+    public let rawValue: String
+    public init(rawValue: String) { self.rawValue = rawValue }
+    public init(from decoder: any Decoder) throws { rawValue = try decoder.singleValueContainer().decode(String.self) }
+    public func encode(to encoder: any Encoder) throws { var c = encoder.singleValueContainer(); try c.encode(rawValue) }
+    public static let `ok` = Self(rawValue: "ok")
+    public static let `noTariff` = Self(rawValue: "noTariff")
+    public static let `zoneUnknown` = Self(rawValue: "zoneUnknown")
+    public static let `noForecast` = Self(rawValue: "noForecast")
+    public static let `currencyMismatch` = Self(rawValue: "currencyMismatch")
+    public static let `timeZoneUnknown` = Self(rawValue: "timeZoneUnknown")
+    public var isKnown: Bool { ["ok", "noTariff", "zoneUnknown", "noForecast", "currencyMismatch", "timeZoneUnknown"].contains(rawValue) }
+}
+
+public struct FlowionPricePartKind: RawRepresentable, Codable, Hashable, Sendable {
+    public let rawValue: String
+    public init(rawValue: String) { self.rawValue = rawValue }
+    public init(from decoder: any Decoder) throws { rawValue = try decoder.singleValueContainer().decode(String.self) }
+    public func encode(to encoder: any Encoder) throws { var c = encoder.singleValueContainer(); try c.encode(rawValue) }
+    public static let `spot` = Self(rawValue: "spot")
+    public static let `energy` = Self(rawValue: "energy")
+    public static let `part` = Self(rawValue: "part")
+    public static let `tax` = Self(rawValue: "tax")
+    public var isKnown: Bool { ["spot", "energy", "part", "tax"].contains(rawValue) }
+}
+
+public struct FlowionPriceStory: RawRepresentable, Codable, Hashable, Sendable {
+    public let rawValue: String
+    public init(rawValue: String) { self.rawValue = rawValue }
+    public init(from decoder: any Decoder) throws { rawValue = try decoder.singleValueContainer().decode(String.self) }
+    public func encode(to encoder: any Encoder) throws { var c = encoder.singleValueContainer(); try c.encode(rawValue) }
+    public static let `spot` = Self(rawValue: "spot")
+    public static let `fixed` = Self(rawValue: "fixed")
+    public static let `covered` = Self(rawValue: "covered")
+    public static let `none` = Self(rawValue: "none")
+    public var isKnown: Bool { ["spot", "fixed", "covered", "none"].contains(rawValue) }
 }
 
 public struct FlowionPriceUnit: RawRepresentable, Codable, Hashable, Sendable {
@@ -1342,6 +1723,41 @@ public struct FlowionPricesPendingReason: RawRepresentable, Codable, Hashable, S
     public static let `zoneUnknown` = Self(rawValue: "zoneUnknown")
     public static let `currencyMismatch` = Self(rawValue: "currencyMismatch")
     public var isKnown: Bool { ["notPublished", "zoneUnknown", "currencyMismatch"].contains(rawValue) }
+}
+
+public struct FlowionProjectKind: RawRepresentable, Codable, Hashable, Sendable {
+    public let rawValue: String
+    public init(rawValue: String) { self.rawValue = rawValue }
+    public init(from decoder: any Decoder) throws { rawValue = try decoder.singleValueContainer().decode(String.self) }
+    public func encode(to encoder: any Encoder) throws { var c = encoder.singleValueContainer(); try c.encode(rawValue) }
+    public static let `operations` = Self(rawValue: "operations")
+    public static let `installations` = Self(rawValue: "installations")
+    public var isKnown: Bool { ["operations", "installations"].contains(rawValue) }
+}
+
+public struct FlowionProjectPreset: RawRepresentable, Codable, Hashable, Sendable {
+    public let rawValue: String
+    public init(rawValue: String) { self.rawValue = rawValue }
+    public init(from decoder: any Decoder) throws { rawValue = try decoder.singleValueContainer().decode(String.self) }
+    public func encode(to encoder: any Encoder) throws { var c = encoder.singleValueContainer(); try c.encode(rawValue) }
+    public static let `housing` = Self(rawValue: "housing")
+    public static let `operator` = Self(rawValue: "operator")
+    public static let `developer` = Self(rawValue: "developer")
+    public var isKnown: Bool { ["housing", "operator", "developer"].contains(rawValue) }
+}
+
+public struct FlowionProviderChargerState: RawRepresentable, Codable, Hashable, Sendable {
+    public let rawValue: String
+    public init(rawValue: String) { self.rawValue = rawValue }
+    public init(from decoder: any Decoder) throws { rawValue = try decoder.singleValueContainer().decode(String.self) }
+    public func encode(to encoder: any Encoder) throws { var c = encoder.singleValueContainer(); try c.encode(rawValue) }
+    public static let `available` = Self(rawValue: "available")
+    public static let `charging` = Self(rawValue: "charging")
+    public static let `paused` = Self(rawValue: "paused")
+    public static let `waiting` = Self(rawValue: "waiting")
+    public static let `faulted` = Self(rawValue: "faulted")
+    public static let `offline` = Self(rawValue: "offline")
+    public var isKnown: Bool { ["available", "charging", "paused", "waiting", "faulted", "offline"].contains(rawValue) }
 }
 
 public struct FlowionRange: RawRepresentable, Codable, Hashable, Sendable {
@@ -1477,6 +1893,16 @@ public struct FlowionResetStatusView: RawRepresentable, Codable, Hashable, Senda
     public var isKnown: Bool { ["Accepted", "Rejected", "Scheduled"].contains(rawValue) }
 }
 
+public struct FlowionReviewQueueKind: RawRepresentable, Codable, Hashable, Sendable {
+    public let rawValue: String
+    public init(rawValue: String) { self.rawValue = rawValue }
+    public init(from decoder: any Decoder) throws { rawValue = try decoder.singleValueContainer().decode(String.self) }
+    public func encode(to encoder: any Encoder) throws { var c = encoder.singleValueContainer(); try c.encode(rawValue) }
+    public static let `submittedApp` = Self(rawValue: "submittedApp")
+    public static let `revision` = Self(rawValue: "revision")
+    public var isKnown: Bool { ["submittedApp", "revision"].contains(rawValue) }
+}
+
 public struct FlowionSecurityProfileApi: RawRepresentable, Codable, Hashable, Sendable {
     public let rawValue: String
     public init(rawValue: String) { self.rawValue = rawValue }
@@ -1588,25 +2014,59 @@ public struct FlowionSwiftErrorBodyError: RawRepresentable, Codable, Hashable, S
     public init(rawValue: String) { self.rawValue = rawValue }
     public init(from decoder: any Decoder) throws { rawValue = try decoder.singleValueContainer().decode(String.self) }
     public func encode(to encoder: any Encoder) throws { var c = encoder.singleValueContainer(); try c.encode(rawValue) }
+    public static let `stepUpRequired` = Self(rawValue: "stepUpRequired")
+    public static let `coolingOff` = Self(rawValue: "coolingOff")
+    public static let `authUnavailable` = Self(rawValue: "authUnavailable")
+    public static let `avatarTooLarge` = Self(rawValue: "avatarTooLarge")
+    public static let `belowPrivilegedMinimum` = Self(rawValue: "belowPrivilegedMinimum")
+    public static let `tryAgainLater` = Self(rawValue: "tryAgainLater")
+    public static let `handoverFinished` = Self(rawValue: "handoverFinished")
+    public static let `intentionNotRemovable` = Self(rawValue: "intentionNotRemovable")
+    public static let `addressAmbiguous` = Self(rawValue: "addressAmbiguous")
+    public static let `addressNotFound` = Self(rawValue: "addressNotFound")
+    public static let `geocodingUnavailable` = Self(rawValue: "geocodingUnavailable")
+    public static let `invalidCoordinateResolution` = Self(rawValue: "invalidCoordinateResolution")
+    public static let `publicCatalogueUnavailable` = Self(rawValue: "publicCatalogueUnavailable")
+    public static let `accessRevoked` = Self(rawValue: "accessRevoked")
+    public static let `jobNotOpen` = Self(rawValue: "jobNotOpen")
+    public static let `vendorRateLimited` = Self(rawValue: "vendorRateLimited")
+    public static let `vendorUnavailable` = Self(rawValue: "vendorUnavailable")
+    public static let `zaptecUnavailable` = Self(rawValue: "zaptecUnavailable")
+    public static let `incompleteMapping` = Self(rawValue: "incompleteMapping")
+    public static let `installationClaimed` = Self(rawValue: "installationClaimed")
+    public static let `consentInvalid` = Self(rawValue: "consentInvalid")
+    public static let `requestConflict` = Self(rawValue: "requestConflict")
+    public static let `staleRevision` = Self(rawValue: "staleRevision")
     public static let `accountHasOpenBalance` = Self(rawValue: "accountHasOpenBalance")
     public static let `accountNotReady` = Self(rawValue: "accountNotReady")
     public static let `alreadyStarted` = Self(rawValue: "alreadyStarted")
+    public static let `alreadyHandedOver` = Self(rawValue: "alreadyHandedOver")
+    public static let `notAvailable` = Self(rawValue: "notAvailable")
+    public static let `notOn` = Self(rawValue: "notOn")
+    public static let `systemConfirmed` = Self(rawValue: "systemConfirmed")
     public static let `ambiguousIdToken` = Self(rawValue: "ambiguousIdToken")
     public static let `ambiguousReservationAddress` = Self(rawValue: "ambiguousReservationAddress")
     public static let `assetServiceUnavailable` = Self(rawValue: "assetServiceUnavailable")
+    public static let `locationCoordinatesRequired` = Self(rawValue: "locationCoordinatesRequired")
+    public static let `forecastTimeOutsideCoverage` = Self(rawValue: "forecastTimeOutsideCoverage")
+    public static let `weatherServiceUnavailable` = Self(rawValue: "weatherServiceUnavailable")
     public static let `assistantCardRequired` = Self(rawValue: "assistantCardRequired")
     public static let `assistantDisabled` = Self(rawValue: "assistantDisabled")
     public static let `assistantLimitReached` = Self(rawValue: "assistantLimitReached")
+    public static let `installerPhotoDayLimit` = Self(rawValue: "installerPhotoDayLimit")
+    public static let `installerPhotoConversationLimit` = Self(rawValue: "installerPhotoConversationLimit")
     public static let `assistantNotEnabled` = Self(rawValue: "assistantNotEnabled")
     public static let `assistantRouteNotAllowed` = Self(rawValue: "assistantRouteNotAllowed")
     public static let `assistantUnavailable` = Self(rawValue: "assistantUnavailable")
+    public static let `additionsNotAllowed` = Self(rawValue: "additionsNotAllowed")
     public static let `authenticationRequired` = Self(rawValue: "authenticationRequired")
     public static let `authorizationUnavailable` = Self(rawValue: "authorizationUnavailable")
     public static let `badRequest` = Self(rawValue: "badRequest")
     public static let `batchTooLarge` = Self(rawValue: "batchTooLarge")
+    public static let `billingAccountClosed` = Self(rawValue: "billingAccountClosed")
+    public static let `billingAccountSuspended` = Self(rawValue: "billingAccountSuspended")
     public static let `billingNotConfigured` = Self(rawValue: "billingNotConfigured")
     public static let `billingServiceUnavailable` = Self(rawValue: "billingServiceUnavailable")
-    public static let `cannotDeleteDefault` = Self(rawValue: "cannotDeleteDefault")
     public static let `capacityExceeded` = Self(rawValue: "capacityExceeded")
     public static let `cardAlreadyHeld` = Self(rawValue: "cardAlreadyHeld")
     public static let `cardBlocked` = Self(rawValue: "cardBlocked")
@@ -1617,6 +2077,7 @@ public struct FlowionSwiftErrorBodyError: RawRepresentable, Codable, Hashable, S
     public static let `circuitNotFound` = Self(rawValue: "circuitNotFound")
     public static let `circuitNotOnJobLocation` = Self(rawValue: "circuitNotOnJobLocation")
     public static let `chargerNotRunning` = Self(rawValue: "chargerNotRunning")
+    public static let `chargePointIdTaken` = Self(rawValue: "chargePointIdTaken")
     public static let `chargerSplitAcrossLocations` = Self(rawValue: "chargerSplitAcrossLocations")
     public static let `chargingStationNotAccepted` = Self(rawValue: "chargingStationNotAccepted")
     public static let `claimNotEligible` = Self(rawValue: "claimNotEligible")
@@ -1625,10 +2086,16 @@ public struct FlowionSwiftErrorBodyError: RawRepresentable, Codable, Hashable, S
     public static let `commandTypeRemoved` = Self(rawValue: "commandTypeRemoved")
     public static let `commandsUnavailable` = Self(rawValue: "commandsUnavailable")
     public static let `conflict` = Self(rawValue: "conflict")
+    public static let `confirmationInvalid` = Self(rawValue: "confirmationInvalid")
+    public static let `confirmationLocked` = Self(rawValue: "confirmationLocked")
+    public static let `confirmationNotSent` = Self(rawValue: "confirmationNotSent")
     public static let `confirmationRequired` = Self(rawValue: "confirmationRequired")
     public static let `confirmEraseRequired` = Self(rawValue: "confirmEraseRequired")
     public static let `consentMissing` = Self(rawValue: "consentMissing")
     public static let `conversationClosed` = Self(rawValue: "conversationClosed")
+    public static let `conversationBusy` = Self(rawValue: "conversationBusy")
+    public static let `speechRateLimited` = Self(rawValue: "speechRateLimited")
+    public static let `speechNotReady` = Self(rawValue: "speechNotReady")
     public static let `connectionNotEligible` = Self(rawValue: "connectionNotEligible")
     public static let `connectorAlreadyOccupied` = Self(rawValue: "connectorAlreadyOccupied")
     public static let `connectorNotFound` = Self(rawValue: "connectorNotFound")
@@ -1640,7 +2107,10 @@ public struct FlowionSwiftErrorBodyError: RawRepresentable, Codable, Hashable, S
     public static let `diagnosticsRequestOutstanding` = Self(rawValue: "diagnosticsRequestOutstanding")
     public static let `diagnosticsUnsupportedProtocolVersion` = Self(rawValue: "diagnosticsUnsupportedProtocolVersion")
     public static let `disconnected` = Self(rawValue: "disconnected")
+    public static let `dismissedForSession` = Self(rawValue: "dismissedForSession")
     public static let `duplicate` = Self(rawValue: "duplicate")
+    public static let `duplicateSlug` = Self(rawValue: "duplicateSlug")
+    public static let `detachFirst` = Self(rawValue: "detachFirst")
     public static let `easeeCircuitUnmapped` = Self(rawValue: "easeeCircuitUnmapped")
     public static let `easeeSiteClaimedElsewhere` = Self(rawValue: "easeeSiteClaimedElsewhere")
     public static let `easeeUnreachable` = Self(rawValue: "easeeUnreachable")
@@ -1656,9 +2126,12 @@ public struct FlowionSwiftErrorBodyError: RawRepresentable, Codable, Hashable, S
     public static let `fileExpired` = Self(rawValue: "fileExpired")
     public static let `fileNotAvailable` = Self(rawValue: "fileNotAvailable")
     public static let `firmwareIdentityUnknown` = Self(rawValue: "firmwareIdentityUnknown")
+    public static let `finishAccountSetup` = Self(rawValue: "finishAccountSetup")
     public static let `forbidden` = Self(rawValue: "forbidden")
     public static let `handoverNotReady` = Self(rawValue: "handoverNotReady")
+    public static let `handoverBegun` = Self(rawValue: "handoverBegun")
     public static let `hasChildCircuits` = Self(rawValue: "hasChildCircuits")
+    public static let `hasInverters` = Self(rawValue: "hasInverters")
     public static let `holdAmountOutOfRange` = Self(rawValue: "holdAmountOutOfRange")
     public static let `holdNotAuthorized` = Self(rawValue: "holdNotAuthorized")
     public static let `idTokenNotAccepted` = Self(rawValue: "idTokenNotAccepted")
@@ -1666,6 +2139,7 @@ public struct FlowionSwiftErrorBodyError: RawRepresentable, Codable, Hashable, S
     public static let `idempotencyKeyConflict` = Self(rawValue: "idempotencyKeyConflict")
     public static let `idempotencyKeyInFlight` = Self(rawValue: "idempotencyKeyInFlight")
     public static let `idempotencyKeyReplayed` = Self(rawValue: "idempotencyKeyReplayed")
+    public static let `idempotencyStoreUnavailable` = Self(rawValue: "idempotencyStoreUnavailable")
     public static let `integrationEaseeServiceUnavailable` = Self(rawValue: "integrationEaseeServiceUnavailable")
     public static let `integrationUnavailable` = Self(rawValue: "integrationUnavailable")
     public static let `connectionsServiceUnavailable` = Self(rawValue: "connectionsServiceUnavailable")
@@ -1690,13 +2164,20 @@ public struct FlowionSwiftErrorBodyError: RawRepresentable, Codable, Hashable, S
     public static let `invalidRedirectUri` = Self(rawValue: "invalidRedirectUri")
     public static let `invalidReason` = Self(rawValue: "invalidReason")
     public static let `invalidPhaseCount` = Self(rawValue: "invalidPhaseCount")
+    public static let `inverterBindingConflict` = Self(rawValue: "inverterBindingConflict")
     public static let `invalidRequest` = Self(rawValue: "invalidRequest")
+    public static let `invalidRegistration` = Self(rawValue: "invalidRegistration")
+    public static let `liveUpdatesUnavailable` = Self(rawValue: "liveUpdatesUnavailable")
+    public static let `invalidImage` = Self(rawValue: "invalidImage")
+    public static let `imageTooLarge` = Self(rawValue: "imageTooLarge")
     public static let `invalidWindow` = Self(rawValue: "invalidWindow")
     public static let `methodNotUsable` = Self(rawValue: "methodNotUsable")
     public static let `notAPaidCharger` = Self(rawValue: "notAPaidCharger")
     public static let `notCaptured` = Self(rawValue: "notCaptured")
     public static let `overRefund` = Self(rawValue: "overRefund")
     public static let `paymentRequired` = Self(rawValue: "paymentRequired")
+    public static let `pricingUnavailable` = Self(rawValue: "pricingUnavailable")
+    public static let `projectsHaveNoDefault` = Self(rawValue: "projectsHaveNoDefault")
     public static let `revisionConflict` = Self(rawValue: "revisionConflict")
     public static let `invalidSchedule` = Self(rawValue: "invalidSchedule")
     public static let `invalidScope` = Self(rawValue: "invalidScope")
@@ -1713,12 +2194,19 @@ public struct FlowionSwiftErrorBodyError: RawRepresentable, Codable, Hashable, S
     public static let `invalidTimeZone` = Self(rawValue: "invalidTimeZone")
     public static let `invalidUrl` = Self(rawValue: "invalidUrl")
     public static let `invalidValue` = Self(rawValue: "invalidValue")
+    public static let `installerNotHeld` = Self(rawValue: "installerNotHeld")
     public static let `invitationAlreadyAccepted` = Self(rawValue: "invitationAlreadyAccepted")
     public static let `invitationExpired` = Self(rawValue: "invitationExpired")
     public static let `jobsServiceUnavailable` = Self(rawValue: "jobsServiceUnavailable")
+    public static let `openJobs` = Self(rawValue: "openJobs")
+    public static let `servesCustomerGrants` = Self(rawValue: "servesCustomerGrants")
+    public static let `notAnInstallationsProject` = Self(rawValue: "notAnInstallationsProject")
+    public static let `notAnOperationsProject` = Self(rawValue: "notAnOperationsProject")
+    public static let `grantNotActive` = Self(rawValue: "grantNotActive")
     public static let `lastCircuitOnLocation` = Self(rawValue: "lastCircuitOnLocation")
     public static let `locationUnderInstallation` = Self(rawValue: "locationUnderInstallation")
     public static let `locationNotBuilt` = Self(rawValue: "locationNotBuilt")
+    public static let `locationAlreadyBuilt` = Self(rawValue: "locationAlreadyBuilt")
     public static let `metricsStoreError` = Self(rawValue: "metricsStoreError")
     public static let `metricsStoreUnavailable` = Self(rawValue: "metricsStoreUnavailable")
     public static let `messageTooLong` = Self(rawValue: "messageTooLong")
@@ -1734,15 +2222,31 @@ public struct FlowionSwiftErrorBodyError: RawRepresentable, Codable, Hashable, S
     public static let `notConnected` = Self(rawValue: "notConnected")
     public static let `notDispatchable` = Self(rawValue: "notDispatchable")
     public static let `notEntitled` = Self(rawValue: "notEntitled")
+    public static let `noEligibleOrganization` = Self(rawValue: "noEligibleOrganization")
+    public static let `requestConsumed` = Self(rawValue: "requestConsumed")
+    public static let `requestExpired` = Self(rawValue: "requestExpired")
+    public static let `requestInvalid` = Self(rawValue: "requestInvalid")
+    public static let `requiredScopeMissing` = Self(rawValue: "requiredScopeMissing")
+    public static let `assigneeCannotReadJob` = Self(rawValue: "assigneeCannotReadJob")
     public static let `notFound` = Self(rawValue: "notFound")
+    public static let `labelMistyped` = Self(rawValue: "labelMistyped")
+    public static let `labelNotFound` = Self(rawValue: "labelNotFound")
+    public static let `labelRetired` = Self(rawValue: "labelRetired")
+    public static let `labelLinkedElsewhere` = Self(rawValue: "labelLinkedElsewhere")
+    public static let `outletHasLabel` = Self(rawValue: "outletHasLabel")
+    public static let `sandboxOutlet` = Self(rawValue: "sandboxOutlet")
+    public static let `notOffered` = Self(rawValue: "notOffered")
     public static let `notReady` = Self(rawValue: "notReady")
     public static let `notSandboxMode` = Self(rawValue: "notSandboxMode")
     public static let `noFirmwareCataloged` = Self(rawValue: "noFirmwareCataloged")
     public static let `noOpenSession` = Self(rawValue: "noOpenSession")
     public static let `noSupportedTransferProtocol` = Self(rawValue: "noSupportedTransferProtocol")
     public static let `noVehicle` = Self(rawValue: "noVehicle")
+    public static let `nothingToOffer` = Self(rawValue: "nothingToOffer")
+    public static let `notAdminOrOwner` = Self(rawValue: "notAdminOrOwner")
     public static let `ocppUnavailable` = Self(rawValue: "ocppUnavailable")
     public static let `organizationNotEmpty` = Self(rawValue: "organizationNotEmpty")
+    public static let `organizationNumberMismatch` = Self(rawValue: "organizationNumberMismatch")
     public static let `ownerCannotLeave` = Self(rawValue: "ownerCannotLeave")
     public static let `ownsOrganizations` = Self(rawValue: "ownsOrganizations")
     public static let `paymentMethodRequired` = Self(rawValue: "paymentMethodRequired")
@@ -1757,12 +2261,25 @@ public struct FlowionSwiftErrorBodyError: RawRepresentable, Codable, Hashable, S
     public static let `permissionPolicyManagementPermissionForNonMember` = Self(rawValue: "permission_policy.management_permission_for_non_member")
     public static let `permissionPolicyNameTaken` = Self(rawValue: "permission_policy.name_taken")
     public static let `permissionPolicyNotGrantable` = Self(rawValue: "permission_policy.not_grantable")
+    public static let `permissionPolicyStale` = Self(rawValue: "permission_policy.stale")
     public static let `permissionPolicyUnknownPermission` = Self(rawValue: "permission_policy.unknown_permission")
     public static let `permissionPolicyWouldRemoveLastEditor` = Self(rawValue: "permission_policy.would_remove_last_editor")
     public static let `paymentsAccountNotFound` = Self(rawValue: "paymentsAccountNotFound")
     public static let `paymentsAccountSubmitted` = Self(rawValue: "paymentsAccountSubmitted")
     public static let `paymentsOrganizationSynthetic` = Self(rawValue: "paymentsOrganizationSynthetic")
     public static let `paymentsUnavailable` = Self(rawValue: "paymentsUnavailable")
+    public static let `paymentModeUnknown` = Self(rawValue: "paymentModeUnknown")
+    public static let `deviceAttestationRequired` = Self(rawValue: "deviceAttestationRequired")
+    public static let `limitExceeded` = Self(rawValue: "limitExceeded")
+    public static let `attestationRejected` = Self(rawValue: "attestationRejected")
+    public static let `paymentsNotEnabled` = Self(rawValue: "paymentsNotEnabled")
+    public static let `amountOutOfRange` = Self(rawValue: "amountOutOfRange")
+    public static let `carNotPluggedIn` = Self(rawValue: "carNotPluggedIn")
+    public static let `chargerOffline` = Self(rawValue: "chargerOffline")
+    public static let `priceUnavailable` = Self(rawValue: "priceUnavailable")
+    public static let `organizationNotTestEligible` = Self(rawValue: "organizationNotTestEligible")
+    public static let `quoteExpired` = Self(rawValue: "quoteExpired")
+    public static let `quoteUsed` = Self(rawValue: "quoteUsed")
     public static let `phaseTopologyNotConfirmed` = Self(rawValue: "phaseTopologyNotConfirmed")
     public static let `principalErased` = Self(rawValue: "principalErased")
     public static let `principalInactive` = Self(rawValue: "principalInactive")
@@ -1772,20 +2289,37 @@ public struct FlowionSwiftErrorBodyError: RawRepresentable, Codable, Hashable, S
     public static let `protocolError` = Self(rawValue: "protocolError")
     public static let `rateLimitError` = Self(rawValue: "rateLimitError")
     public static let `rateLimited` = Self(rawValue: "rateLimited")
+    public static let `recentSignInRequired` = Self(rawValue: "recentSignInRequired")
+    public static let `cardHeldElsewhere` = Self(rawValue: "cardHeldElsewhere")
+    public static let `cardNotReadable` = Self(rawValue: "cardNotReadable")
+    public static let `cardUidChanges` = Self(rawValue: "cardUidChanges")
+    public static let `cardsNotEnabled` = Self(rawValue: "cardsNotEnabled")
+    public static let `cardsUnavailable` = Self(rawValue: "cardsUnavailable")
+    public static let `learnAlreadyOpen` = Self(rawValue: "learnAlreadyOpen")
+    public static let `learnAmbiguous` = Self(rawValue: "learnAmbiguous")
+    public static let `learnExpired` = Self(rawValue: "learnExpired")
+    public static let `learnNotOffered` = Self(rawValue: "learnNotOffered")
     public static let `ratedCurrentNotPositive` = Self(rawValue: "ratedCurrentNotPositive")
     public static let `referenceTaken` = Self(rawValue: "referenceTaken")
     public static let `sandboxOrganizationChargerLimitReached` = Self(rawValue: "sandboxOrganizationChargerLimitReached")
     public static let `sandboxProjectChargerLimitReached` = Self(rawValue: "sandboxProjectChargerLimitReached")
     public static let `sandboxStationRefused` = Self(rawValue: "sandboxStationRefused")
     public static let `selfParent` = Self(rawValue: "selfParent")
+    public static let `sellerTermsUrlInvalid` = Self(rawValue: "sellerTermsUrlInvalid")
     public static let `sellerUnavailable` = Self(rawValue: "sellerUnavailable")
+    public static let `staleCircuit` = Self(rawValue: "staleCircuit")
     public static let `serviceUnavailable` = Self(rawValue: "serviceUnavailable")
+    public static let `sessionEnded` = Self(rawValue: "sessionEnded")
     public static let `sessionServiceUnavailable` = Self(rawValue: "sessionServiceUnavailable")
     public static let `stationOffline` = Self(rawValue: "stationOffline")
+    public static let `stationsNotDeprovisioned` = Self(rawValue: "stationsNotDeprovisioned")
     public static let `signingSecretTooShort` = Self(rawValue: "signingSecretTooShort")
+    public static let `signInRequired` = Self(rawValue: "signInRequired")
+    public static let `tooManyOpenSessions` = Self(rawValue: "tooManyOpenSessions")
     public static let `siteClaimedElsewhere` = Self(rawValue: "siteClaimedElsewhere")
     public static let `siteOwnedByAnotherEaseeOperator` = Self(rawValue: "siteOwnedByAnotherEaseeOperator")
     public static let `slugChangeNotAcknowledged` = Self(rawValue: "slugChangeNotAcknowledged")
+    public static let `slugTaken` = Self(rawValue: "slugTaken")
     public static let `spotCurrencyMismatch` = Self(rawValue: "spotCurrencyMismatch")
     public static let `tariffEnergyAndSpot` = Self(rawValue: "tariffEnergyAndSpot")
     public static let `timeZoneRequired` = Self(rawValue: "timeZoneRequired")
@@ -1809,6 +2343,7 @@ public struct FlowionSwiftErrorBodyError: RawRepresentable, Codable, Hashable, S
     public static let `settlementServiceUnavailable` = Self(rawValue: "settlementServiceUnavailable")
     public static let `transactionAlreadyOpen` = Self(rawValue: "transactionAlreadyOpen")
     public static let `transactionNotOpen` = Self(rawValue: "transactionNotOpen")
+    public static let `trackingUnavailable` = Self(rawValue: "trackingUnavailable")
     public static let `unauthorized` = Self(rawValue: "unauthorized")
     public static let `unavailable` = Self(rawValue: "unavailable")
     public static let `unintelligibleResponse` = Self(rawValue: "unintelligibleResponse")
@@ -1831,7 +2366,19 @@ public struct FlowionSwiftErrorBodyError: RawRepresentable, Codable, Hashable, S
     public static let `virtualChargerStateUnavailable` = Self(rawValue: "virtualChargerStateUnavailable")
     public static let `webhookServiceUnavailable` = Self(rawValue: "webhookServiceUnavailable")
     public static let `wrongPin` = Self(rawValue: "wrongPin")
-    public var isKnown: Bool { ["accountHasOpenBalance", "accountNotReady", "alreadyStarted", "ambiguousIdToken", "ambiguousReservationAddress", "assetServiceUnavailable", "assistantCardRequired", "assistantDisabled", "assistantLimitReached", "assistantNotEnabled", "assistantRouteNotAllowed", "assistantUnavailable", "authenticationRequired", "authorizationUnavailable", "badRequest", "batchTooLarge", "billingNotConfigured", "billingServiceUnavailable", "cannotDeleteDefault", "capacityExceeded", "cardAlreadyHeld", "cardBlocked", "cardOwnedByPrincipal", "certificateAuthorityServiceUnavailable", "chargerUnsafeForHold", "circuitChosenTwice", "circuitNotFound", "circuitNotOnJobLocation", "chargerNotRunning", "chargerSplitAcrossLocations", "chargingStationNotAccepted", "claimNotEligible", "claimNotFound", "commandNotSupported", "commandTypeRemoved", "commandsUnavailable", "conflict", "confirmationRequired", "confirmEraseRequired", "consentMissing", "conversationClosed", "connectionNotEligible", "connectorAlreadyOccupied", "connectorNotFound", "connectorNotOccupied", "confirmOverPlanRequired", "csmsManagedSetting", "declined", "diagnosticsReceiverServiceUnavailable", "diagnosticsRequestOutstanding", "diagnosticsUnsupportedProtocolVersion", "disconnected", "duplicate", "easeeCircuitUnmapped", "easeeSiteClaimedElsewhere", "easeeUnreachable", "easeeWrongSerialOrPin", "emailNotVerified", "emptyEventTypes", "emptyLimit", "emptyTransactionLimit", "energyControllerUnavailable", "energyPricingServiceUnavailable", "eventTypeNotSubscribable", "exceedsCapability", "fileExpired", "fileNotAvailable", "firmwareIdentityUnknown", "forbidden", "handoverNotReady", "hasChildCircuits", "holdAmountOutOfRange", "holdNotAuthorized", "idTokenNotAccepted", "idTokenNotRecoverable", "idempotencyKeyConflict", "idempotencyKeyInFlight", "idempotencyKeyReplayed", "integrationEaseeServiceUnavailable", "integrationUnavailable", "connectionsServiceUnavailable", "internalError", "invalid", "invalidAddress", "invalidAppDestination", "invalidClient", "invalidCoordinates", "invalidCountry", "invalidCurrentType", "invalidEvses", "invalidCursor", "invalidErrorCode", "invalidIdToken", "invalidLine", "invalidMode", "invalidMonitorAssignment", "invalidMonitorConnection", "invalidName", "invalidPagination", "invalidRedirectUri", "invalidReason", "invalidPhaseCount", "invalidRequest", "invalidWindow", "methodNotUsable", "notAPaidCharger", "notCaptured", "overRefund", "paymentRequired", "revisionConflict", "invalidSchedule", "invalidScope", "invalidSettingValue", "invalidLocationTarget", "invalidSlug", "invalidStartingSoc", "invalidTargetSoc", "invalidTarget", "invalidTargetUrl", "invalidTariff", "invalidTariffCondition", "invalidTariffId", "invalidTimeZone", "invalidUrl", "invalidValue", "invitationAlreadyAccepted", "invitationExpired", "jobsServiceUnavailable", "lastCircuitOnLocation", "locationUnderInstallation", "locationNotBuilt", "metricsStoreError", "metricsStoreUnavailable", "messageTooLong", "missingIdToken", "missingIdempotencyKey", "monitorConflict", "monitorNotFound", "mqttServiceUnavailable", "missingOrMalformedHeader", "invalidToken", "jwksUnavailable", "apiKeyServiceUnavailable", "notConnected", "notDispatchable", "notEntitled", "notFound", "notReady", "notSandboxMode", "noFirmwareCataloged", "noOpenSession", "noSupportedTransferProtocol", "noVehicle", "ocppUnavailable", "organizationNotEmpty", "ownerCannotLeave", "ownsOrganizations", "paymentMethodRequired", "binding.driver_policy_requires_access_permission", "binding.holder_outside_home_project", "permission_policy.deny_not_allowed", "permission_policy.deny_on_owner_floor", "permission_policy.in_use", "permission_policy.invalid_document", "permission_policy.limit_exceeded", "permission_policy.managed_immutable", "permission_policy.management_permission_for_non_member", "permission_policy.name_taken", "permission_policy.not_grantable", "permission_policy.unknown_permission", "permission_policy.would_remove_last_editor", "paymentsAccountNotFound", "paymentsAccountSubmitted", "paymentsOrganizationSynthetic", "paymentsUnavailable", "phaseTopologyNotConfirmed", "principalErased", "principalInactive", "principalNotFound", "projectNotFound", "proposalAlreadyDecided", "protocolError", "rateLimitError", "rateLimited", "ratedCurrentNotPositive", "referenceTaken", "sandboxOrganizationChargerLimitReached", "sandboxProjectChargerLimitReached", "sandboxStationRefused", "selfParent", "sellerUnavailable", "serviceUnavailable", "sessionServiceUnavailable", "stationOffline", "signingSecretTooShort", "siteClaimedElsewhere", "siteOwnedByAnotherEaseeOperator", "slugChangeNotAcknowledged", "spotCurrencyMismatch", "tariffEnergyAndSpot", "timeZoneRequired", "timedOut", "scopeNotGranted", "scopeTooLarge", "windowEnded", "windowTooLong", "sessionCapExceeded", "invalidMonth", "monthTooLarge", "mixedCurrencies", "monthNotClosable", "monthHasOpenHolds", "monthAlreadyClosed", "monthNotClosed", "outcomeFinal", "monthClosed", "notCarriable", "targetMonthClosed", "settlementServiceUnavailable", "transactionAlreadyOpen", "transactionNotOpen", "unauthorized", "unavailable", "unintelligibleResponse", "unknownBiddingZone", "unknownChargerModel", "unknownEventType", "unknownFallbackStatus", "unknownSerial", "unknownVariable", "unknownVehicleModel", "unprocessable", "unrecognisedApiKeyMode", "unrecognisedSessionMode", "unsupported", "vendorManagedFirmware", "vendorUnreachable", "virtualChargerLimitReached", "virtualChargerOrganizationLimitReached", "virtualChargerServiceUnavailable", "virtualChargerStateUnavailable", "webhookServiceUnavailable", "wrongPin"].contains(rawValue) }
+    public static let `homeVehiclePreferencesChanged` = Self(rawValue: "homeVehiclePreferencesChanged")
+    public static let `homeLimit` = Self(rawValue: "homeLimit")
+    public static let `homeHasMembers` = Self(rawValue: "homeHasMembers")
+    public static let `invitationNotFound` = Self(rawValue: "invitationNotFound")
+    public static let `homeNotReady` = Self(rawValue: "homeNotReady")
+    public static let `invalidPrice` = Self(rawValue: "invalidPrice")
+    public static let `invalidPriceArea` = Self(rawValue: "invalidPriceArea")
+    public static let `gridFeeCurrencyUnsupported` = Self(rawValue: "gridFeeCurrencyUnsupported")
+    public static let `priceAreaRequired` = Self(rawValue: "priceAreaRequired")
+    public static let `notAvailableForHome` = Self(rawValue: "notAvailableForHome")
+    public static let `publicLocation` = Self(rawValue: "publicLocation")
+    public static let `locationStepRequired` = Self(rawValue: "locationStepRequired")
+    public var isKnown: Bool { ["stepUpRequired", "coolingOff", "authUnavailable", "avatarTooLarge", "belowPrivilegedMinimum", "tryAgainLater", "handoverFinished", "intentionNotRemovable", "addressAmbiguous", "addressNotFound", "geocodingUnavailable", "invalidCoordinateResolution", "publicCatalogueUnavailable", "accessRevoked", "jobNotOpen", "vendorRateLimited", "vendorUnavailable", "zaptecUnavailable", "incompleteMapping", "installationClaimed", "consentInvalid", "requestConflict", "staleRevision", "accountHasOpenBalance", "accountNotReady", "alreadyStarted", "alreadyHandedOver", "notAvailable", "notOn", "systemConfirmed", "ambiguousIdToken", "ambiguousReservationAddress", "assetServiceUnavailable", "locationCoordinatesRequired", "forecastTimeOutsideCoverage", "weatherServiceUnavailable", "assistantCardRequired", "assistantDisabled", "assistantLimitReached", "installerPhotoDayLimit", "installerPhotoConversationLimit", "assistantNotEnabled", "assistantRouteNotAllowed", "assistantUnavailable", "additionsNotAllowed", "authenticationRequired", "authorizationUnavailable", "badRequest", "batchTooLarge", "billingAccountClosed", "billingAccountSuspended", "billingNotConfigured", "billingServiceUnavailable", "capacityExceeded", "cardAlreadyHeld", "cardBlocked", "cardOwnedByPrincipal", "certificateAuthorityServiceUnavailable", "chargerUnsafeForHold", "circuitChosenTwice", "circuitNotFound", "circuitNotOnJobLocation", "chargerNotRunning", "chargePointIdTaken", "chargerSplitAcrossLocations", "chargingStationNotAccepted", "claimNotEligible", "claimNotFound", "commandNotSupported", "commandTypeRemoved", "commandsUnavailable", "conflict", "confirmationInvalid", "confirmationLocked", "confirmationNotSent", "confirmationRequired", "confirmEraseRequired", "consentMissing", "conversationClosed", "conversationBusy", "speechRateLimited", "speechNotReady", "connectionNotEligible", "connectorAlreadyOccupied", "connectorNotFound", "connectorNotOccupied", "confirmOverPlanRequired", "csmsManagedSetting", "declined", "diagnosticsReceiverServiceUnavailable", "diagnosticsRequestOutstanding", "diagnosticsUnsupportedProtocolVersion", "disconnected", "dismissedForSession", "duplicate", "duplicateSlug", "detachFirst", "easeeCircuitUnmapped", "easeeSiteClaimedElsewhere", "easeeUnreachable", "easeeWrongSerialOrPin", "emailNotVerified", "emptyEventTypes", "emptyLimit", "emptyTransactionLimit", "energyControllerUnavailable", "energyPricingServiceUnavailable", "eventTypeNotSubscribable", "exceedsCapability", "fileExpired", "fileNotAvailable", "firmwareIdentityUnknown", "finishAccountSetup", "forbidden", "handoverNotReady", "handoverBegun", "hasChildCircuits", "hasInverters", "holdAmountOutOfRange", "holdNotAuthorized", "idTokenNotAccepted", "idTokenNotRecoverable", "idempotencyKeyConflict", "idempotencyKeyInFlight", "idempotencyKeyReplayed", "idempotencyStoreUnavailable", "integrationEaseeServiceUnavailable", "integrationUnavailable", "connectionsServiceUnavailable", "internalError", "invalid", "invalidAddress", "invalidAppDestination", "invalidClient", "invalidCoordinates", "invalidCountry", "invalidCurrentType", "invalidEvses", "invalidCursor", "invalidErrorCode", "invalidIdToken", "invalidLine", "invalidMode", "invalidMonitorAssignment", "invalidMonitorConnection", "invalidName", "invalidPagination", "invalidRedirectUri", "invalidReason", "invalidPhaseCount", "inverterBindingConflict", "invalidRequest", "invalidRegistration", "liveUpdatesUnavailable", "invalidImage", "imageTooLarge", "invalidWindow", "methodNotUsable", "notAPaidCharger", "notCaptured", "overRefund", "paymentRequired", "pricingUnavailable", "projectsHaveNoDefault", "revisionConflict", "invalidSchedule", "invalidScope", "invalidSettingValue", "invalidLocationTarget", "invalidSlug", "invalidStartingSoc", "invalidTargetSoc", "invalidTarget", "invalidTargetUrl", "invalidTariff", "invalidTariffCondition", "invalidTariffId", "invalidTimeZone", "invalidUrl", "invalidValue", "installerNotHeld", "invitationAlreadyAccepted", "invitationExpired", "jobsServiceUnavailable", "openJobs", "servesCustomerGrants", "notAnInstallationsProject", "notAnOperationsProject", "grantNotActive", "lastCircuitOnLocation", "locationUnderInstallation", "locationNotBuilt", "locationAlreadyBuilt", "metricsStoreError", "metricsStoreUnavailable", "messageTooLong", "missingIdToken", "missingIdempotencyKey", "monitorConflict", "monitorNotFound", "mqttServiceUnavailable", "missingOrMalformedHeader", "invalidToken", "jwksUnavailable", "apiKeyServiceUnavailable", "notConnected", "notDispatchable", "notEntitled", "noEligibleOrganization", "requestConsumed", "requestExpired", "requestInvalid", "requiredScopeMissing", "assigneeCannotReadJob", "notFound", "labelMistyped", "labelNotFound", "labelRetired", "labelLinkedElsewhere", "outletHasLabel", "sandboxOutlet", "notOffered", "notReady", "notSandboxMode", "noFirmwareCataloged", "noOpenSession", "noSupportedTransferProtocol", "noVehicle", "nothingToOffer", "notAdminOrOwner", "ocppUnavailable", "organizationNotEmpty", "organizationNumberMismatch", "ownerCannotLeave", "ownsOrganizations", "paymentMethodRequired", "binding.driver_policy_requires_access_permission", "binding.holder_outside_home_project", "permission_policy.deny_not_allowed", "permission_policy.deny_on_owner_floor", "permission_policy.in_use", "permission_policy.invalid_document", "permission_policy.limit_exceeded", "permission_policy.managed_immutable", "permission_policy.management_permission_for_non_member", "permission_policy.name_taken", "permission_policy.not_grantable", "permission_policy.stale", "permission_policy.unknown_permission", "permission_policy.would_remove_last_editor", "paymentsAccountNotFound", "paymentsAccountSubmitted", "paymentsOrganizationSynthetic", "paymentsUnavailable", "paymentModeUnknown", "deviceAttestationRequired", "limitExceeded", "attestationRejected", "paymentsNotEnabled", "amountOutOfRange", "carNotPluggedIn", "chargerOffline", "priceUnavailable", "organizationNotTestEligible", "quoteExpired", "quoteUsed", "phaseTopologyNotConfirmed", "principalErased", "principalInactive", "principalNotFound", "projectNotFound", "proposalAlreadyDecided", "protocolError", "rateLimitError", "rateLimited", "recentSignInRequired", "cardHeldElsewhere", "cardNotReadable", "cardUidChanges", "cardsNotEnabled", "cardsUnavailable", "learnAlreadyOpen", "learnAmbiguous", "learnExpired", "learnNotOffered", "ratedCurrentNotPositive", "referenceTaken", "sandboxOrganizationChargerLimitReached", "sandboxProjectChargerLimitReached", "sandboxStationRefused", "selfParent", "sellerTermsUrlInvalid", "sellerUnavailable", "staleCircuit", "serviceUnavailable", "sessionEnded", "sessionServiceUnavailable", "stationOffline", "stationsNotDeprovisioned", "signingSecretTooShort", "signInRequired", "tooManyOpenSessions", "siteClaimedElsewhere", "siteOwnedByAnotherEaseeOperator", "slugChangeNotAcknowledged", "slugTaken", "spotCurrencyMismatch", "tariffEnergyAndSpot", "timeZoneRequired", "timedOut", "scopeNotGranted", "scopeTooLarge", "windowEnded", "windowTooLong", "sessionCapExceeded", "invalidMonth", "monthTooLarge", "mixedCurrencies", "monthNotClosable", "monthHasOpenHolds", "monthAlreadyClosed", "monthNotClosed", "outcomeFinal", "monthClosed", "notCarriable", "targetMonthClosed", "settlementServiceUnavailable", "transactionAlreadyOpen", "transactionNotOpen", "trackingUnavailable", "unauthorized", "unavailable", "unintelligibleResponse", "unknownBiddingZone", "unknownChargerModel", "unknownEventType", "unknownFallbackStatus", "unknownSerial", "unknownVariable", "unknownVehicleModel", "unprocessable", "unrecognisedApiKeyMode", "unrecognisedSessionMode", "unsupported", "vendorManagedFirmware", "vendorUnreachable", "virtualChargerLimitReached", "virtualChargerOrganizationLimitReached", "virtualChargerServiceUnavailable", "virtualChargerStateUnavailable", "webhookServiceUnavailable", "wrongPin", "homeVehiclePreferencesChanged", "homeLimit", "homeHasMembers", "invitationNotFound", "homeNotReady", "invalidPrice", "invalidPriceArea", "gridFeeCurrencyUnsupported", "priceAreaRequired", "notAvailableForHome", "publicLocation", "locationStepRequired"].contains(rawValue) }
 }
 
 public struct FlowionTariffHoursOutcome: RawRepresentable, Codable, Hashable, Sendable {
@@ -2021,6 +2568,16 @@ public struct FlowionVehicleConnectionHealth: RawRepresentable, Codable, Hashabl
     public var isKnown: Bool { ["working", "needsReconnect", "disconnected"].contains(rawValue) }
 }
 
+public struct FlowionVehicleConnectionState: RawRepresentable, Codable, Hashable, Sendable {
+    public let rawValue: String
+    public init(rawValue: String) { self.rawValue = rawValue }
+    public init(from decoder: any Decoder) throws { rawValue = try decoder.singleValueContainer().decode(String.self) }
+    public func encode(to encoder: any Encoder) throws { var c = encoder.singleValueContainer(); try c.encode(rawValue) }
+    public static let `connected` = Self(rawValue: "connected")
+    public static let `disconnected` = Self(rawValue: "disconnected")
+    public var isKnown: Bool { ["connected", "disconnected"].contains(rawValue) }
+}
+
 public struct FlowionVehicleConsentRefusal: RawRepresentable, Codable, Hashable, Sendable {
     public let rawValue: String
     public init(rawValue: String) { self.rawValue = rawValue }
@@ -2043,6 +2600,37 @@ public struct FlowionVehicleStreamSetup: RawRepresentable, Codable, Hashable, Se
     public static let `maxConfigs` = Self(rawValue: "maxConfigs")
     public static let `refused` = Self(rawValue: "refused")
     public var isKnown: Bool { ["accepted", "missingKey", "unsupportedHardware", "unsupportedFirmware", "maxConfigs", "refused"].contains(rawValue) }
+}
+
+public struct FlowionVisitReason: RawRepresentable, Codable, Hashable, Sendable {
+    public let rawValue: String
+    public init(rawValue: String) { self.rawValue = rawValue }
+    public init(from decoder: any Decoder) throws { rawValue = try decoder.singleValueContainer().decode(String.self) }
+    public func encode(to encoder: any Encoder) throws { var c = encoder.singleValueContainer(); try c.encode(rawValue) }
+    public static let `network` = Self(rawValue: "network")
+    public static let `notCharging` = Self(rawValue: "notCharging")
+    public static let `partReplaced` = Self(rawValue: "partReplaced")
+    public static let `wiring` = Self(rawValue: "wiring")
+    public static let `other` = Self(rawValue: "other")
+    public var isKnown: Bool { ["network", "notCharging", "partReplaced", "wiring", "other"].contains(rawValue) }
+}
+
+public struct FlowionWeatherForecastMetric: RawRepresentable, Codable, Hashable, Sendable {
+    public let rawValue: String
+    public init(rawValue: String) { self.rawValue = rawValue }
+    public init(from decoder: any Decoder) throws { rawValue = try decoder.singleValueContainer().decode(String.self) }
+    public func encode(to encoder: any Encoder) throws { var c = encoder.singleValueContainer(); try c.encode(rawValue) }
+    public static let `irradiance` = Self(rawValue: "irradiance")
+    public var isKnown: Bool { ["irradiance"].contains(rawValue) }
+}
+
+public struct FlowionWeatherForecastRange: RawRepresentable, Codable, Hashable, Sendable {
+    public let rawValue: String
+    public init(rawValue: String) { self.rawValue = rawValue }
+    public init(from decoder: any Decoder) throws { rawValue = try decoder.singleValueContainer().decode(String.self) }
+    public func encode(to encoder: any Encoder) throws { var c = encoder.singleValueContainer(); try c.encode(rawValue) }
+    public static let `_36H` = Self(rawValue: "36H")
+    public var isKnown: Bool { ["36H"].contains(rawValue) }
 }
 
 public enum FlowionAppFieldScalar: Codable, Hashable, Sendable {
@@ -2447,6 +3035,36 @@ public enum FlowionJobSubstatusView: Codable, Hashable, Sendable {
     }
 }
 
+public enum FlowionLabelResolution: Codable, Hashable, Sendable {
+    case variant1(Components.Schemas.SwiftLabelResolutionVariant1)
+    case variant2(Components.Schemas.SwiftLabelResolutionVariant2)
+    case variant3(Components.Schemas.SwiftLabelResolutionVariant3)
+    case variant4(Components.Schemas.SwiftLabelResolutionVariant4)
+    case variant5(Components.Schemas.SwiftLabelResolutionVariant5)
+    case unknown(JSONValue)
+    public init(from decoder: any Decoder) throws {
+        let raw = try JSONValue(from: decoder)
+        switch raw.objectValue?["kind"]?.stringValue {
+        case "yours": self = .variant1(try .init(from: decoder))
+        case "notYours": self = .variant2(try .init(from: decoder))
+        case "notSetUp": self = .variant3(try .init(from: decoder))
+        case "retired": self = .variant4(try .init(from: decoder))
+        case "unrecognised": self = .variant5(try .init(from: decoder))
+        default: self = .unknown(raw)
+        }
+    }
+    public func encode(to encoder: any Encoder) throws {
+        switch self {
+        case .variant1(let value): try value.encode(to: encoder)
+        case .variant2(let value): try value.encode(to: encoder)
+        case .variant3(let value): try value.encode(to: encoder)
+        case .variant4(let value): try value.encode(to: encoder)
+        case .variant5(let value): try value.encode(to: encoder)
+        case .unknown(let value): try value.encode(to: encoder)
+        }
+    }
+}
+
 public enum FlowionProtocolChoiceReasonView: Codable, Hashable, Sendable {
     case variant1(Components.Schemas.SwiftProtocolChoiceReasonViewVariant1)
     case variant2(Components.Schemas.SwiftProtocolChoiceReasonViewVariant2)
@@ -2466,6 +3084,33 @@ public enum FlowionProtocolChoiceReasonView: Codable, Hashable, Sendable {
         case .variant1(let value): try value.encode(to: encoder)
         case .variant2(let value): try value.encode(to: encoder)
         case .variant3(let value): try value.encode(to: encoder)
+        case .unknown(let value): try value.encode(to: encoder)
+        }
+    }
+}
+
+public enum FlowionPublicLabelAnswer: Codable, Hashable, Sendable {
+    case variant1(Components.Schemas.SwiftPublicLabelAnswerVariant1)
+    case variant2(Components.Schemas.SwiftPublicLabelAnswerVariant2)
+    case variant3(Components.Schemas.SwiftPublicLabelAnswerVariant3)
+    case variant4(Components.Schemas.SwiftPublicLabelAnswerVariant4)
+    case unknown(JSONValue)
+    public init(from decoder: any Decoder) throws {
+        let raw = try JSONValue(from: decoder)
+        switch raw.objectValue?["kind"]?.stringValue {
+        case "live": self = .variant1(try .init(from: decoder))
+        case "notSetUp": self = .variant2(try .init(from: decoder))
+        case "retired": self = .variant3(try .init(from: decoder))
+        case "unrecognised": self = .variant4(try .init(from: decoder))
+        default: self = .unknown(raw)
+        }
+    }
+    public func encode(to encoder: any Encoder) throws {
+        switch self {
+        case .variant1(let value): try value.encode(to: encoder)
+        case .variant2(let value): try value.encode(to: encoder)
+        case .variant3(let value): try value.encode(to: encoder)
+        case .variant4(let value): try value.encode(to: encoder)
         case .unknown(let value): try value.encode(to: encoder)
         }
     }
@@ -2901,6 +3546,31 @@ public struct FlowionJobLineInput: Codable, Hashable, Sendable {
     }
 }
 
+public struct FlowionJobOnSiteContactView: Codable, Hashable, Sendable {
+    /// Never empty. A name that is empty after trimming means no on-site
+    /// contact at all.
+    public var `name`: String
+    public var `phone`: Patch<String>
+    public init(`name`: String, `phone`: Patch<String> = .omitted) {
+        self.`name` = `name`
+        self.`phone` = `phone`
+    }
+    private enum CodingKeys: String, CodingKey {
+        case `name` = "name"
+        case `phone` = "phone"
+    }
+    public init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        self.`name` = try c.decode(String.self, forKey: .`name`)
+        self.`phone` = try c.decodePatch(String.self, forKey: .`phone`)
+    }
+    public func encode(to encoder: any Encoder) throws {
+        var c = encoder.container(keyedBy: CodingKeys.self)
+        try c.encode(`name`, forKey: .`name`)
+        try c.encodePatch(`phone`, forKey: .`phone`)
+    }
+}
+
 public struct FlowionLocationAddressInput: Codable, Hashable, Sendable {
     public var `city`: Patch<String>
     /// ISO 3166-1 alpha-2.
@@ -3126,8 +3796,12 @@ public struct FlowionUpdateChargingStationSettingsRequest: Codable, Hashable, Se
 }
 
 public struct FlowionUpdateConnectionAppRequest: Codable, Hashable, Sendable {
+    public var `audience`: Patch<[Components.Schemas.AppAudience]>
     public var `category`: Patch<Components.Schemas.AppCategory>
     public var `challengePreparationUri`: Patch<String>
+    public var `clientType`: Patch<Components.Schemas.AppClientType>
+    /// A URL sets it, `null` withdraws it, and leaving the key out keeps it.
+    public var `connectUrl`: Patch<String>
     public var `description`: Patch<String>
     public var `displayName`: Patch<String>
     public var `fields`: Patch<[Components.Schemas.ConnectionAppField]>
@@ -3138,9 +3812,12 @@ public struct FlowionUpdateConnectionAppRequest: Codable, Hashable, Sendable {
     public var `settingsUrl`: Patch<String>
     public var `supportUrl`: Patch<String>
     public var `termsUrl`: Patch<String>
-    public init(`category`: Patch<Components.Schemas.AppCategory> = .omitted, `challengePreparationUri`: Patch<String> = .omitted, `description`: Patch<String> = .omitted, `displayName`: Patch<String> = .omitted, `fields`: Patch<[Components.Schemas.ConnectionAppField]> = .omitted, `privacyUrl`: Patch<String> = .omitted, `redirectUris`: Patch<[String]> = .omitted, `requestedScopes`: Patch<[Components.Schemas.ConnectionAppScope]> = .omitted, `settingsUrl`: Patch<String> = .omitted, `supportUrl`: Patch<String> = .omitted, `termsUrl`: Patch<String> = .omitted) {
+    public init(`audience`: Patch<[Components.Schemas.AppAudience]> = .omitted, `category`: Patch<Components.Schemas.AppCategory> = .omitted, `challengePreparationUri`: Patch<String> = .omitted, `clientType`: Patch<Components.Schemas.AppClientType> = .omitted, `connectUrl`: Patch<String> = .omitted, `description`: Patch<String> = .omitted, `displayName`: Patch<String> = .omitted, `fields`: Patch<[Components.Schemas.ConnectionAppField]> = .omitted, `privacyUrl`: Patch<String> = .omitted, `redirectUris`: Patch<[String]> = .omitted, `requestedScopes`: Patch<[Components.Schemas.ConnectionAppScope]> = .omitted, `settingsUrl`: Patch<String> = .omitted, `supportUrl`: Patch<String> = .omitted, `termsUrl`: Patch<String> = .omitted) {
+        self.`audience` = `audience`
         self.`category` = `category`
         self.`challengePreparationUri` = `challengePreparationUri`
+        self.`clientType` = `clientType`
+        self.`connectUrl` = `connectUrl`
         self.`description` = `description`
         self.`displayName` = `displayName`
         self.`fields` = `fields`
@@ -3152,8 +3829,11 @@ public struct FlowionUpdateConnectionAppRequest: Codable, Hashable, Sendable {
         self.`termsUrl` = `termsUrl`
     }
     private enum CodingKeys: String, CodingKey {
+        case `audience` = "audience"
         case `category` = "category"
         case `challengePreparationUri` = "challengePreparationUri"
+        case `clientType` = "clientType"
+        case `connectUrl` = "connectUrl"
         case `description` = "description"
         case `displayName` = "displayName"
         case `fields` = "fields"
@@ -3166,8 +3846,11 @@ public struct FlowionUpdateConnectionAppRequest: Codable, Hashable, Sendable {
     }
     public init(from decoder: any Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
+        self.`audience` = try c.decodePatch([Components.Schemas.AppAudience].self, forKey: .`audience`)
         self.`category` = try c.decodePatch(Components.Schemas.AppCategory.self, forKey: .`category`)
         self.`challengePreparationUri` = try c.decodePatch(String.self, forKey: .`challengePreparationUri`)
+        self.`clientType` = try c.decodePatch(Components.Schemas.AppClientType.self, forKey: .`clientType`)
+        self.`connectUrl` = try c.decodePatch(String.self, forKey: .`connectUrl`)
         self.`description` = try c.decodePatch(String.self, forKey: .`description`)
         self.`displayName` = try c.decodePatch(String.self, forKey: .`displayName`)
         self.`fields` = try c.decodePatch([Components.Schemas.ConnectionAppField].self, forKey: .`fields`)
@@ -3177,12 +3860,15 @@ public struct FlowionUpdateConnectionAppRequest: Codable, Hashable, Sendable {
         self.`settingsUrl` = try c.decodePatch(String.self, forKey: .`settingsUrl`)
         self.`supportUrl` = try c.decodePatch(String.self, forKey: .`supportUrl`)
         self.`termsUrl` = try c.decodePatch(String.self, forKey: .`termsUrl`)
-        try decoder.ensureNoAdditionalProperties(knownKeys: ["category", "challengePreparationUri", "description", "displayName", "fields", "privacyUrl", "redirectUris", "requestedScopes", "settingsUrl", "supportUrl", "termsUrl"])
+        try decoder.ensureNoAdditionalProperties(knownKeys: ["audience", "category", "challengePreparationUri", "clientType", "connectUrl", "description", "displayName", "fields", "privacyUrl", "redirectUris", "requestedScopes", "settingsUrl", "supportUrl", "termsUrl"])
     }
     public func encode(to encoder: any Encoder) throws {
         var c = encoder.container(keyedBy: CodingKeys.self)
+        try c.encodePatch(`audience`, forKey: .`audience`)
         try c.encodePatch(`category`, forKey: .`category`)
         try c.encodePatch(`challengePreparationUri`, forKey: .`challengePreparationUri`)
+        try c.encodePatch(`clientType`, forKey: .`clientType`)
+        try c.encodePatch(`connectUrl`, forKey: .`connectUrl`)
         try c.encodePatch(`description`, forKey: .`description`)
         try c.encodePatch(`displayName`, forKey: .`displayName`)
         try c.encodePatch(`fields`, forKey: .`fields`)
@@ -3233,48 +3919,75 @@ public struct FlowionUpdateIdTokenRequest: Codable, Hashable, Sendable {
 
 public struct FlowionUpdateJobRequest: Codable, Hashable, Sendable {
     public var `address`: Patch<String>
+    /// Removes the on-site contact (the third state, as `clearPlannedDate`).
+    /// Wins over `onSiteContact` if both are sent.
+    public var `clearOnSiteContact`: Bool?
     public var `clearPlannedDate`: Bool?
     public var `contact`: Patch<Components.Schemas.JobContactView>
     public var `customer`: Patch<Components.Schemas.JobCustomerView>
+    /// Re-reads `customer.organizationNumber` under this country. Absent keeps
+    /// the job's own country.
+    public var `customerCountry`: Patch<String>
     public var `lines`: [Components.Schemas.JobLineInput]?
+    public var `onSiteContact`: Patch<Components.Schemas.JobOnSiteContactView>
     public var `plannedDate`: Patch<String>
+    /// Whether the planned date is confirmed with the customer. Absent leaves
+    /// it as it was. A change of the date or of this flag notifies a linked
+    /// customer.
+    public var `plannedDateConfirmed`: Patch<Bool>
     public var `replaceLines`: Bool?
-    public init(`address`: Patch<String> = .omitted, `clearPlannedDate`: Bool? = nil, `contact`: Patch<Components.Schemas.JobContactView> = .omitted, `customer`: Patch<Components.Schemas.JobCustomerView> = .omitted, `lines`: [Components.Schemas.JobLineInput]? = nil, `plannedDate`: Patch<String> = .omitted, `replaceLines`: Bool? = nil) {
+    public init(`address`: Patch<String> = .omitted, `clearOnSiteContact`: Bool? = nil, `clearPlannedDate`: Bool? = nil, `contact`: Patch<Components.Schemas.JobContactView> = .omitted, `customer`: Patch<Components.Schemas.JobCustomerView> = .omitted, `customerCountry`: Patch<String> = .omitted, `lines`: [Components.Schemas.JobLineInput]? = nil, `onSiteContact`: Patch<Components.Schemas.JobOnSiteContactView> = .omitted, `plannedDate`: Patch<String> = .omitted, `plannedDateConfirmed`: Patch<Bool> = .omitted, `replaceLines`: Bool? = nil) {
         self.`address` = `address`
+        self.`clearOnSiteContact` = `clearOnSiteContact`
         self.`clearPlannedDate` = `clearPlannedDate`
         self.`contact` = `contact`
         self.`customer` = `customer`
+        self.`customerCountry` = `customerCountry`
         self.`lines` = `lines`
+        self.`onSiteContact` = `onSiteContact`
         self.`plannedDate` = `plannedDate`
+        self.`plannedDateConfirmed` = `plannedDateConfirmed`
         self.`replaceLines` = `replaceLines`
     }
     private enum CodingKeys: String, CodingKey {
         case `address` = "address"
+        case `clearOnSiteContact` = "clearOnSiteContact"
         case `clearPlannedDate` = "clearPlannedDate"
         case `contact` = "contact"
         case `customer` = "customer"
+        case `customerCountry` = "customerCountry"
         case `lines` = "lines"
+        case `onSiteContact` = "onSiteContact"
         case `plannedDate` = "plannedDate"
+        case `plannedDateConfirmed` = "plannedDateConfirmed"
         case `replaceLines` = "replaceLines"
     }
     public init(from decoder: any Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
         self.`address` = try c.decodePatch(String.self, forKey: .`address`)
+        self.`clearOnSiteContact` = try c.decodeIfPresent(Bool.self, forKey: .`clearOnSiteContact`)
         self.`clearPlannedDate` = try c.decodeIfPresent(Bool.self, forKey: .`clearPlannedDate`)
         self.`contact` = try c.decodePatch(Components.Schemas.JobContactView.self, forKey: .`contact`)
         self.`customer` = try c.decodePatch(Components.Schemas.JobCustomerView.self, forKey: .`customer`)
+        self.`customerCountry` = try c.decodePatch(String.self, forKey: .`customerCountry`)
         self.`lines` = try c.decodeIfPresent([Components.Schemas.JobLineInput].self, forKey: .`lines`)
+        self.`onSiteContact` = try c.decodePatch(Components.Schemas.JobOnSiteContactView.self, forKey: .`onSiteContact`)
         self.`plannedDate` = try c.decodePatch(String.self, forKey: .`plannedDate`)
+        self.`plannedDateConfirmed` = try c.decodePatch(Bool.self, forKey: .`plannedDateConfirmed`)
         self.`replaceLines` = try c.decodeIfPresent(Bool.self, forKey: .`replaceLines`)
     }
     public func encode(to encoder: any Encoder) throws {
         var c = encoder.container(keyedBy: CodingKeys.self)
         try c.encodePatch(`address`, forKey: .`address`)
+        try c.encodeIfPresent(`clearOnSiteContact`, forKey: .`clearOnSiteContact`)
         try c.encodeIfPresent(`clearPlannedDate`, forKey: .`clearPlannedDate`)
         try c.encodePatch(`contact`, forKey: .`contact`)
         try c.encodePatch(`customer`, forKey: .`customer`)
+        try c.encodePatch(`customerCountry`, forKey: .`customerCountry`)
         try c.encodeIfPresent(`lines`, forKey: .`lines`)
+        try c.encodePatch(`onSiteContact`, forKey: .`onSiteContact`)
         try c.encodePatch(`plannedDate`, forKey: .`plannedDate`)
+        try c.encodePatch(`plannedDateConfirmed`, forKey: .`plannedDateConfirmed`)
         try c.encodeIfPresent(`replaceLines`, forKey: .`replaceLines`)
     }
 }
@@ -3294,16 +4007,21 @@ public struct FlowionUpdateLocationRequest: Codable, Hashable, Sendable {
     /// forecast is rejected rather than stored and silently yielding an
     /// empty forecast forever.
     public var `priceZone`: Patch<String>
+    /// Resolve the address with Google and permanently save its coordinates.
+    /// Coordinates must be omitted. Existing saved coordinates are preserved.
+    /// Lookup failure refuses the entire write. Defaults to false.
+    public var `resolveCoordinates`: Bool?
     /// The IANA time zone (e.g. `Europe/Stockholm`) this location's timestamps
     /// are rendered in. Send `null` to clear it; omit the field entirely
     /// to leave it unchanged. Validated against the IANA time zone
     /// database.
     public var `timeZone`: Patch<String>
-    public init(`address`: Patch<Components.Schemas.LocationAddressInput> = .omitted, `coordinates`: Patch<Components.Schemas.LocationCoordinatesInput> = .omitted, `name`: Patch<String> = .omitted, `priceZone`: Patch<String> = .omitted, `timeZone`: Patch<String> = .omitted) {
+    public init(`address`: Patch<Components.Schemas.LocationAddressInput> = .omitted, `coordinates`: Patch<Components.Schemas.LocationCoordinatesInput> = .omitted, `name`: Patch<String> = .omitted, `priceZone`: Patch<String> = .omitted, `resolveCoordinates`: Bool? = nil, `timeZone`: Patch<String> = .omitted) {
         self.`address` = `address`
         self.`coordinates` = `coordinates`
         self.`name` = `name`
         self.`priceZone` = `priceZone`
+        self.`resolveCoordinates` = `resolveCoordinates`
         self.`timeZone` = `timeZone`
     }
     private enum CodingKeys: String, CodingKey {
@@ -3311,6 +4029,7 @@ public struct FlowionUpdateLocationRequest: Codable, Hashable, Sendable {
         case `coordinates` = "coordinates"
         case `name` = "name"
         case `priceZone` = "priceZone"
+        case `resolveCoordinates` = "resolveCoordinates"
         case `timeZone` = "timeZone"
     }
     public init(from decoder: any Decoder) throws {
@@ -3319,6 +4038,7 @@ public struct FlowionUpdateLocationRequest: Codable, Hashable, Sendable {
         self.`coordinates` = try c.decodePatch(Components.Schemas.LocationCoordinatesInput.self, forKey: .`coordinates`)
         self.`name` = try c.decodePatch(String.self, forKey: .`name`)
         self.`priceZone` = try c.decodePatch(String.self, forKey: .`priceZone`)
+        self.`resolveCoordinates` = try c.decodeIfPresent(Bool.self, forKey: .`resolveCoordinates`)
         self.`timeZone` = try c.decodePatch(String.self, forKey: .`timeZone`)
     }
     public func encode(to encoder: any Encoder) throws {
@@ -3327,48 +4047,62 @@ public struct FlowionUpdateLocationRequest: Codable, Hashable, Sendable {
         try c.encodePatch(`coordinates`, forKey: .`coordinates`)
         try c.encodePatch(`name`, forKey: .`name`)
         try c.encodePatch(`priceZone`, forKey: .`priceZone`)
+        try c.encodeIfPresent(`resolveCoordinates`, forKey: .`resolveCoordinates`)
         try c.encodePatch(`timeZone`, forKey: .`timeZone`)
     }
 }
 
 public struct FlowionUpdateOrganizationRequest: Codable, Hashable, Sendable {
     public var `name`: String
-    /// The organization's Swedish organization number (R10). Omit the
-    /// field entirely to leave it unchanged; null or an empty string
+    /// The organization's registration number, as its country names it. Omit
+    /// the field entirely to leave it unchanged; null or an empty string
     /// clears it -- the generated console SDK can't express a JSON
     /// `null` (`UpdateOrganizationRequest.organization_number` is a bare
     /// `Option<String>` with `skip_serializing_if`, same gap as the
     /// environment time zone), so an empty or whitespace-only string is
     /// accepted as the same "clear" instruction; send a non-blank string
-    /// to set it, once it parses under `identity::OrganizationNumber::parse`
-    /// (`556703-7485` and a few other accepted forms — see that module's
-    /// own doc comment). A value that fails to parse is a 422 with a
+    /// to set it. Where the country has a validator the number must pass it
+    /// (`556703-7485` and a few other forms are accepted for Sweden); a
+    /// number for a country without one is stored trimmed and upper-cased and
+    /// is not verified. A VAT number is accepted where it contains the
+    /// registration number (`SE` + ten digits + `01`, `DK` + eight digits,
+    /// `FI` + eight digits) and reduced to it; any other VAT number is a 422
+    /// that points to the billing page. A value that fails is a 422 with a
     /// plain-language reason.
     public var `organizationNumber`: Patch<String>
+    /// The country that issued `organizationNumber`, ISO 3166-1 alpha-2
+    /// (`SE`). Omitted with a number to set it means `SE`. To change only the
+    /// country of the number already held, send the number again with the new
+    /// country. Ignored when `organizationNumber` is not being set.
+    public var `organizationNumberCountry`: Patch<String>
     /// If present, also changes the organization's slug — lowercase
     /// alphanumeric segments joined by single hyphens, at most 63
     /// characters, unique across the platform.
     public var `slug`: Patch<String>
-    public init(`name`: String, `organizationNumber`: Patch<String> = .omitted, `slug`: Patch<String> = .omitted) {
+    public init(`name`: String, `organizationNumber`: Patch<String> = .omitted, `organizationNumberCountry`: Patch<String> = .omitted, `slug`: Patch<String> = .omitted) {
         self.`name` = `name`
         self.`organizationNumber` = `organizationNumber`
+        self.`organizationNumberCountry` = `organizationNumberCountry`
         self.`slug` = `slug`
     }
     private enum CodingKeys: String, CodingKey {
         case `name` = "name"
         case `organizationNumber` = "organizationNumber"
+        case `organizationNumberCountry` = "organizationNumberCountry"
         case `slug` = "slug"
     }
     public init(from decoder: any Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
         self.`name` = try c.decode(String.self, forKey: .`name`)
         self.`organizationNumber` = try c.decodePatch(String.self, forKey: .`organizationNumber`)
+        self.`organizationNumberCountry` = try c.decodePatch(String.self, forKey: .`organizationNumberCountry`)
         self.`slug` = try c.decodePatch(String.self, forKey: .`slug`)
     }
     public func encode(to encoder: any Encoder) throws {
         var c = encoder.container(keyedBy: CodingKeys.self)
         try c.encode(`name`, forKey: .`name`)
         try c.encodePatch(`organizationNumber`, forKey: .`organizationNumber`)
+        try c.encodePatch(`organizationNumberCountry`, forKey: .`organizationNumberCountry`)
         try c.encodePatch(`slug`, forKey: .`slug`)
     }
 }
@@ -3423,6 +4157,7 @@ public struct FlowionUpdateProjectRequest: Codable, Hashable, Sendable {
     /// ignored, since a name cannot be cleared. Does **not** change
     /// `slug` — that is its own field below, deliberately.
     public var `name`: Patch<String>
+    public var `preset`: Patch<Components.Schemas.ProjectPreset>
     /// Deprecated: no longer settable on an environment. Any non-null
     /// value is rejected with `invalidRequest` — price zone is now
     /// configured per location instead.
@@ -3443,10 +4178,11 @@ public struct FlowionUpdateProjectRequest: Codable, Hashable, Sendable {
     /// entirely to leave it unchanged. Validated against the IANA time
     /// zone database.
     public var `timeZone`: Patch<String>
-    public init(`acknowledgeDisconnectsStations`: Bool? = nil, `monthlyStatements`: Patch<Bool> = .omitted, `name`: Patch<String> = .omitted, `priceZone`: Patch<String> = .omitted, `slug`: Patch<String> = .omitted, `timeZone`: Patch<String> = .omitted) {
+    public init(`acknowledgeDisconnectsStations`: Bool? = nil, `monthlyStatements`: Patch<Bool> = .omitted, `name`: Patch<String> = .omitted, `preset`: Patch<Components.Schemas.ProjectPreset> = .omitted, `priceZone`: Patch<String> = .omitted, `slug`: Patch<String> = .omitted, `timeZone`: Patch<String> = .omitted) {
         self.`acknowledgeDisconnectsStations` = `acknowledgeDisconnectsStations`
         self.`monthlyStatements` = `monthlyStatements`
         self.`name` = `name`
+        self.`preset` = `preset`
         self.`priceZone` = `priceZone`
         self.`slug` = `slug`
         self.`timeZone` = `timeZone`
@@ -3455,6 +4191,7 @@ public struct FlowionUpdateProjectRequest: Codable, Hashable, Sendable {
         case `acknowledgeDisconnectsStations` = "acknowledgeDisconnectsStations"
         case `monthlyStatements` = "monthlyStatements"
         case `name` = "name"
+        case `preset` = "preset"
         case `priceZone` = "priceZone"
         case `slug` = "slug"
         case `timeZone` = "timeZone"
@@ -3464,6 +4201,7 @@ public struct FlowionUpdateProjectRequest: Codable, Hashable, Sendable {
         self.`acknowledgeDisconnectsStations` = try c.decodeIfPresent(Bool.self, forKey: .`acknowledgeDisconnectsStations`)
         self.`monthlyStatements` = try c.decodePatch(Bool.self, forKey: .`monthlyStatements`)
         self.`name` = try c.decodePatch(String.self, forKey: .`name`)
+        self.`preset` = try c.decodePatch(Components.Schemas.ProjectPreset.self, forKey: .`preset`)
         self.`priceZone` = try c.decodePatch(String.self, forKey: .`priceZone`)
         self.`slug` = try c.decodePatch(String.self, forKey: .`slug`)
         self.`timeZone` = try c.decodePatch(String.self, forKey: .`timeZone`)
@@ -3473,6 +4211,7 @@ public struct FlowionUpdateProjectRequest: Codable, Hashable, Sendable {
         try c.encodeIfPresent(`acknowledgeDisconnectsStations`, forKey: .`acknowledgeDisconnectsStations`)
         try c.encodePatch(`monthlyStatements`, forKey: .`monthlyStatements`)
         try c.encodePatch(`name`, forKey: .`name`)
+        try c.encodePatch(`preset`, forKey: .`preset`)
         try c.encodePatch(`priceZone`, forKey: .`priceZone`)
         try c.encodePatch(`slug`, forKey: .`slug`)
         try c.encodePatch(`timeZone`, forKey: .`timeZone`)
